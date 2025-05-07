@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Rede 3D</title>
+    <style>
+        body { 
+            margin: 0; 
+            overflow: hidden; 
+            /* A cor de fundo do corpo é transparente para que o conteúdo abaixo (se houver) seja visível */
+            background-color: transparent; 
+            font-family: Arial, sans-serif; 
+        }
+        canvas { 
+            display: block; 
+            /* Garante que o canvas em si não tenha uma cor de fundo que sobrescreva a transparência */
+            background-color: transparent !important; 
+        }
+        #scoreBoard {
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none; 
+        }
+        #aiScore, #playerScore {
+            padding: 10px 20px;
+            font-size: 24px;
+            font-weight: bold;
+            /* Adicionar uma leve sombra para melhor legibilidade em fundos variados */
+            text-shadow: 0px 0px 5px rgba(0,0,0,0.7);
+        }
+        #aiScore {
+            color: #FFF800; /* Amarelo-neon para IA */
+            text-align: left;
+        }
+        #playerScore {
+            color: #00A3FF; /* Azul para Jogador */
+            text-align: right;
+        }
+        #messageOverlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 36px;
+            font-weight: bold;
+            text-align: center;
+            background-color: rgba(0,0,0,0.7);
+            padding: 20px;
+            border-radius: 10px;
+            display: none; 
+            pointer-events: none;
+            text-shadow: 0px 0px 5px rgba(0,0,0,0.5);
+        }
+        #instructions {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 16px;
+            background-color: rgba(0,0,0,0.5);
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-shadow: 0px 0px 3px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body>
+    <div id="scoreBoard">
+        <div id="aiScore">IA: 0</div>
+        <div id="playerScore">Jogador: 0</div>
+    </div>
+    <div id="messageOverlay">Pressione ESPAÇO para iniciar</div>
+    <div id="instructions">Use o mouse para olhar. Clique nos nós verdes. ESPAÇO para (Re)Iniciar.</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // --- Configuração de Cores ---
+        const COLORS = {
+            // BACKGROUND: 0xFF8000, // Laranja - Removido para fundo transparente
+            PLAYER_SCORE: '#00A3FF', // Azul
+            AI_SCORE: '#FFF800', // Amarelo-neon
+            COLLECTABLE_NODE: 0xB3FF00, // Verde-limão
+            NODE_TYPE_1: 0xFF008A, // Rosa-pink
+            NODE_TYPE_2: 0x9600FF, // Roxo
+            EDGE: 0xFFFFFF, // Branco
+            NODE_DEFAULT_EMISSIVE: 0x000000,
+            COLLECTABLE_EMISSIVE: 0x55ff55 // Um brilho verde para o coletável
+        };
+
+        // --- Variáveis Globais ---
+        let scene, camera, renderer;
+        let nodes = [];
+        let edges = [];
+        let collectableNode = null;
+        let playerScore = 0;
+        let aiScore = 0;
+        const WINNING_SCORE = 150; // Alterado para 150
+        let mouse = new THREE.Vector2();
+        let targetRotation = { x: 0, y: 0 };
+        let currentRotation = { x: 0, y: 0 };
+        let cameraDistance = 25;
+        let raycaster = new THREE.Raycaster();
+        let gameRunning = false;
+        let nodeCounter = 0; 
+        
+        let aiActionTimeout;
+        let nodeGenerationInterval;
+        let collectableGenerationTimeout;
+
+        const aiScoreDisplay = document.getElementById('aiScore');
+        const playerScoreDisplay = document.getElementById('playerScore');
+        const messageOverlay = document.getElementById('messageOverlay');
+        const instructionsDisplay = document.getElementById('instructions');
+
+        // --- Inicialização ---
+        function init() {
+            // Cena
+            scene = new THREE.Scene();
+            // scene.background = new THREE.Color(COLORS.BACKGROUND); // Removido para fundo transparente
+
+            // Câmera
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = cameraDistance;
+
+            // Renderer
+            // Alpha: true permite transparência no canvas do renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); 
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            // Define o alfa do clear color para 0 (totalmente transparente)
+            renderer.setClearAlpha(0); 
+            document.body.appendChild(renderer.domElement);
+
+            // Luzes
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8); 
+            scene.add(ambientLight);
+            const pointLight = new THREE.PointLight(0xffffff, 0.9, 150); 
+            pointLight.position.set(15, 15, 15);
+            scene.add(pointLight);
+            const pointLight2 = new THREE.PointLight(0xffffff, 0.5, 100); 
+            pointLight2.position.set(-15, -10, -10);
+            scene.add(pointLight2);
+
+
+            // Event Listeners
+            window.addEventListener('resize', onWindowResize, false);
+            document.addEventListener('mousemove', onMouseMove, false);
+            document.addEventListener('click', onMouseClick, false);
+            document.addEventListener('keydown', onKeyDown, false);
+
+            showMessage("Pressione ESPAÇO para iniciar");
+            instructionsDisplay.style.display = 'block';
+            animate();
+        }
+
+        // --- Lógica do Jogo ---
+        function startGame() {
+            if (gameRunning && (playerScore >= WINNING_SCORE || aiScore >= WINNING_SCORE)) {
+                // Se o jogo acabou e está tentando reiniciar
+            } else if (gameRunning) {
+                return; 
+            }
+            
+            console.log("Iniciando o jogo...");
+            gameRunning = true;
+            hideMessage();
+            instructionsDisplay.style.display = 'block';
+
+            // Resetar estado
+            playerScore = 0;
+            aiScore = 0;
+            updateScoreDisplay();
+            
+            // Limpar objetos da cena de forma segura
+            while(edges.length > 0) scene.remove(edges.pop());
+            while(nodes.length > 0) scene.remove(nodes.pop().mesh); 
+            
+            nodes = []; 
+            edges = []; 
+            nodeCounter = 0;
+            if (collectableNode) {
+                resetNodeToNormal(collectableNode); 
+                collectableNode = null;
+            }
+
+            clearTimeout(aiActionTimeout);
+            clearInterval(nodeGenerationInterval);
+            clearTimeout(collectableGenerationTimeout);
+
+            addNode(new THREE.Vector3(0, 0, 0)); // Adiciona o primeiro nó
+
+            // Aumentar a frequência de geração de nós e o limite para um jogo mais longo
+            nodeGenerationInterval = setInterval(() => {
+                if (gameRunning && nodes.length < 250) { // Limite de nós para performance (pode precisar de ajuste)
+                    addNewNodeToNetwork();
+                }
+            }, 1500); // Adiciona um novo nó mais rapidamente
+
+            aiActionLoop();
+        }
+
+        function addNewNodeToNetwork() {
+            if (!nodes.length) return;
+            const parentNode = nodes[Math.floor(Math.random() * nodes.length)];
+            const offset = new THREE.Vector3(
+                (Math.random() - 0.5) * 15, // Aumenta um pouco a dispersão para uma rede maior
+                (Math.random() - 0.5) * 15,
+                (Math.random() - 0.5) * 15
+            ).normalize().multiplyScalar(5 + Math.random() * 5); 
+            
+            const newNodePosition = new THREE.Vector3().copy(parentNode.mesh.position).add(offset);
+            const newNode = addNode(newNodePosition);
+            addEdge(parentNode, newNode);
+
+            clearTimeout(collectableGenerationTimeout); 
+            collectableGenerationTimeout = setTimeout(() => {
+                if (gameRunning && !collectableNode) { 
+                    makeRandomNodeCollectable();
+                }
+            }, Math.random() * 600 + 200); // Coletável aparece um pouco mais rápido
+        }
+
+        function addNode(position) {
+            const geometry = new THREE.SphereGeometry(0.5, 32, 32); 
+            const color = (nodeCounter % 2 === 0) ? COLORS.NODE_TYPE_1 : COLORS.NODE_TYPE_2;
+            const material = new THREE.MeshStandardMaterial({ 
+                color: color,
+                emissive: COLORS.NODE_DEFAULT_EMISSIVE,
+                roughness: 0.4, 
+                metalness: 0.4  
+            });
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.position.copy(position);
+            mesh.userData = { id: nodeCounter++, isCollectable: false, originalColor: color };
+            
+            scene.add(mesh);
+            nodes.push({ mesh: mesh, id: mesh.userData.id });
+            return nodes[nodes.length - 1];
+        }
+
+        function addEdge(nodeA, nodeB) {
+            const material = new THREE.LineBasicMaterial({ color: COLORS.EDGE, linewidth: 1.5 }); 
+            const points = [];
+            points.push(nodeA.mesh.position);
+            points.push(nodeB.mesh.position);
+            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+            const line = new THREE.Line(geometry, material);
+            scene.add(line);
+            edges.push(line);
+        }
+
+        function makeRandomNodeCollectable() {
+            if (!gameRunning || collectableNode) return; 
+
+            const availableNodes = nodes.filter(n => n.mesh && !n.mesh.userData.isCollectable); 
+            if (availableNodes.length > 0) {
+                const randomIndex = Math.floor(Math.random() * availableNodes.length);
+                const nodeToMakeCollectable = availableNodes[randomIndex];
+                
+                nodeToMakeCollectable.mesh.material.color.setHex(COLORS.COLLECTABLE_NODE);
+                nodeToMakeCollectable.mesh.material.emissive.setHex(COLORS.COLLECTABLE_EMISSIVE);
+                nodeToMakeCollectable.mesh.material.needsUpdate = true;
+                nodeToMakeCollectable.mesh.userData.isCollectable = true;
+                collectableNode = nodeToMakeCollectable;
+            }
+        }
+        
+        function resetNodeToNormal(nodeData) {
+            if (nodeData && nodeData.mesh && nodeData.mesh.userData) { 
+                nodeData.mesh.material.color.setHex(nodeData.mesh.userData.originalColor);
+                nodeData.mesh.material.emissive.setHex(COLORS.NODE_DEFAULT_EMISSIVE);
+                nodeData.mesh.material.emissiveIntensity = 1.0; 
+                nodeData.mesh.material.needsUpdate = true;
+                nodeData.mesh.userData.isCollectable = false;
+            }
+        }
+
+        function onMouseClick(event) {
+            if (!gameRunning || !collectableNode) return;
+
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(nodes.map(n => n.mesh).filter(mesh => mesh)); 
+
+            if (intersects.length > 0) {
+                const clickedObject = intersects[0].object;
+                if (clickedObject.userData.isCollectable) {
+                    playerScore++;
+                    updateScoreDisplay();
+                    showTemporaryMessage("Jogador coletou!", COLORS.PLAYER_SCORE, "right");
+                    
+                    const nodeData = nodes.find(n => n.mesh === clickedObject);
+                    if (nodeData) {
+                        resetNodeToNormal(nodeData);
+                    }
+                    collectableNode = null; 
+
+                    checkWinCondition();
+                    if (gameRunning) { 
+                         clearTimeout(collectableGenerationTimeout);
+                         collectableGenerationTimeout = setTimeout(makeRandomNodeCollectable, Math.random() * 400 + 150); // Mais rápido após coleta
+                    }
+                }
+            }
+        }
+
+        function aiActionLoop() {
+            if (!gameRunning) return;
+
+            const aiThinkTime = Math.random() * 1500 + 1000; // IA um pouco mais rápida para um jogo mais longo: 1s a 2.5s
+            aiActionTimeout = setTimeout(() => {
+                if (gameRunning && collectableNode) {
+                    aiScore++;
+                    updateScoreDisplay();
+                    showTemporaryMessage("IA coletou!", COLORS.AI_SCORE, "left");
+                    
+                    resetNodeToNormal(collectableNode);
+                    collectableNode = null;
+
+                    checkWinCondition();
+                     if (gameRunning) { 
+                        clearTimeout(collectableGenerationTimeout);
+                        collectableGenerationTimeout = setTimeout(makeRandomNodeCollectable, Math.random() * 400 + 150);
+                        aiActionLoop(); 
+                    }
+                } else if (gameRunning) {
+                    aiActionLoop(); 
+                }
+            }, aiThinkTime);
+        }
+        
+        function showTemporaryMessage(text, color, side) {
+            const tempMsg = document.createElement('div');
+            tempMsg.textContent = text;
+            tempMsg.style.position = 'absolute';
+            tempMsg.style.top = '60px';
+            if (side === 'left') tempMsg.style.left = '20px';
+            else tempMsg.style.right = '20px';
+            tempMsg.style.padding = '10px';
+            tempMsg.style.backgroundColor = 'rgba(0,0,0,0.6)';
+            tempMsg.style.color = color;
+            tempMsg.style.fontSize = '18px';
+            tempMsg.style.borderRadius = '5px';
+            tempMsg.style.zIndex = '100';
+            tempMsg.style.textShadow = '0px 0px 3px rgba(0,0,0,0.5)';
+            document.body.appendChild(tempMsg);
+            setTimeout(() => {
+                if (document.body.contains(tempMsg)) { 
+                    document.body.removeChild(tempMsg);
+                }
+            }, 1500);
+        }
+
+        function updateScoreDisplay() {
+            aiScoreDisplay.textContent = `IA: ${aiScore}`;
+            playerScoreDisplay.textContent = `Jogador: ${playerScore}`;
+        }
+
+        function checkWinCondition() {
+            if (playerScore >= WINNING_SCORE) {
+                showMessage(`Jogador Venceu! (${playerScore} x ${aiScore})<br>Pressione ESPAÇO para reiniciar.`);
+                endGame();
+            } else if (aiScore >= WINNING_SCORE) {
+                showMessage(`IA Venceu! (${aiScore} x ${playerScore})<br>Pressione ESPAÇO para reiniciar.`);
+                endGame();
+            }
+        }
+        
+        function endGame() {
+            gameRunning = false;
+            instructionsDisplay.style.display = 'none';
+            clearTimeout(aiActionTimeout);
+            clearInterval(nodeGenerationInterval);
+            clearTimeout(collectableGenerationTimeout);
+        }
+
+        function showMessage(text) {
+            messageOverlay.innerHTML = text;
+            messageOverlay.style.display = 'block';
+        }
+
+        function hideMessage() {
+            messageOverlay.style.display = 'none';
+        }
+        
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function onMouseMove(event) {
+            const normalizedMouseX = (event.clientX / window.innerWidth) * 2 - 1;
+            const normalizedMouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+            targetRotation.y = normalizedMouseX * Math.PI * 0.5; 
+            targetRotation.x = normalizedMouseY * Math.PI * 0.3; 
+        }
+        
+        function onKeyDown(event) {
+            if (event.code === 'Space') {
+                event.preventDefault(); 
+                if (!gameRunning || playerScore >= WINNING_SCORE || aiScore >= WINNING_SCORE) {
+                    startGame();
+                }
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            currentRotation.x += (targetRotation.x - currentRotation.x) * 0.05;
+            currentRotation.y += (targetRotation.y - currentRotation.y) * 0.05;
+
+            camera.position.x = cameraDistance * Math.sin(currentRotation.y) * Math.cos(currentRotation.x);
+            camera.position.y = cameraDistance * Math.sin(currentRotation.x);
+            camera.position.z = cameraDistance * Math.cos(currentRotation.y) * Math.cos(currentRotation.x);
+            camera.lookAt(scene.position); 
+
+            if (collectableNode && collectableNode.mesh && collectableNode.mesh.userData.isCollectable) { 
+                const time = Date.now() * 0.005;
+                const emissiveIntensity = (Math.sin(time * 3.5) + 1) / 2 * 0.6 + 0.4; 
+                collectableNode.mesh.material.emissiveIntensity = emissiveIntensity;
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        init();
+    </script></body>
+</html>
