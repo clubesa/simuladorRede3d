@@ -8,7 +8,7 @@
     <style>
         body {
             margin: 0;
-            overflow: hidden;
+            overflow: hidden; /* Evita barras de rolagem no body do HTML interno */
             font-family: 'Raleway', sans-serif;
             background-color: transparent; 
         }
@@ -19,9 +19,9 @@
             background-color: transparent; 
             touch-action: none; 
         }
-        /* Estilização do contêiner principal da UI (arrastável) */
+        /* Estilização do contêiner principal da UI (arrastável e fixo) */
         #uiContainer {
-            position: absolute; 
+            position: fixed; /* Alterado de absolute para fixed */
             top: 10px;        
             right: 10px;       
             padding: 8px; 
@@ -68,7 +68,7 @@
         }
         /* Estilização da mensagem de vitória */
         #victoryMessage {
-            position: absolute;
+            position: fixed; /* Também fixo para sobrepor corretamente */
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -124,7 +124,9 @@
 
     <div id="victoryMessage">
         <h2 id="winnerTitle"></h2>
-        <p id="finalPlayerScore"></p> <p id="finalAiScore"></p>     <button id="playAgainButton">Jogar Novamente</button>
+        <p id="finalPlayerScore"></p> 
+        <p id="finalAiScore"></p>     
+        <button id="playAgainButton">Jogar Novamente</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -148,7 +150,6 @@
         const COLOR_EDGE = 0xFFFFFF; 
         const COLOR_NODE_DEFAULT_MATERIAL = 0x007FFF; 
         
-        // Cores para mensagens de evento na UI (usadas por addEventToLog)
         const COLOR_PLAYER_CAPTURED_MSG = '#FF007F'; 
         const COLOR_AI_CAPTURED_MSG = '#FFFF00';     
 
@@ -171,8 +172,8 @@
         const eventLog = document.getElementById('eventLog');
         const victoryMessageDiv = document.getElementById('victoryMessage');
         const winnerTitle = document.getElementById('winnerTitle');
-        const finalPlayerScoreElem = document.getElementById('finalPlayerScore'); // Elemento do placar final
-        const finalAiScoreElem = document.getElementById('finalAiScore');       // Elemento do placar final
+        const finalPlayerScoreElem = document.getElementById('finalPlayerScore'); 
+        const finalAiScoreElem = document.getElementById('finalAiScore');       
         const playAgainButton = document.getElementById('playAgainButton');
 
         // Lógica para tornar o uiContainer arrastável
@@ -212,13 +213,17 @@
             }
             currentX = clientX - offsetX;
             currentY = clientY - offsetY;
+            
+            // Limitar o movimento dentro da janela (viewport)
             const maxX = window.innerWidth - uiContainer.offsetWidth;
             const maxY = window.innerHeight - uiContainer.offsetHeight;
+
             currentX = Math.max(0, Math.min(currentX, maxX));
             currentY = Math.max(0, Math.min(currentY, maxY));
+
             uiContainer.style.left = currentX + 'px';
             uiContainer.style.top = currentY + 'px';
-            uiContainer.style.right = 'auto'; // Sobrescreve 'right' para que 'left' tenha precedência
+            uiContainer.style.right = 'auto'; // Sobrescreve 'right' para que 'left' tenha precedência durante o arraste
         }
 
         function dragEnd(e) {
@@ -232,18 +237,17 @@
                 document.removeEventListener('touchend', dragEnd);
             }
         }
-        if (uiContainer) { // Adiciona listeners apenas se uiContainer existir
+        if (uiContainer) { 
             uiContainer.addEventListener('mousedown', dragStart);
             uiContainer.addEventListener('touchstart', dragStart, { passive: false });
         }
         
-        // Funções da UI (anteriormente em ui.html)
         function updateScoreInUI(newPlayerScore, newAiScore) {
             if (playerScoreDisplay) playerScoreDisplay.textContent = `Jogador: ${newPlayerScore}`;
             if (aiScoreDisplay) aiScoreDisplay.textContent = `IA: ${newAiScore}`;
         }
 
-        function addEventToLog(message, type) { // Renomeado de addEventToLogUI
+        function addEventToLog(message, type) { 
             if (!eventLog) return;
             const p = document.createElement('p');
             p.textContent = message;
@@ -256,7 +260,7 @@
             }
         }
 
-        function clearEventLog() { // Renomeado de clearEventLogUI
+        function clearEventLog() { 
             if (eventLog) eventLog.innerHTML = '';
         }
         
@@ -268,7 +272,6 @@
             }
         }
 
-        // Inicialização do Jogo (adaptada de game-script.js)
         function init() {
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -313,9 +316,9 @@
             renderer.domElement.addEventListener('touchend', onTouchEnd, false); 
             if(playAgainButton) playAgainButton.addEventListener('click', resetGame); 
 
-            resetUIPosition(); // Garante que a UI comece na posição correta
-            updateScoreInUI(0,0); // Inicializa o placar na UI
-            clearEventLog();      // Limpa o log de eventos na UI
+            resetUIPosition(); 
+            updateScoreInUI(0,0); 
+            clearEventLog();      
 
             spawnInitialNode();
             animate(); 
@@ -389,6 +392,11 @@
 
         function onMouseClick(event) {
             if (!gameRunning) return;
+            // Verifica se o clique foi no uiContainer ou em seus filhos
+            if (uiContainer && uiContainer.contains(event.target)) {
+                 // Se o clique foi na UI, não tenta coletar um nó do jogo
+                return;
+            }
             const clickCoords = { x: event.clientX, y: event.clientY };
             performRaycast(clickCoords); 
         }
@@ -397,6 +405,13 @@
             if (!gameRunning) return;
             if (event.changedTouches.length === 0) return; 
             const touch = event.changedTouches[0]; 
+
+            // Verifica se o toque foi no uiContainer ou em seus filhos
+            if (uiContainer && uiContainer.contains(touch.target)) {
+                // Se o toque foi na UI, não tenta coletar um nó do jogo
+                // A lógica de dragStart/dragEnd já lida com preventDefault para o uiContainer
+                return;
+            }
             const touchCoords = { x: touch.clientX, y: touch.clientY };
             performRaycast(touchCoords); 
         }
@@ -498,8 +513,8 @@
             if (winner) {
                 gameRunning = false;
                 if(winnerTitle) winnerTitle.textContent = `${winner} Venceu!`;
-                if(finalPlayerScoreElem) finalPlayerScoreElem.textContent = `Jogador: ${playerScore}`; // Usa o elemento correto
-                if(finalAiScoreElem) finalAiScoreElem.textContent = `IA: ${aiScore}`;           // Usa o elemento correto
+                if(finalPlayerScoreElem) finalPlayerScoreElem.textContent = `Jogador: ${playerScore}`; 
+                if(finalAiScoreElem) finalAiScoreElem.textContent = `IA: ${aiScore}`;           
                 if(victoryMessageDiv) victoryMessageDiv.style.display = 'block';
                 if (winner === 'Jogador' && victoryMessageDiv) {
                      victoryMessageDiv.style.backgroundColor = `#${COLOR_PLAYER_COLLECTED.toString(16).padStart(6, '0')}`;
@@ -524,8 +539,8 @@
             edges = [];
             playerScore = 0;
             aiScore = 0;
-            updateScoreInUI(playerScore, aiScore); // Atualiza UI
-            clearEventLog(); // Limpa log na UI
+            updateScoreInUI(playerScore, aiScore); 
+            clearEventLog(); 
             nextNodeId = 0;
             lastAICheckTime = 0;
             if(victoryMessageDiv) victoryMessageDiv.style.display = 'none';
@@ -533,7 +548,7 @@
             camera.lookAt(0,0,0);
             controls.target.set(0,0,0);
             controls.update();
-            resetUIPosition(); // Reposiciona a UI
+            resetUIPosition(); 
             gameRunning = true;
             spawnInitialNode();
         }
@@ -570,7 +585,6 @@
             renderer.render(scene, camera);
         }
 
-        // Garante que o DOM esteja carregado antes de iniciar o jogo
         document.addEventListener('DOMContentLoaded', (event) => {
             init();
         });
