@@ -69,6 +69,21 @@
             font-size: 14px; /* Como solicitado para o texto interno */
             margin: 5px 0;
         }
+        #playAgainButton {
+            margin-top: 15px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-family: 'Raleway', sans-serif;
+            background-color: #FF7F00; /* Laranja */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #playAgainButton:hover {
+            background-color: #E67300; /* Laranja mais escuro no hover */
+        }
     </style>
 </head>
 <body>
@@ -85,6 +100,7 @@
         <h2 id="winnerTitle"></h2>
         <p id="finalPlayerScore"></p>
         <p id="finalAiScore"></p>
+        <button id="playAgainButton">Jogar Novamente</button>
     </div>
 
     <script>
@@ -123,6 +139,7 @@
         const winnerTitle = document.getElementById('winnerTitle');
         const finalPlayerScore = document.getElementById('finalPlayerScore');
         const finalAiScore = document.getElementById('finalAiScore');
+        const playAgainButton = document.getElementById('playAgainButton');
 
         // Inicialização
         function init() {
@@ -171,6 +188,7 @@
             window.addEventListener('resize', onWindowResize, false);
             renderer.domElement.addEventListener('click', onMouseClick, false);
             renderer.domElement.addEventListener('touchend', onTouchEnd, false);
+            playAgainButton.addEventListener('click', resetGame);
 
 
             spawnInitialNode();
@@ -206,7 +224,7 @@
             nodes.push(nodeObject);
 
             setTimeout(() => {
-                if (nodeObject.mesh && !nodeObject.mesh.userData.collected) {
+                if (nodeObject.mesh && !nodeObject.mesh.userData.collected) { // Checa se o mesh ainda existe
                     nodeObject.mesh.userData.collectable = true;
                     nodeObject.mesh.material.color.setHex(COLOR_ORIGINAL_NODE);
                 }
@@ -361,7 +379,7 @@
         
         function applyForces() {
             const centerAttractionForce = 0.005; 
-            const repulsionStrength = 4.0; // Aumentado consideravelmente
+            const repulsionStrength = 4.0; 
             const minRepulsionDistance = NODE_RADIUS * 6.0; 
 
             for (let i = 0; i < nodes.length; i++) {
@@ -416,23 +434,75 @@
                 }
             }
         }
+
+        function resetGame() {
+            // Limpar nós da cena e do mundo físico
+            for (let i = nodes.length - 1; i >= 0; i--) {
+                const node = nodes[i];
+                scene.remove(node.mesh);
+                if (node.body) { // Checar se o corpo existe antes de remover
+                    world.removeBody(node.body);
+                }
+            }
+            nodes = [];
+
+            // Limpar arestas da cena e do mundo físico
+            for (let i = edges.length - 1; i >= 0; i--) {
+                const edge = edges[i];
+                scene.remove(edge.line);
+                if (edge.constraint) { // Checar se a restrição existe
+                     world.removeConstraint(edge.constraint);
+                }
+            }
+            edges = [];
+
+            // Resetar placares
+            playerScore = 0;
+            aiScore = 0;
+            updateScoreDisplay();
+
+            // Limpar log de eventos
+            eventLog.innerHTML = '';
+
+            // Resetar variáveis de controle
+            nextNodeId = 0;
+            lastAICheckTime = 0;
+            
+            // Esconder mensagem de vitória
+            victoryMessageDiv.style.display = 'none';
+
+            // Resetar câmera para posição inicial (opcional, mas pode ser bom)
+            camera.position.set(0, 15, 30);
+            camera.lookAt(0,0,0);
+            controls.target.set(0,0,0);
+            controls.update();
+
+            // Recomeçar o jogo
+            gameRunning = true;
+            spawnInitialNode();
+            // O loop de animação requestAnimationFrame(animate) já está rodando,
+            // apenas gameRunning = true; reativa a lógica principal.
+        }
         
         let lastTime = 0;
         function animate(currentTime = 0) {
-            if (gameRunning) {
-                requestAnimationFrame(animate);
-            }
+            // Sempre requisitar o próximo frame para manter o loop de renderização e controles
+            requestAnimationFrame(animate); 
             
             const deltaTime = (currentTime - lastTime) / 1000 || 1/60; 
             lastTime = currentTime;
 
             controls.update(); 
 
+            // Apenas executa a lógica do jogo se gameRunning for true
             if (gameRunning) {
                  applyForces(); 
                  world.step(1 / 60, deltaTime, 3); 
+                 aiTurn(currentTime);
             }
 
+            // Sincronização e renderização ocorrem mesmo se o jogo estiver "pausado" (gameRunning = false)
+            // para permitir que os controles da câmera funcionem e a cena seja exibida.
             for (const node of nodes) {
                 if (node.mesh && node.body) { 
                     node.mesh.position.copy(node.body.position);
@@ -453,10 +523,6 @@
                 }
             }
             
-            if (gameRunning) {
-                aiTurn(currentTime);
-            }
-
             renderer.render(scene, camera);
         }
 
