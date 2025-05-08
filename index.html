@@ -3,48 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador de Rede 3D</title>
+    <title>Simulador de Rede 3D Combinado</title>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <style>
         body {
             margin: 0;
             overflow: hidden;
             font-family: 'Raleway', sans-serif;
-            background-color: transparent; /* Fundo transparente */
+            background-color: transparent; 
         }
         #gameContainer {
             width: 100vw;
             height: 100vh;
             display: block;
-            background-color: transparent; /* Fundo transparente para o container do jogo */
-            touch-action: none; /* Prevenir ações padrão do navegador em toques */
+            background-color: transparent; 
+            touch-action: none; 
         }
-        /* Estilização do contêiner principal da UI */
+        /* Estilização do contêiner principal da UI (arrastável) */
         #uiContainer {
-            position: absolute;
-            top: 10px;
-            right: 10px;
+            position: absolute; 
+            top: 10px;        
+            right: 10px;       
             padding: 8px; 
-            background-color: rgba(0, 0, 0, 0.45); 
-            color: white;
+            background-color: rgba(0, 0, 0, 0.55); 
             border-radius: 8px;
-            font-size: 13px; 
+            color: white;
+            font-size: 13px;
             display: flex; 
             gap: 8px; 
-            width: auto; /* Largura automática baseada no conteúdo */
-            max-width: 420px; /* Ainda é bom ter um max-width */
-            box-shadow: 0 2px 10px rgba(0,0,0,0.5); 
+            width: auto; 
+            max-width: 420px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.6); 
+            cursor: move; 
+            user-select: none; 
+            z-index: 1000; 
         }
-        /* Estilização comum para cada seção da UI (Placar, Eventos) */
         .uiSection {
             padding: 8px 10px; 
-            background-color: rgba(20, 20, 20, 0.55); 
+            background-color: rgba(20, 20, 20, 0.6); 
             border-radius: 6px;
-            /* flex: 1; removido para largura baseada no conteúdo */
-            /* min-width: 160px; removido */
         }
         .uiSection h3, .uiSection h4 {
             margin-top: 0;
@@ -55,7 +52,6 @@
         .uiSection p {
             margin: 3px 0; 
         }
-        /* Estilização específica para o log de eventos */
         #eventLog {
             max-height: 60px; 
             overflow-y: hidden; 
@@ -83,7 +79,7 @@
             text-align: center;
             border-radius: 10px;
             display: none; 
-            z-index: 1000;
+            z-index: 1001; /* Acima da UI arrastável */
             box-shadow: 0 4px 15px rgba(0,0,0,0.5); 
         }
         #victoryMessage p {
@@ -113,6 +109,7 @@
 </head>
 <body>
     <div id="gameContainer"></div>
+
     <div id="uiContainer">
         <div id="scoreContainer" class="uiSection">
             <h3>Placar</h3>
@@ -124,13 +121,16 @@
             <div id="eventLog"></div>
         </div>
     </div>
+
     <div id="victoryMessage">
         <h2 id="winnerTitle"></h2>
-        <p id="finalPlayerScore"></p>
-        <p id="finalAiScore"></p>
-        <button id="playAgainButton">Jogar Novamente</button>
+        <p id="finalPlayerScore"></p> <p id="finalAiScore"></p>     <button id="playAgainButton">Jogar Novamente</button>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    
     <script>
         // Configurações do Jogo
         const WINNING_SCORE = 150;
@@ -139,7 +139,7 @@
         const NODE_COLLECTABLE_TIME = 1000; 
         const NEW_NODES_ON_COLLECT = 3;
         const NODE_SIZE_INCREASE_FACTOR = 1.02; 
-        const MAX_EVENT_LOG_ITEMS = 3; // Limite de itens no log de eventos
+        const MAX_EVENT_LOG_ITEMS = 3; 
 
         // Cores
         const COLOR_IA_COLLECTED = 0xFFFF00;
@@ -147,6 +147,10 @@
         const COLOR_PLAYER_COLLECTED = 0xFF007F;
         const COLOR_EDGE = 0xFFFFFF; 
         const COLOR_NODE_DEFAULT_MATERIAL = 0x007FFF; 
+        
+        // Cores para mensagens de evento na UI (usadas por addEventToLog)
+        const COLOR_PLAYER_CAPTURED_MSG = '#FF007F'; 
+        const COLOR_AI_CAPTURED_MSG = '#FFFF00';     
 
         let scene, camera, renderer, controls;
         let world; 
@@ -161,26 +165,120 @@
         let lastAICheckTime = 0;
 
         // Elementos da UI
+        const uiContainer = document.getElementById('uiContainer');
         const playerScoreDisplay = document.getElementById('playerScore');
         const aiScoreDisplay = document.getElementById('aiScore');
         const eventLog = document.getElementById('eventLog');
         const victoryMessageDiv = document.getElementById('victoryMessage');
         const winnerTitle = document.getElementById('winnerTitle');
-        const finalPlayerScore = document.getElementById('finalPlayerScore');
-        const finalAiScore = document.getElementById('finalAiScore');
+        const finalPlayerScoreElem = document.getElementById('finalPlayerScore'); // Elemento do placar final
+        const finalAiScoreElem = document.getElementById('finalAiScore');       // Elemento do placar final
         const playAgainButton = document.getElementById('playAgainButton');
 
-        // Inicialização
+        // Lógica para tornar o uiContainer arrastável
+        let isDragging = false;
+        let offsetX, offsetY; 
+        let currentX, currentY; 
+
+        function dragStart(e) {
+            isDragging = true;
+            uiContainer.style.transition = 'none'; 
+            if (e.type === 'mousedown') {
+                offsetX = e.clientX - uiContainer.offsetLeft;
+                offsetY = e.clientY - uiContainer.offsetTop;
+                document.addEventListener('mousemove', dragging);
+                document.addEventListener('mouseup', dragEnd);
+            } else if (e.type === 'touchstart') {
+                const touch = e.touches[0];
+                offsetX = touch.clientX - uiContainer.offsetLeft;
+                offsetY = touch.clientY - uiContainer.offsetTop;
+                document.addEventListener('touchmove', dragging, { passive: false }); 
+                document.addEventListener('touchend', dragEnd);
+            }
+            e.preventDefault(); 
+        }
+
+        function dragging(e) {
+            if (!isDragging) return;
+            let clientX, clientY;
+            if (e.type === 'mousemove') {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            } else if (e.type === 'touchmove') {
+                const touch = e.touches[0];
+                clientX = touch.clientX;
+                clientY = touch.clientY;
+                e.preventDefault(); 
+            }
+            currentX = clientX - offsetX;
+            currentY = clientY - offsetY;
+            const maxX = window.innerWidth - uiContainer.offsetWidth;
+            const maxY = window.innerHeight - uiContainer.offsetHeight;
+            currentX = Math.max(0, Math.min(currentX, maxX));
+            currentY = Math.max(0, Math.min(currentY, maxY));
+            uiContainer.style.left = currentX + 'px';
+            uiContainer.style.top = currentY + 'px';
+            uiContainer.style.right = 'auto'; // Sobrescreve 'right' para que 'left' tenha precedência
+        }
+
+        function dragEnd(e) {
+            isDragging = false;
+            uiContainer.style.transition = ''; 
+            if (e.type === 'mouseup') {
+                document.removeEventListener('mousemove', dragging);
+                document.removeEventListener('mouseup', dragEnd);
+            } else if (e.type === 'touchend') {
+                document.removeEventListener('touchmove', dragging);
+                document.removeEventListener('touchend', dragEnd);
+            }
+        }
+        if (uiContainer) { // Adiciona listeners apenas se uiContainer existir
+            uiContainer.addEventListener('mousedown', dragStart);
+            uiContainer.addEventListener('touchstart', dragStart, { passive: false });
+        }
+        
+        // Funções da UI (anteriormente em ui.html)
+        function updateScoreInUI(newPlayerScore, newAiScore) {
+            if (playerScoreDisplay) playerScoreDisplay.textContent = `Jogador: ${newPlayerScore}`;
+            if (aiScoreDisplay) aiScoreDisplay.textContent = `IA: ${newAiScore}`;
+        }
+
+        function addEventToLog(message, type) { // Renomeado de addEventToLogUI
+            if (!eventLog) return;
+            const p = document.createElement('p');
+            p.textContent = message;
+            p.classList.add('message');
+            if (type === 'jogador') p.style.color = COLOR_PLAYER_CAPTURED_MSG;
+            else if (type === 'ia') p.style.color = COLOR_AI_CAPTURED_MSG;
+            eventLog.insertBefore(p, eventLog.firstChild); 
+            while (eventLog.children.length > MAX_EVENT_LOG_ITEMS) { 
+                eventLog.removeChild(eventLog.lastChild);
+            }
+        }
+
+        function clearEventLog() { // Renomeado de clearEventLogUI
+            if (eventLog) eventLog.innerHTML = '';
+        }
+        
+        function resetUIPosition() {
+            if (uiContainer) {
+                uiContainer.style.left = 'auto'; 
+                uiContainer.style.top = '10px';
+                uiContainer.style.right = '10px'; 
+            }
+        }
+
+        // Inicialização do Jogo (adaptada de game-script.js)
         function init() {
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.set(0, 15, 30); 
-            camera.lookAt(0,0,0);
+            camera.lookAt(0,0,0); 
 
-            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); 
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setClearColor(0x000000, 0); 
-            document.getElementById('gameContainer').appendChild(renderer.domElement);
+            document.getElementById('gameContainer').appendChild(renderer.domElement); 
 
             controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true; 
@@ -189,12 +287,10 @@
             controls.minDistance = 5; 
             controls.maxDistance = 250; 
             controls.target.set(0,0,0);
-
             controls.touches = {
                 ONE: THREE.TOUCH.NONE !== undefined ? THREE.TOUCH.NONE : null, 
                 TWO: THREE.TOUCH.DOLLY_ROTATE 
             };
-
 
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
             scene.add(ambientLight);
@@ -206,22 +302,23 @@
             world.gravity.set(0, 0, 0); 
             world.broadphase = new CANNON.NaiveBroadphase(); 
             world.solver.iterations = 10; 
-
             const nodeMaterial = new CANNON.Material('nodeMaterial');
             const nodeContactMaterial = new CANNON.ContactMaterial(nodeMaterial, nodeMaterial, {
-                friction: 0.1, 
-                restitution: 0.5 
+                friction: 0.1, restitution: 0.5 
             });
             world.addContactMaterial(nodeContactMaterial);
 
-            window.addEventListener('resize', onWindowResize, false);
-            renderer.domElement.addEventListener('click', onMouseClick, false);
-            renderer.domElement.addEventListener('touchend', onTouchEnd, false);
-            playAgainButton.addEventListener('click', resetGame);
+            window.addEventListener('resize', onWindowResize, false); 
+            renderer.domElement.addEventListener('click', onMouseClick, false); 
+            renderer.domElement.addEventListener('touchend', onTouchEnd, false); 
+            if(playAgainButton) playAgainButton.addEventListener('click', resetGame); 
 
+            resetUIPosition(); // Garante que a UI comece na posição correta
+            updateScoreInUI(0,0); // Inicializa o placar na UI
+            clearEventLog();      // Limpa o log de eventos na UI
 
             spawnInitialNode();
-            animate();
+            animate(); 
         }
 
         function spawnInitialNode() {
@@ -229,74 +326,57 @@
         }
 
         function createNode(position, parentNode = null) {
-            const nodeId = nextNodeId++;
-            
+            const nodeId = nextNodeId++; 
             const geometry = new THREE.SphereGeometry(NODE_RADIUS, 32, 32);
             const material = new THREE.MeshPhongMaterial({ color: COLOR_NODE_DEFAULT_MATERIAL });
             const mesh = new THREE.Mesh(geometry, material);
             mesh.position.copy(position);
             mesh.userData = { id: nodeId, type: 'node', collected: false, collectable: false, connections: 0, baseRadius: NODE_RADIUS };
             scene.add(mesh);
-
             const initialRadius = NODE_RADIUS; 
             const shape = new CANNON.Sphere(initialRadius); 
             const body = new CANNON.Body({
-                mass: 0.8, 
-                position: new CANNON.Vec3(position.x, position.y, position.z),
-                material: world.materials.find(m => m.name === 'nodeMaterial') || new CANNON.Material('nodeMaterial')
+                mass: 0.8, position: new CANNON.Vec3(position.x, position.y, position.z),
+                material: world.materials.find(m => m.name === 'nodeMaterial') || new CANNON.Material('nodeMaterial') 
             });
             body.addShape(shape);
             body.userData = mesh; 
             world.addBody(body);
-            
             const nodeObject = { id: nodeId, mesh, body, parentNodeId: parentNode ? parentNode.id : null, connections: 0 };
             nodes.push(nodeObject);
-
             setTimeout(() => {
                 if (nodeObject.mesh && !nodeObject.mesh.userData.collected) { 
                     nodeObject.mesh.userData.collectable = true;
-                    nodeObject.mesh.material.color.setHex(COLOR_ORIGINAL_NODE);
+                    nodeObject.mesh.material.color.setHex(COLOR_ORIGINAL_NODE); 
                 }
             }, NODE_COLLECTABLE_TIME);
-
             if (parentNode) {
                 createEdge(nodeObject, parentNode);
                 incrementNodeConnections(nodeObject); 
                 incrementNodeConnections(parentNode); 
             }
-            
             return nodeObject;
         }
 
         function incrementNodeConnections(node) {
             node.connections++;
             node.mesh.userData.connections++;
-            
             const scaleFactor = Math.pow(NODE_SIZE_INCREASE_FACTOR, node.connections);
             node.mesh.scale.set(scaleFactor, scaleFactor, scaleFactor);
-            
             if (node.body.shapes.length > 0 && node.body.shapes[0] instanceof CANNON.Sphere) {
                 node.body.shapes[0].radius = node.mesh.userData.baseRadius * scaleFactor; 
                 node.body.updateBoundingRadius(); 
             }
         }
 
-
         function createEdge(node1, node2) {
             const material = new THREE.LineBasicMaterial({ color: COLOR_EDGE, linewidth: 2 });
             const geometry = new THREE.BufferGeometry().setFromPoints([node1.mesh.position, node2.mesh.position]);
             const line = new THREE.Line(geometry, material);
             scene.add(line);
-
             const desiredDistance = NODE_RADIUS * 5.0; 
-            const constraint = new CANNON.DistanceConstraint(
-                node1.body, 
-                node2.body, 
-                desiredDistance, 
-                150 
-            );
+            const constraint = new CANNON.DistanceConstraint(node1.body, node2.body, desiredDistance, 150 );
             world.addConstraint(constraint);
-
             const edgeObject = { line, constraint, node1Id: node1.id, node2Id: node2.id };
             edges.push(edgeObject);
         }
@@ -310,47 +390,40 @@
         function onMouseClick(event) {
             if (!gameRunning) return;
             const clickCoords = { x: event.clientX, y: event.clientY };
-            performRaycast(clickCoords);
+            performRaycast(clickCoords); 
         }
 
         function onTouchEnd(event) {
             if (!gameRunning) return;
-            if (event.changedTouches.length === 0) return;
-            const touch = event.changedTouches[0];
+            if (event.changedTouches.length === 0) return; 
+            const touch = event.changedTouches[0]; 
             const touchCoords = { x: touch.clientX, y: touch.clientY };
-            performRaycast(touchCoords);
+            performRaycast(touchCoords); 
         }
 
         function performRaycast(coords) {
-            const vec = new THREE.Vector2();
-            const raycaster = new THREE.Raycaster();
-
+            const vec = new THREE.Vector2(); 
+            const raycaster = new THREE.Raycaster(); 
             vec.x = (coords.x / renderer.domElement.clientWidth) * 2 - 1;
             vec.y = -(coords.y / renderer.domElement.clientHeight) * 2 + 1;
-            raycaster.setFromCamera(vec, camera);
-            
+            raycaster.setFromCamera(vec, camera); 
             const intersects = raycaster.intersectObjects(nodes.map(n => n.mesh), false); 
-
             if (intersects.length > 0) {
                 const intersectedMesh = intersects[0].object; 
                 if (intersectedMesh.userData.collectable && !intersectedMesh.userData.collected) {
-                    collectNode(intersectedMesh.userData.id, 'Jogador');
+                    collectNode(intersectedMesh.userData.id, 'Jogador'); 
                 }
             }
         }
 
-
         function collectNode(nodeId, collector) {
-            const node = nodes.find(n => n.id === nodeId);
-            if (!node || node.mesh.userData.collected) return;
-
+            const node = nodes.find(n => n.id === nodeId); 
+            if (!node || node.mesh.userData.collected) return; 
             node.mesh.userData.collected = true;
             node.mesh.userData.collectable = false; 
-
             let collectionMessage = "";
-            const spawnPositionBase = node.mesh.position.clone();
+            const spawnPositionBase = node.mesh.position.clone(); 
             const offsetMultiplier = 9; 
-
             if (collector === 'Jogador') {
                 playerScore++;
                 node.mesh.material.color.setHex(COLOR_PLAYER_COLLECTED);
@@ -360,7 +433,6 @@
                 node.mesh.material.color.setHex(COLOR_IA_COLLECTED);
                 collectionMessage = `IA captou nó ${nodeId}`; 
             }
-
             for (let i = 0; i < NEW_NODES_ON_COLLECT; i++) {
                 const offset = new THREE.Vector3(
                     (Math.random() - 0.5) * offsetMultiplier, 
@@ -370,34 +442,14 @@
                 if (offset.lengthSq() < 0.1) offset.x += 0.5 * Math.sign(offset.x || 1); 
                 createNode(spawnPositionBase.clone().add(offset), node);
             }
-
-            addEventToLog(collectionMessage, collector.toLowerCase());
-            updateScoreDisplay();
-            checkWinCondition();
+            addEventToLog(collectionMessage, collector.toLowerCase()); 
+            updateScoreInUI(playerScore, aiScore); 
+            checkWinCondition(); 
         }
         
-        function addEventToLog(message, type) {
-            const p = document.createElement('p');
-            p.textContent = message;
-            p.classList.add('message');
-            if (type === 'jogador') p.style.color = `#${COLOR_PLAYER_COLLECTED.toString(16).padStart(6, '0')}`;
-            if (type === 'ia') p.style.color = `#${COLOR_IA_COLLECTED.toString(16).padStart(6, '0')}`;
-            
-            eventLog.insertBefore(p, eventLog.firstChild); 
-            while (eventLog.children.length > MAX_EVENT_LOG_ITEMS) { 
-                eventLog.removeChild(eventLog.lastChild);
-            }
-        }
-
-        function updateScoreDisplay() {
-            playerScoreDisplay.textContent = `Jogador: ${playerScore}`;
-            aiScoreDisplay.textContent = `IA: ${aiScore}`;
-        }
-
         function aiTurn(currentTime) {
             if (!gameRunning || currentTime - lastAICheckTime < AI_COLLECTION_INTERVAL) return;
             lastAICheckTime = currentTime;
-
             const collectableNodes = nodes.filter(n => n.mesh.userData.collectable && !n.mesh.userData.collected);
             if (collectableNodes.length > 0) {
                 collectableNodes.sort((a, b) => a.mesh.userData.connections - b.mesh.userData.connections);
@@ -410,28 +462,22 @@
             const centerAttractionForce = 0.002; 
             const repulsionStrength = 4.0; 
             const minRepulsionDistance = NODE_RADIUS * 6.0; 
-
             for (let i = 0; i < nodes.length; i++) {
                 const nodeA = nodes[i];
                 if (!nodeA.body) continue; 
-                
                 const forceToCenter = nodeA.body.position.clone().negate().scale(centerAttractionForce * nodeA.body.mass);
                 nodeA.body.applyForce(forceToCenter, nodeA.body.position);
-
                 for (let j = i + 1; j < nodes.length; j++) {
                     const nodeB = nodes[j];
                     if (!nodeB.body) continue; 
-                    
                     const diff = new CANNON.Vec3();
                     nodeA.body.position.vsub(nodeB.body.position, diff);
                     const distance = diff.length();
-                    
                     if (distance > 0.01 && distance < minRepulsionDistance) { 
                         const isConnected = edges.some(edge => 
                             (edge.node1Id === nodeA.id && edge.node2Id === nodeB.id) ||
                             (edge.node1Id === nodeB.id && edge.node2Id === nodeA.id)
                         );
-
                         if (!isConnected) { 
                             const forceMagnitude = repulsionStrength / (distance * distance + 0.01); 
                             diff.normalize();
@@ -449,16 +495,15 @@
             let winner = null;
             if (playerScore >= WINNING_SCORE) winner = 'Jogador';
             else if (aiScore >= WINNING_SCORE) winner = 'IA';
-
             if (winner) {
                 gameRunning = false;
-                winnerTitle.textContent = `${winner} Venceu!`;
-                finalPlayerScore.textContent = `Jogador: ${playerScore}`;
-                finalAiScore.textContent = `IA: ${aiScore}`;
-                victoryMessageDiv.style.display = 'block';
-                if (winner === 'Jogador') {
+                if(winnerTitle) winnerTitle.textContent = `${winner} Venceu!`;
+                if(finalPlayerScoreElem) finalPlayerScoreElem.textContent = `Jogador: ${playerScore}`; // Usa o elemento correto
+                if(finalAiScoreElem) finalAiScoreElem.textContent = `IA: ${aiScore}`;           // Usa o elemento correto
+                if(victoryMessageDiv) victoryMessageDiv.style.display = 'block';
+                if (winner === 'Jogador' && victoryMessageDiv) {
                      victoryMessageDiv.style.backgroundColor = `#${COLOR_PLAYER_COLLECTED.toString(16).padStart(6, '0')}`;
-                } else {
+                } else if (victoryMessageDiv) {
                      victoryMessageDiv.style.backgroundColor = `#${COLOR_IA_COLLECTED.toString(16).padStart(6, '0')}`;
                 }
             }
@@ -468,32 +513,27 @@
             for (let i = nodes.length - 1; i >= 0; i--) {
                 const node = nodes[i];
                 scene.remove(node.mesh);
-                if (node.body) { 
-                    world.removeBody(node.body);
-                }
+                if (node.body) world.removeBody(node.body);
             }
             nodes = [];
-
             for (let i = edges.length - 1; i >= 0; i--) {
                 const edge = edges[i];
                 scene.remove(edge.line);
-                if (edge.constraint) { 
-                     world.removeConstraint(edge.constraint);
-                }
+                if (edge.constraint) world.removeConstraint(edge.constraint);
             }
             edges = [];
-
             playerScore = 0;
             aiScore = 0;
-            updateScoreDisplay();
-            eventLog.innerHTML = '';
+            updateScoreInUI(playerScore, aiScore); // Atualiza UI
+            clearEventLog(); // Limpa log na UI
             nextNodeId = 0;
             lastAICheckTime = 0;
-            victoryMessageDiv.style.display = 'none';
+            if(victoryMessageDiv) victoryMessageDiv.style.display = 'none';
             camera.position.set(0, 15, 30);
             camera.lookAt(0,0,0);
             controls.target.set(0,0,0);
             controls.update();
+            resetUIPosition(); // Reposiciona a UI
             gameRunning = true;
             spawnInitialNode();
         }
@@ -501,25 +541,20 @@
         let lastTime = 0;
         function animate(currentTime = 0) {
             requestAnimationFrame(animate); 
-            
             const deltaTime = (currentTime - lastTime) / 1000 || 1/60; 
             lastTime = currentTime;
-
             controls.update(); 
-
             if (gameRunning) {
                  applyForces(); 
                  world.step(1 / 60, deltaTime, 3); 
                  aiTurn(currentTime);
             }
-
             for (const node of nodes) {
                 if (node.mesh && node.body) { 
                     node.mesh.position.copy(node.body.position);
                     node.mesh.quaternion.copy(node.body.quaternion);
                 }
             }
-
             for (const edge of edges) {
                 const node1 = nodes.find(n => n.id === edge.node1Id);
                 const node2 = nodes.find(n => n.id === edge.node2Id);
@@ -532,11 +567,13 @@
                     positions.needsUpdate = true;
                 }
             }
-            
             renderer.render(scene, camera);
         }
 
-        init();
+        // Garante que o DOM esteja carregado antes de iniciar o jogo
+        document.addEventListener('DOMContentLoaded', (event) => {
+            init();
+        });
     </script>
 </body>
 </html>
