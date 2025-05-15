@@ -8,7 +8,7 @@
     <style>
         body {
             margin: 0;
-            overflow: hidden; /* Evita barras de rolagem no body do HTML interno */
+            overflow: hidden; 
             font-family: 'Raleway', sans-serif;
             background-color: transparent; 
         }
@@ -21,8 +21,8 @@
         }
         /* Estilização do contêiner principal da UI (arrastável e fixo) */
         #uiContainer {
-            position: fixed; /* Alterado de absolute para fixed */
-            top: 10px;        
+            position: fixed; 
+            bottom: 10px;      /* Alterado para bottom */
             right: 10px;       
             padding: 8px; 
             background-color: rgba(0, 0, 0, 0.55); 
@@ -53,22 +53,20 @@
             margin: 3px 0; 
         }
         #eventLog {
-            max-height: 60px; 
+            max-height: 20px; /* Altura ajustada para 1 evento */
             overflow-y: hidden; 
         }
         .message {
             font-size: 11px; 
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 2px;
-            margin-bottom: 2px;
+            /* border-bottom: 1px solid rgba(255,255,255,0.1); Removida borda para 1 item */
+            padding-bottom: 0px; /* Removido padding para 1 item */
+            margin-bottom: 0px;  /* Removido margin para 1 item */
             line-height: 1.3; 
         }
-        .message:last-child {
-            border-bottom: none;
-        }
-        /* Estilização da mensagem de vitória */
+        /* .message:last-child { border-bottom: none; } Não mais necessário */
+        
         #victoryMessage {
-            position: fixed; /* Também fixo para sobrepor corretamente */
+            position: fixed; 
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -79,7 +77,7 @@
             text-align: center;
             border-radius: 10px;
             display: none; 
-            z-index: 1001; /* Acima da UI arrastável */
+            z-index: 1001; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.5); 
         }
         #victoryMessage p {
@@ -141,7 +139,8 @@
         const NODE_COLLECTABLE_TIME = 1000; 
         const NEW_NODES_ON_COLLECT = 3;
         const NODE_SIZE_INCREASE_FACTOR = 1.02; 
-        const MAX_EVENT_LOG_ITEMS = 3; 
+        const MAX_EVENT_LOG_ITEMS = 1; // Alterado para 1 evento
+        const INITIAL_NETWORK_Y_OFFSET = -3; // Posição Y inicial da rede, mais abaixo
 
         // Cores
         const COLOR_IA_COLLECTED = 0xFFFF00;
@@ -214,7 +213,6 @@
             currentX = clientX - offsetX;
             currentY = clientY - offsetY;
             
-            // Limitar o movimento dentro da janela (viewport)
             const maxX = window.innerWidth - uiContainer.offsetWidth;
             const maxY = window.innerHeight - uiContainer.offsetHeight;
 
@@ -223,12 +221,22 @@
 
             uiContainer.style.left = currentX + 'px';
             uiContainer.style.top = currentY + 'px';
-            uiContainer.style.right = 'auto'; // Sobrescreve 'right' para que 'left' tenha precedência durante o arraste
+            uiContainer.style.right = 'auto'; 
+            uiContainer.style.bottom = 'auto'; // Para que top e left tenham precedência durante o arraste
         }
 
         function dragEnd(e) {
             isDragging = false;
             uiContainer.style.transition = ''; 
+            // Ao soltar, se a posição left/top foi definida, remove right/bottom para evitar conflitos
+            // e garantir que a posição arrastada seja mantida.
+            // Se o usuário quiser que volte para o canto, a função resetUIPosition faz isso.
+            if (uiContainer.style.left !== 'auto' || uiContainer.style.top !== 'auto') {
+                 uiContainer.style.right = 'auto';
+                 uiContainer.style.bottom = 'auto';
+            }
+
+
             if (e.type === 'mouseup') {
                 document.removeEventListener('mousemove', dragging);
                 document.removeEventListener('mouseup', dragEnd);
@@ -249,15 +257,14 @@
 
         function addEventToLog(message, type) { 
             if (!eventLog) return;
+            // Limpa eventos anteriores para mostrar apenas o último
+            eventLog.innerHTML = ''; 
             const p = document.createElement('p');
             p.textContent = message;
             p.classList.add('message');
             if (type === 'jogador') p.style.color = COLOR_PLAYER_CAPTURED_MSG;
             else if (type === 'ia') p.style.color = COLOR_AI_CAPTURED_MSG;
-            eventLog.insertBefore(p, eventLog.firstChild); 
-            while (eventLog.children.length > MAX_EVENT_LOG_ITEMS) { 
-                eventLog.removeChild(eventLog.lastChild);
-            }
+            eventLog.appendChild(p); // Adiciona o novo evento
         }
 
         function clearEventLog() { 
@@ -267,16 +274,18 @@
         function resetUIPosition() {
             if (uiContainer) {
                 uiContainer.style.left = 'auto'; 
-                uiContainer.style.top = '10px';
-                uiContainer.style.right = '10px'; 
+                uiContainer.style.top = 'auto'; // Reset top
+                uiContainer.style.bottom = '10px'; // Posição no rodapé
+                uiContainer.style.right = '10px';  // Posição à direita
             }
         }
 
         function init() {
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 15, 30); 
-            camera.lookAt(0,0,0); 
+            // Ajusta a posição Y da câmera para cima para compensar a rede mais abaixo, mantendo o campo de visão
+            camera.position.set(0, 15 + Math.abs(INITIAL_NETWORK_Y_OFFSET), 30); 
+            camera.lookAt(0, INITIAL_NETWORK_Y_OFFSET, 0); // Câmera olha para a posição Y inicial da rede
 
             renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); 
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -289,7 +298,7 @@
             controls.screenSpacePanning = false; 
             controls.minDistance = 5; 
             controls.maxDistance = 250; 
-            controls.target.set(0,0,0);
+            controls.target.set(0, INITIAL_NETWORK_Y_OFFSET, 0); // Alvo dos controles na posição Y da rede
             controls.touches = {
                 ONE: THREE.TOUCH.NONE !== undefined ? THREE.TOUCH.NONE : null, 
                 TWO: THREE.TOUCH.DOLLY_ROTATE 
@@ -325,7 +334,8 @@
         }
 
         function spawnInitialNode() {
-            createNode(new THREE.Vector3(0, 0, 0), null); 
+            // Cria o nó inicial na posição Y definida
+            createNode(new THREE.Vector3(0, INITIAL_NETWORK_Y_OFFSET, 0), null); 
         }
 
         function createNode(position, parentNode = null) {
@@ -392,9 +402,7 @@
 
         function onMouseClick(event) {
             if (!gameRunning) return;
-            // Verifica se o clique foi no uiContainer ou em seus filhos
             if (uiContainer && uiContainer.contains(event.target)) {
-                 // Se o clique foi na UI, não tenta coletar um nó do jogo
                 return;
             }
             const clickCoords = { x: event.clientX, y: event.clientY };
@@ -405,11 +413,7 @@
             if (!gameRunning) return;
             if (event.changedTouches.length === 0) return; 
             const touch = event.changedTouches[0]; 
-
-            // Verifica se o toque foi no uiContainer ou em seus filhos
             if (uiContainer && uiContainer.contains(touch.target)) {
-                // Se o toque foi na UI, não tenta coletar um nó do jogo
-                // A lógica de dragStart/dragEnd já lida com preventDefault para o uiContainer
                 return;
             }
             const touchCoords = { x: touch.clientX, y: touch.clientY };
@@ -544,10 +548,13 @@
             nextNodeId = 0;
             lastAICheckTime = 0;
             if(victoryMessageDiv) victoryMessageDiv.style.display = 'none';
-            camera.position.set(0, 15, 30);
-            camera.lookAt(0,0,0);
-            controls.target.set(0,0,0);
+            
+            // Restaura câmera e alvo para a posição inicial da rede
+            camera.position.set(0, 15 + Math.abs(INITIAL_NETWORK_Y_OFFSET), 30);
+            camera.lookAt(0, INITIAL_NETWORK_Y_OFFSET, 0);
+            controls.target.set(0, INITIAL_NETWORK_Y_OFFSET, 0);
             controls.update();
+
             resetUIPosition(); 
             gameRunning = true;
             spawnInitialNode();
