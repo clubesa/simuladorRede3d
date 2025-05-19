@@ -70,10 +70,10 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            padding: 20px 25px; /* Padding vertical reduzido */
+            padding: 20px 25px; 
             background-color: rgba(0, 100, 180, 0.9); 
-            color: white; /* Cor padrão do texto */
-            font-size: 20px; /* Tamanho da fonte do título reduzido ligeiramente */
+            color: white; 
+            font-size: 20px; 
             text-align: center;
             border-radius: 10px;
             display: none; 
@@ -82,17 +82,17 @@
             pointer-events: auto; 
         }
         #victoryMessage h2 {
-            margin-top: 0; /* Remove margem superior do h2 */
-            margin-bottom: 10px; /* Margem inferior do h2 reduzida */
+            margin-top: 0; 
+            margin-bottom: 10px; 
         }
         #victoryMessage p {
-            font-size: 15px; /* Tamanho da fonte do placar reduzido ligeiramente */
-            margin: 5px 0; /* Margem do placar reduzida */
+            font-size: 15px; 
+            margin: 5px 0; 
         }
         #playAgainButton {
-            margin-top: 15px; /* Margem acima do botão reduzida */
-            padding: 10px 20px; /* Padding do botão reduzido */
-            font-size: 15px; /* Fonte do botão reduzida */
+            margin-top: 15px; 
+            padding: 10px 20px; 
+            font-size: 15px; 
             font-family: 'Raleway', sans-serif;
             background-color: #FF7F00; 
             color: white;
@@ -148,16 +148,16 @@
         const INITIAL_NETWORK_Y_OFFSET = -3; 
 
         // Cores
-        const COLOR_IA_COLLECTED_NODE = 0xFFFF00; // Cor do nó quando IA coleta
+        const COLOR_IA_COLLECTED_NODE = 0xFFFF00; 
         const COLOR_ORIGINAL_NODE = 0xFF7F00;
-        const COLOR_PLAYER_COLLECTED_NODE = 0xFF007F; // Cor do nó quando Jogador coleta
+        const COLOR_PLAYER_COLLECTED_NODE = 0xFF007F; 
         const COLOR_EDGE = 0xFFFFFF; 
         const COLOR_NODE_DEFAULT_MATERIAL = 0x007FFF; 
         
         const COLOR_PLAYER_CAPTURED_MSG = '#FF007F'; 
         const COLOR_AI_CAPTURED_MSG = '#FFFF00';
-        const VICTORY_TEXT_COLOR_IA_WINS = '#333333'; // Cinza escuro para texto na vitória da IA
-        const VICTORY_TEXT_COLOR_PLAYER_WINS = '#FFFFFF'; // Branco para texto na vitória do Jogador
+        const VICTORY_TEXT_COLOR_IA_WINS = '#333333'; 
+        const VICTORY_TEXT_COLOR_PLAYER_WINS = '#FFFFFF'; 
 
 
         let scene, camera, renderer, controls;
@@ -301,8 +301,8 @@
             controls.enableDamping = true; 
             controls.dampingFactor = 0.05;
             controls.screenSpacePanning = false; 
-            controls.minDistance = 5; 
-            controls.maxDistance = 250; 
+            controls.minDistance = 10; // Aumentado para limitar zoom in
+            controls.maxDistance = 80; // Diminuído para limitar zoom out (era 100)
             controls.target.set(0, INITIAL_NETWORK_Y_OFFSET, 0); 
             controls.touches = {
                 ONE: THREE.TOUCH.NONE !== undefined ? THREE.TOUCH.NONE : null, 
@@ -516,7 +516,7 @@
         function checkWinCondition() {
             if (!gameRunning) return;
             let winner = null;
-            let textColor = VICTORY_TEXT_COLOR_PLAYER_WINS; // Cor padrão para vitória do jogador
+            let textColor = VICTORY_TEXT_COLOR_PLAYER_WINS; 
 
             if (playerScore >= WINNING_SCORE) {
                 winner = 'Jogador';
@@ -524,7 +524,7 @@
                 if (victoryMessageDiv) victoryMessageDiv.style.backgroundColor = `#${COLOR_PLAYER_COLLECTED_NODE.toString(16).padStart(6, '0')}`;
             } else if (aiScore >= WINNING_SCORE) {
                 winner = 'IA';
-                textColor = VICTORY_TEXT_COLOR_IA_WINS; // Altera a cor do texto para vitória da IA
+                textColor = VICTORY_TEXT_COLOR_IA_WINS; 
                 if (victoryMessageDiv) victoryMessageDiv.style.backgroundColor = `#${COLOR_IA_COLLECTED_NODE.toString(16).padStart(6, '0')}`;
             }
 
@@ -542,8 +542,8 @@
                     finalAiScoreElem.textContent = `IA: ${aiScore}`;   
                     finalAiScoreElem.style.color = textColor;        
                 }
-                if(playAgainButton) { // Garante que o botão também use a cor de texto apropriada se necessário
-                    playAgainButton.style.color = VICTORY_TEXT_COLOR_PLAYER_WINS; // Botão sempre com texto branco
+                if(playAgainButton) { 
+                    playAgainButton.style.color = VICTORY_TEXT_COLOR_PLAYER_WINS; 
                 }
                 if(victoryMessageDiv) {
                     victoryMessageDiv.style.display = 'block';
