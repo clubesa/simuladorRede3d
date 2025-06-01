@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empreendeção: Uma Forma de Ser</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Raleway', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .section-transition {
+            transition: all 0.5s ease-in-out;
+        }
+        .popup {
+            display: none;
+            position: absolute; 
+            background-color: #333;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            z-index: 50; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            pointer-events: none; 
+        }
+        .interactive-card-content {
+            display: none;
+            transform: rotateY(180deg); 
+            backface-visibility: hidden;
+        }
+        .interactive-card.flipped .interactive-card-front {
+            transform: rotateY(180deg);
+        }
+        .interactive-card.flipped .interactive-card-back {
+            transform: rotateY(0deg);
+            display: block;
+        }
+        .interactive-card-front, .interactive-card-back {
+            transition: transform 0.6s;
+            backface-visibility: hidden;
+        }
+        .carousel-item {
+            min-width: 80%; 
+            scroll-snap-align: center;
+        }
+        @media (min-width: 768px) {
+            .carousel-item {
+                min-width: 30%;
+            }
+        }
+        .gemini-response-item {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+            border-radius: 0.375rem;
+            border-left: 4px solid #ffff00; /* Amarelo para destaque */
+        }
+        .loader {
+            border: 4px solid #f3f3f3; /* Light grey */
+            border-top: 4px solid #007fff; /* Blue */
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 1rem auto;
+            display: none; /* Hidden by default */
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <header class="bg-[rgba(255,127,0,0.85)] text-gray-900 p-8 shadow-md">
+        <div class="container mx-auto text-center">
+            <h1 class="text-4xl md:text-5xl font-bold">📣 VIR A SER e outras loucuras empreendedoras que me meti…</h1>
+        </div>
+    </header>
+
+    <main class="container mx-auto mt-2 p-4">
+
+        <section id="revelacao" class="bg-[rgba(127,255,0,0.85)] text-gray-900 p-8 my-8 rounded-lg shadow-xl section-transition">
+            <h2 class="text-3xl font-bold mb-4 text-center">A Epifania do "Vir a Ser" 💡</h2>
+            <p class="text-lg mb-2 leading-relaxed" id="typewriter-p1">Depois de viver umas coisinhas por aí (umas dignas de Oscar, outras de terapia), percebi que “vir a ser” é uma ideia poderosa.</p>
+        </section>
+
+        <section id="o-que-e" class="bg-[rgba(0,127,255,0.85)] text-white p-8 my-8 rounded-lg shadow-xl section-transition">
+            <h2 class="text-3xl font-bold mb-6 text-center">Empreendeção: Se Joga Que a Vida Ensina! 🤸</h2>
+            <div id="empreendecao-card" class="interactive-card bg-white/20 p-6 rounded-lg cursor-pointer hover:shadow-2xl transition-shadow duration-300">
+                <div class="interactive-card-front">
+                    <p class="text-lg mb-2 leading-relaxed">"Foi aí que me joguei na tal da empreendeção — que, pra mim, é mais do que abrir empresa:"</p>
+                    <p class="text-center mt-4 text-yellow-300 font-semibold">(Clique para revelar mais)</p>
+                </div>
+                <div class="interactive-card-back interactive-card-content">
+                    <p class="text-lg leading-relaxed">"É se jogar no mundo, tropeçar bonito, aprender rindo (ou chorando), e seguir."</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="genese" class="bg-[rgba(127,0,255,0.85)] text-white p-8 my-8 rounded-lg shadow-xl section-transition">
+            <h2 class="text-3xl font-bold mb-6 text-center">No Princípio... Era o Perrengue (e a Criatividade!) 🌍</h2>
+            <p class="text-lg mb-4 leading-relaxed">"Empreender é a arte de se reinventar no improviso."</p>
+            <p class="text-lg mb-6 leading-relaxed">"No fundo, a humanidade começou assim: alguém teve um perrengue, se virou, e nasceu a civilização. Sem CNPJ, sem pitch, sem nada. Só na coragem e no caos."</p>
+            <div class="flex justify-center items-center space-x-8">
+                <div id="perrengue-icon-container" class="text-center cursor-pointer relative"> 
+                    <svg id="lampada-apagada" xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 mx-auto text-yellow-200 transition-opacity duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                    </svg>
+                    <svg id="lampada-acesa" xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 mx-auto text-yellow-400 transition-opacity duration-500 opacity-0 absolute top-0 left-0 right-0 bottom-0 m-auto" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2.25c-5.376 0-9.75 4.374-9.75 9.75 0 4.353 2.886 8.034 6.75 9.278V22.5h6v-1.222c3.864-1.244 6.75-4.925 6.75-9.278C21.75 6.624 17.376 2.25 12 2.25zM12 19.5c-3.72 0-6.75-3.03-6.75-6.75S8.28 6 12 6s6.75 3.03 6.75 6.75-3.03 6.75-6.75 6.75z"/>
+                        <path d="M12 7.5a.75.75 0 00-.75.75v3a.75.75 0 001.5 0v-3A.75.75 0 0012 7.5z" fill="#FFF200"/>
+                        <circle cx="12" cy="13.5" r="1.5" fill="#FFF200"/>
+                    </svg>
+                    <p id="icon-text" class="mt-2 text-yellow-200">Perrengue (Clique)</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="confusao" class="bg-[rgba(255,0,127,0.85)] text-white p-8 my-8 rounded-lg shadow-xl section-transition">
+            <h2 class="text-3xl font-bold mb-6 text-center">ALERTA DE MITO: Empreendedorismo ≠ Empresariamento 🚫</h2>
+            <p class="text-lg mb-4 leading-relaxed">"E antes que confundam: 💡 Empreendedorismo ≠ Empresariamento."</p>
+            <p class="text-lg mb-6 leading-relaxed">"Nada contra abrir empresa, tá? Mas não reduz meu rolê a isso. Tenho alergia a rótulo raso."</p>
+            <div class="flex flex-col md:flex-row justify-around items-center gap-6">
+                <div id="bloco-empreendedorismo" class="bg-white/20 p-6 rounded-lg text-center cursor-pointer w-full md:w-2/5 hover:bg-white/30 transition-colors">
+                    <h3 class="text-xl font-semibold mb-2 text-yellow-300">Empreendedorismo</h3>
+                    <p>Ação de Vir a Ser</p>
+                </div>
+                <div id="bloco-empresariamento" class="bg-white/20 p-6 rounded-lg text-center cursor-pointer w-full md:w-2/5 hover:bg-white/30 transition-colors">
+                     <h3 class="text-xl font-semibold mb-2 text-yellow-300">Empresariamento</h3>
+                    <p>Abrir CNPJ (e tá tudo bem também!)</p>
+                </div>
+            </div>
+             <p id="alternating-text-display" class="mt-6 text-center text-lg bg-white/10 p-4 rounded-md min-h-[60px]"></p>
+        </section>
+
+        <section id="quem-sou" class="bg-[rgba(255,127,0,0.85)] text-gray-900 p-8 my-8 rounded-lg shadow-xl section-transition">
+            <h2 class="text-3xl font-bold mb-6 text-center">Quem é o Ser Humano por Trás Dessa Empreendeção Toda? 🤔</h2>
+            <div class="md:flex md:items-center md:space-x-8">
+                <div class="md:w-1/3 text-center mb-6 md:mb-0">
+                    <img src="https://placehold.co/200x200/e2e8f0/333333?text=Sua+Foto+Aqui" alt="Foto de Edu" class="rounded-full mx-auto shadow-lg w-40 h-40 md:w-48 md:h-48 object-cover">
+                </div>
+                <div class="md:w-2/3">
+                    <p class="text-lg mb-2 leading-relaxed">"Na carteirinha: contador e administrador (sim, eu escolhi sofrer duas vezes)."</p>
+                    <p class="text-lg mb-2 leading-relaxed">"Nos bastidores: mestre Jedi em 
+                        <span class="specialty underline cursor-pointer" data-desc="Transformo números em histórias e planilhas em mapas do tesouro.">finanças</span>, 
+                        <span class="specialty underline cursor-pointer" data-desc="Ajudo a traçar o caminho das pedras... e a desviar delas com estilo.">estratégia</span>, 
+                        <span class="specialty underline cursor-pointer" data-desc="Crio pontes entre o 'e se?' e o 'bora fazer!'.">inovação</span> e 
+                        <span class="specialty underline cursor-pointer" data-desc="Conecto os pontos para que a mágica (e o lucro) aconteça.">sistemas</span>."
+                    </p>
+                    <p class="text-lg leading-relaxed">"Tradução: adoro uma planilha, mas gosto mais ainda de ver gente botando ideia no mundo."</p>
+                    <div id="specialty-popup" class="popup"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="missao" class="bg-[rgba(127,255,0,0.85)] text-gray-900 p-8 my-8 rounded-lg shadow-xl section-transition">
+            <h2 class="text-3xl font-bold mb-6 text-center">Ajudando "Crianças" de Todas as Idades a Sonhar e Realizar ✨</h2>
+            <p class="text-lg mb-2 leading-relaxed">"Hoje, ajudo “crianças” de 0 a 100 anos (tem umas de 43 que são um espetáculo) a transformar sonho em realidade."</p>
+            <p class="text-lg mb-6 leading-relaxed">"Mesmo que o sonho mude no meio do caminho (spoiler: ele muda, e tá tudo bem)."</p>
+            
+            <div class="relative">
+                <div id="carousel" class="flex overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 space-x-4">
+                    <div class="carousel-item flex-none bg-white/80 p-6 rounded-lg shadow-md w-full md:w-1/3 snap-center">
+                        <h3 class="text-xl font-semibold mb-2">Sonho da Maria (7 anos)</h3>
+                        <p>Ter uma casa na árvore com escorregador de arco-íris e um dragão de estimação (o dragão a gente negocia).</p>
+                    </div>
+                    <div class="carousel-item flex-none bg-white/80 p-6 rounded-lg shadow-md w-full md:w-1/3 snap-center">
+                        <h3 class="text-xl font-semibold mb-2">Sonho do João (25 anos)</h3>
+                        <p>Largar o emprego chato e abrir uma cafeteria temática de games retrô. Com direito a campeonatos de Pac-Man!</p>
+                    </div>
+                    <div class="carousel-item flex-none bg-white/80 p-6 rounded-lg shadow-md w-full md:w-1/3 snap-center">
+                        <h3 class="text-xl font-semibold mb-2">Sonho da Ana (43 anos)</h3>
+                        <p>Finalmente escrever aquele livro que está na gaveta há 15 anos e provar que "fanfic de Excel" pode ser best-seller.</p>
+                    </div>
+                    <div class="carousel-item flex-none bg-white/80 p-6 rounded-lg shadow-md w-full md:w-1/3 snap-center">
+                        <h3 class="text-xl font-semibold mb-2">Sonho do Carlos (68 anos)</h3>
+                        <p>Aprender a tocar ukulele para fazer serenata para as capivaras do parque (elas são um público exigente).</p>
+                    </div>
+                </div>
+                <button id="prevBtn" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white p-2 rounded-full shadow-md hover:bg-gray-600 disabled:opacity-50 z-10 ml-[-15px]"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /></svg></button>
+                <button id="nextBtn" class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white p-2 rounded-full shadow-md hover:bg-gray-600 disabled:opacity-50 z-10 mr-[-15px]"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg></button>
+            </div>
+
+            {/* */}
+            <div class="mt-10 text-center">
+                <label for="userDream" class="block text-xl font-semibold mb-2 text-gray-800">Qual é o seu sonho?</label>
+                <input type="text" id="userDream" class="w-full md:w-2/3 p-3 border border-gray-400 rounded-lg shadow-sm focus:ring-2 focus:ring-[#007fff] focus:border-transparent" placeholder="Ex: Viajar pelo mundo, escrever um livro, aprender a programar...">
+                <button id="getDreamStepsBtn" class="mt-4 bg-[#007fff] text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-blue-700 transition-all duration-300 text-lg transform hover:scale-105">
+                    ✨ Me ajude a dar o primeiro passo com a Empreendeção!
+                </button>
+                <div id="geminiLoader" class="loader"></div>
+                <div id="geminiDreamResponse" class="mt-6 text-left md:w-2/3 mx-auto">
+                    {/* */}
+                </div>
+            </div>
+        </section>
+
+        <section id="chamado" class="bg-[rgba(0,127,255,0.85)] text-white p-8 my-8 rounded-lg shadow-xl section-transition text-center">
+            <h2 class="text-3xl font-bold mb-4">E Você? Pronto Para "Vir a Ser"? 💪</h2>
+            <p class="text-lg mb-2 leading-relaxed">"No fim das contas, meu trabalho é lutar — com uma dose de deboche e outra de Excel — pelo direito de todo mundo vir a ser o que quiser."</p>
+            <p class="text-lg mb-6 leading-relaxed">"Inclusive você."</p>
+            <button class="bg-[#ffff00] text-[#007fff] font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-yellow-200 hover:text-blue-700 transition-all duration-300 text-xl transform hover:scale-105">
+                QUERO EMPREENDER MINHA VIDA!
+            </button>
+            <div class="mt-8 text-sm">
+                <p>#Empreendeção #VirASer #SonharÉGratis #RealizarÉOutraCoisa #DebocheComPropósito</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300 p-8 text-center">
+        <div class="mb-4">
+            <a href="#" class="hover:text-yellow-400 mx-2">Rede Social 1</a> |
+            <a href="#" class="hover:text-yellow-400 mx-2">GitHub</a> |
+            <a href="#" class="hover:text-yellow-400 mx-2">Contato</a>
+        </div>
+        <p>"Empreendeção: Uma forma de ser. Por Edu."</p>
+        <p class="text-sm mt-2">&copy; <span id="currentYear"></span> Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        // Ano atual no rodapé
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // --- SEÇÃO 1: Efeito de Digitação ---
+        const p1Element = document.getElementById('typewriter-p1');
+        if (p1Element) {
+            const textForP1 = p1Element.textContent;
+            p1Element.textContent = ''; 
+            let i = 0;
+            function typeP1() {
+                if (i < textForP1.length) {
+                    p1Element.textContent += textForP1.charAt(i);
+                    i++;
+                    setTimeout(typeP1, 50); // Velocidade de digitação
+                }
+            }
+            setTimeout(typeP1, 500); 
+        }
+
+        // --- SEÇÃO 2: Card Interativo ---
+        const empreendecaoCard = document.getElementById('empreendecao-card');
+        if (empreendecaoCard) { 
+            const cardFront = empreendecaoCard.querySelector('.interactive-card-front');
+            const cardBack = empreendecaoCard.querySelector('.interactive-card-back');
+
+            if (cardFront && cardBack) { 
+                empreendecaoCard.addEventListener('click', () => {
+                    empreendecaoCard.classList.toggle('flipped');
+                    if (empreendecaoCard.classList.contains('flipped')) {
+                        cardFront.style.display = 'none'; 
+                        cardBack.style.display = 'block'; 
+                    } else {
+                        cardFront.style.display = 'block';
+                        cardBack.style.display = 'none';
+                    }
+                });
+                cardFront.style.display = 'block';
+                cardBack.style.display = 'none';
+            }
+        }
+
+
+        // --- SEÇÃO 3: Ícone Animado (Lâmpada) ---
+        const perrengueIconContainer = document.getElementById('perrengue-icon-container');
+        if (perrengueIconContainer) { 
+            const lampadaApagada = perrengueIconContainer.querySelector('#lampada-apagada'); 
+            const lampadaAcesa = perrengueIconContainer.querySelector('#lampada-acesa');    
+            const iconText = perrengueIconContainer.querySelector('#icon-text');          
+            let isPerrengue = true;
+
+            if (lampadaApagada && lampadaAcesa && iconText) { 
+                perrengueIconContainer.addEventListener('click', () => {
+                    isPerrengue = !isPerrengue;
+                    if (isPerrengue) {
+                        lampadaApagada.style.opacity = '1';
+                        lampadaAcesa.style.opacity = '0';
+                        iconText.textContent = 'Perrengue (Clique)';
+                        iconText.classList.remove('text-yellow-400');
+                        iconText.classList.add('text-yellow-200');
+                    } else {
+                        lampadaApagada.style.opacity = '0';
+                        lampadaAcesa.style.opacity = '1';
+                        iconText.textContent = 'Criatividade! ✨';
+                        iconText.classList.remove('text-yellow-200');
+                        iconText.classList.add('text-yellow-400');
+                    }
+                });
+            }
+        }
+
+
+        // --- SEÇÃO 4: Blocos Alternados ---
+        const blocoEmpreendedorismo = document.getElementById('bloco-empreendedorismo');
+        const blocoEmpresariamento = document.getElementById('bloco-empresariamento');
+        const alternatingTextDisplay = document.getElementById('alternating-text-display');
+        
+        if (blocoEmpreendedorismo && blocoEmpresariamento && alternatingTextDisplay) { 
+            const textoEmpreendedorismo = "Empreendedorismo: Ação de Vir a Ser. É sobre a jornada, a transformação pessoal e o impacto que você gera, com ou sem CNPJ.";
+            const textoEmpresariamento = "Empresariamento: Abrir CNPJ (e tá tudo bem também!). É o processo de formalizar e gerenciar um negócio, uma das muitas formas de empreender.";
+
+            alternatingTextDisplay.textContent = "Clique em um dos blocos acima para ver a descrição.";
+
+            blocoEmpreendedorismo.addEventListener('click', () => {
+                alternatingTextDisplay.textContent = textoEmpreendedorismo;
+                blocoEmpreendedorismo.classList.add('ring-2', 'ring-yellow-300');
+                blocoEmpresariamento.classList.remove('ring-2', 'ring-yellow-300');
+            });
+            blocoEmpresariamento.addEventListener('click', () => {
+                alternatingTextDisplay.textContent = textoEmpresariamento;
+                blocoEmpresariamento.classList.add('ring-2', 'ring-yellow-300');
+                blocoEmpreendedorismo.classList.remove('ring-2', 'ring-yellow-300');
+            });
+        }
+
+        // --- SEÇÃO 5: Popup de Especialidades ---
+        const specialties = document.querySelectorAll('.specialty');
+        const specialtyPopup = document.getElementById('specialty-popup');
+
+        if (specialtyPopup) { 
+            specialties.forEach(span => {
+                span.addEventListener('mouseenter', (event) => {
+                    specialtyPopup.textContent = span.dataset.desc;
+                    specialtyPopup.style.display = 'block';
+                    const rect = span.getBoundingClientRect();
+                    let top = window.scrollY + rect.bottom + 5;
+                    let left = window.scrollX + rect.left;
+                    if (top + specialtyPopup.offsetHeight > window.innerHeight + window.scrollY) {
+                        top = window.scrollY + rect.top - specialtyPopup.offsetHeight - 5;
+                    }
+                    if (left + specialtyPopup.offsetWidth > window.innerWidth + window.scrollX) {
+                        left = window.scrollX + rect.right - specialtyPopup.offsetWidth;
+                    }
+                    specialtyPopup.style.top = `${top}px`;
+                    specialtyPopup.style.left = `${left}px`;
+                });
+                span.addEventListener('mouseleave', () => {
+                    specialtyPopup.style.display = 'none';
+                });
+            });
+        }
+
+        // --- SEÇÃO 6: Carrossel ---
+        const carousel = document.getElementById('carousel');
+        if (carousel) { 
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const carouselItems = carousel.querySelectorAll('.carousel-item');
+
+            function updateCarouselButtons() {
+                if (!prevBtn || !nextBtn || carouselItems.length === 0) return; 
+                prevBtn.disabled = carousel.scrollLeft < 5; 
+                nextBtn.disabled = carousel.scrollLeft + carousel.clientWidth >= carousel.scrollWidth - 5;
+            }
+
+            if (carouselItems.length > 0 && prevBtn && nextBtn) {
+                const itemWidth = carouselItems[0].offsetWidth + parseInt(getComputedStyle(carouselItems[0]).marginRight || '0'); 
+
+                prevBtn.addEventListener('click', () => {
+                    carousel.scrollBy({ left: -itemWidth, behavior: 'smooth' });
+                });
+
+                nextBtn.addEventListener('click', () => {
+                    carousel.scrollBy({ left: itemWidth, behavior: 'smooth' });
+                });
+
+                carousel.addEventListener('scroll', updateCarouselButtons);
+                window.addEventListener('resize', updateCarouselButtons); 
+                updateCarouselButtons(); 
+            } else {
+                if(prevBtn) prevBtn.style.display = 'none';
+                if(nextBtn) nextBtn.style.display = 'none';
+            }
+        }
+
+        // --- SEÇÃO 6: Gemini API Integration for Dream Steps ---
+        const getDreamStepsBtn = document.getElementById('getDreamStepsBtn');
+        const userDreamInput = document.getElementById('userDream');
+        const geminiDreamResponseDiv = document.getElementById('geminiDreamResponse');
+        const geminiLoader = document.getElementById('geminiLoader');
+
+        if (getDreamStepsBtn && userDreamInput && geminiDreamResponseDiv && geminiLoader) {
+            getDreamStepsBtn.addEventListener('click', async () => {
+                const dream = userDreamInput.value.trim();
+                if (!dream) {
+                    geminiDreamResponseDiv.innerHTML = `<p class="text-red-500 text-center">Por favor, escreva seu sonho primeiro!</p>`;
+                    return;
+                }
+
+                geminiDreamResponseDiv.innerHTML = ''; // Limpa respostas anteriores
+                geminiLoader.style.display = 'block'; // Mostra o loader
+                getDreamStepsBtn.disabled = true;
+
+                const prompt = `Com base no conceito de "Empreendeção" (que é sobre se jogar no mundo, tropeçar, aprender e seguir, mais do que apenas abrir uma empresa), e no sonho de uma pessoa que é "${dream}", sugira 2 ou 3 primeiros passos criativos, acionáveis e com o espírito da "Empreendeção" para ela começar a realizar esse sonho. Apresente os passos de forma clara e inspiradora, talvez como itens de uma lista.`;
+
+                try {
+                    let chatHistory = [];
+                    chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                    const payload = { contents: chatHistory };
+                    const apiKey = ""; // API Key será injetada pelo ambiente, se necessário
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        console.error('Erro da API Gemini:', errorData);
+                        throw new Error(`Erro da API: ${errorData.error?.message || response.statusText}`);
+                    }
+
+                    const result = await response.json();
+
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        // Formata a resposta para melhor visualização (ex: quebrando em parágrafos ou lista)
+                        const formattedText = text.split('\n').map(paragraph => {
+                            paragraph = paragraph.trim();
+                            if (paragraph.startsWith('* ') || paragraph.startsWith('- ')) {
+                                return `<p class="gemini-response-item ml-4">${paragraph.substring(2)}</p>`;
+                            }
+                            if (paragraph.match(/^\d+\.\s/)) {
+                                return `<p class="gemini-response-item ml-4">${paragraph.substring(paragraph.indexOf(' ') + 1)}</p>`;
+                            }
+                            return paragraph ? `<p class="gemini-response-item">${paragraph}</p>` : '';
+                        }).join('');
+                        geminiDreamResponseDiv.innerHTML = `<h3 class="text-xl font-semibold mb-3 text-gray-800">Seus primeiros passos na Empreendeção:</h3>${formattedText}`;
+                    } else {
+                        geminiDreamResponseDiv.innerHTML = `<p class="text-orange-600 text-center">Não consegui gerar os passos desta vez. Tente novamente ou reformule seu sonho!</p>`;
+                    }
+                } catch (error) {
+                    console.error('Falha ao buscar sugestões da API Gemini:', error);
+                    geminiDreamResponseDiv.innerHTML = `<p class="text-red-600 text-center">Ops! Algo deu errado ao buscar sugestões. Por favor, tente novamente mais tarde. Detalhe: ${error.message}</p>`;
+                } finally {
+                    geminiLoader.style.display = 'none'; // Esconde o loader
+                    getDreamStepsBtn.disabled = false;
+                }
+            });
+        }
+
+
+        // --- Animação de surgimento das seções ao rolar ---
+        const sections = document.querySelectorAll('.section-transition');
+        if (typeof IntersectionObserver !== 'undefined') { 
+            const observerOptions = {
+                root: null, 
+                rootMargin: '0px',
+                threshold: 0.1 
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('opacity-100', 'transform', 'translate-y-0', 'scale-100');
+                        entry.target.classList.remove('opacity-0', 'translate-y-10', 'scale-95');
+                    } else {
+                        entry.target.classList.add('opacity-0', 'translate-y-10', 'scale-95');
+                        entry.target.classList.remove('opacity-100', 'transform', 'translate-y-0', 'scale-100');
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                section.classList.add('opacity-0', 'transform', 'translate-y-10', 'scale-95'); 
+                observer.observe(section);
+            });
+        } else { 
+            sections.forEach(section => {
+                section.classList.add('opacity-100', 'transform', 'translate-y-0', 'scale-100');
+                section.classList.remove('opacity-0', 'translate-y-10', 'scale-95');
+            });
+        }
+
+    </script>
+</body>
+</html>
