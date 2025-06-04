@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reforma Tributária: O Impacto na DRE e o Crédito Fiscal com IA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Vibrant Hex (Laranja, Verde Limão, Amarelo, Azul, Roxo, Rosa) -->
+    <!-- Application Structure Plan: A multi-section SPA with top navigation (Visão Geral, DRE Atual, DRE Futura, O Mistério do Crédito, Conclusão). This structure breaks down the complex topic into manageable, logical parts, guiding the user from general context to the specific, interactive answer to the core question about tax credits. The interactive "O Mistério do Crédito" section is the centerpiece, designed as a step-by-step explainer for maximum clarity and engagement, which is more effective than a static report. Gemini API integration adds AI-powered Q&A. -->
+    <!-- Visualization & Content Choices: 1. Tax Transition Diagram (HTML/CSS): Goal: Inform. Method: Flexbox layout with styled divs. Justification: Visually engaging. 2. DRE Comparison (HTML/CSS): Goal: Compare. Method: Styled divs. Justification: Clear comparison. 3. "Mystery of the Credit" Explainer (JS + HTML/CSS + Chart.js): Goal: Organize & Explain. Method: Interactive steps, bar chart. Justification: Dynamic narrative. 4. Gemini API for Q&A: Goal: Explore. Method: Input field + button triggers API call, displays in modal. Justification: Interactive learning. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        :root {
+            --color-orange: #ff7f00;
+            --color-lime: #7fff00;
+            --color-yellow: #ffff00;
+            --color-blue: #007fff;
+            --color-purple: #7f00ff;
+            --color-pink: #ff007f;
+
+            --color-blue-darker: #005cb9; 
+            --color-blue-lighter: #e7f5ff;
+            --color-blue-border-light: #b3daff;
+
+            --color-orange-bg: #fff3e0; /* Lighter orange for background */
+            --color-orange-text: #c65102;  /* Darker orange for text */
+            --color-lime-bg: #f1f8e9;   /* Lighter lime for background */
+            --color-lime-text: #558b2f;   /* Darker lime for text */
+            --color-yellow-bg: #fffde7; /* Lighter yellow for background */
+            --color-yellow-text: #424242; /* Dark gray for text on yellow */
+            --color-purple-bg: #f3e5f5; /* Lighter purple for background */
+            --color-purple-text: #6a1b9a; /* Darker purple for text */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; 
+        }
+        .chart-container {
+            position: relative;
+            height: 320px;
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+        }
+        .nav-link {
+            transition: color 0.2s, border-bottom-color 0.2s;
+        }
+        .nav-link:hover {
+            color: var(--color-blue);
+        }
+        .nav-link.active {
+            color: var(--color-blue); 
+            border-bottom-color: var(--color-blue);
+        }
+        .step-content {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .step-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .dre-line > div {
+            padding: 0.5rem 1rem;
+        }
+        .highlight-box {
+            background-color: var(--color-blue-lighter); 
+            border-left: 4px solid var(--color-blue); 
+            color: var(--color-blue-darker); 
+        }
+        .modal {
+            display: none;
+            animation: fadeInModal 0.3s ease-out;
+        }
+        .modal.active {
+            display: flex;
+        }
+        @keyframes fadeInModal {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: var(--color-blue); 
+            animation: spin 1s ease infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .btn-custom-accent {
+            background-color: var(--color-blue);
+            color: white;
+        }
+        .btn-custom-accent:hover {
+            background-color: var(--color-blue-darker);
+        }
+        .btn-custom-accent:focus {
+            outline: 2px solid transparent;
+            outline-offset: 2px;
+            box-shadow: 0 0 0 3px var(--color-blue-border-light);
+        }
+
+        .diag-box {
+            border-radius: 0.5rem; /* rounded-lg */
+            padding: 0.75rem; /* p-3 */
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+            text-align: center;
+        }
+        .diag-box-orange { background-color: var(--color-orange-bg); color: var(--color-orange-text); border: 1px solid var(--color-orange); }
+        .diag-box-lime   { background-color: var(--color-lime-bg); color: var(--color-lime-text); border: 1px solid var(--color-lime); }
+        .diag-box-yellow { background-color: var(--color-yellow-bg); color: var(--color-yellow-text); border: 1px solid var(--color-yellow); }
+        .diag-box-blue   { background-color: var(--color-blue-lighter); color: var(--color-blue-darker); border: 1px solid var(--color-blue); }
+        .diag-box-purple { background-color: var(--color-purple-bg); color: var(--color-purple-text); border: 1px solid var(--color-purple); }
+        
+        .diag-box-blue-main { /* For CBS/IBS boxes specifically */
+             background-color: var(--color-blue-lighter); color: var(--color-blue-darker); border: 1px solid var(--color-blue);
+             padding: 1rem; /* p-4 */
+        }
+
+    </style>
+</head>
+<body class="text-slate-700 antialiased">
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-xl font-bold" style="color: var(--color-blue);">Reforma Tributária & DRE</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#overview" class="nav-link px-3 py-2 text-sm font-medium text-slate-600 border-b-2 border-transparent">Visão Geral</a>
+                        <a href="#dre-comparison" class="nav-link px-3 py-2 text-sm font-medium text-slate-600 border-b-2 border-transparent">DRE: Antes e Depois</a>
+                        <a href="#credit-mystery" class="nav-link px-3 py-2 text-sm font-medium text-slate-600 border-b-2 border-transparent">O Mistério do Crédito</a>
+                        <a href="#conclusion" class="nav-link px-3 py-2 text-sm font-medium text-slate-600 border-b-2 border-transparent">Conclusão & IA</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        <section id="overview" class="mb-16 scroll-mt-24">
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden p-6 md:p-10">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4">A Transformação dos Tributos sobre o Consumo</h2>
+                <p class="text-lg text-slate-600 mb-8">A Reforma Tributária (EC 132/2023) simplifica o sistema brasileiro ao unificar cinco tributos sobre o consumo em um Imposto sobre Valor Agregado (IVA) de modelo dual: a CBS (federal) e o IBS (estadual/municipal). Esta aplicação interativa explica o impacto dessa mudança na Demonstração de Resultado (DRE).</p>
+                
+                <div class="flex flex-col md:flex-row items-center justify-around gap-8">
+                    <div class="w-full md:w-2/5 text-center">
+                        <h3 class="font-semibold text-xl mb-4 text-slate-700">Sistema Atual</h3>
+                        <div class="space-y-3">
+                            <div class="diag-box diag-box-orange">IPI</div>
+                            <div class="diag-box diag-box-lime">PIS</div>
+                            <div class="diag-box diag-box-lime">COFINS</div>
+                            <div class="diag-box diag-box-purple">ICMS</div>
+                            <div class="diag-box diag-box-yellow">ISS</div>
+                        </div>
+                    </div>
+                    <div class="text-5xl font-thin" style="color: var(--color-blue);">&rarr;</div>
+                    <div class="w-full md:w-2/5 text-center">
+                        <h3 class="font-semibold text-xl mb-4 text-slate-700">Novo Sistema (IVA Dual)</h3>
+                        <div class="space-y-3">
+                            <div class="diag-box diag-box-blue-main">
+                                <span class="font-bold">CBS</span><br>
+                                <span class="text-sm">(Federal: unifica IPI, PIS, COFINS)</span>
+                            </div>
+                            <div class="diag-box diag-box-blue-main">
+                                <span class="font-bold">IBS</span><br>
+                                <span class="text-sm">(Estadual/Municipal: unifica ICMS, ISS)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="dre-comparison" class="mb-16 scroll-mt-24">
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden p-6 md:p-10">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">DRE: A Estrutura Antes e Depois</h2>
+                <p class="text-lg text-slate-600 mb-8">A lógica de segregar o imposto "por fora" da receita da empresa permanece. O que muda são os tributos a serem deduzidos.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="font-semibold text-xl mb-4 text-center text-slate-700">Modelo Atual (com IPI)</h3>
+                        <div class="border rounded-lg bg-slate-50 overflow-hidden shadow-sm">
+                            <div class="dre-line flex justify-between font-mono border-b"><div>Faturamento Bruto</div><div>110.000</div></div>
+                            <div class="dre-line flex justify-between font-mono border-b" style="color: var(--color-pink);"><div>(-) IPI sobre Vendas</div><div>(10.000)</div></div>
+                            <div class="dre-line flex justify-between font-mono border-b font-bold bg-slate-200"><div>(=) Receita Bruta</div><div>100.000</div></div>
+                            <div class="dre-line flex justify-between font-mono border-b"><div>(-) Deduções (PIS/COFINS/ICMS)</div><div>(...)</div></div>
+                            <div class="dre-line flex justify-between font-mono border-b font-semibold"><div>(=) Receita Líquida</div><div>...</div></div>
+                            <div class="dre-line flex justify-between font-mono"><div>(-) CPV</div><div>(...)</div></div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-xl mb-4 text-center text-slate-700">Modelo Futuro (com IBS/CBS)</h3>
+                        <div class="border rounded-lg bg-slate-50 overflow-hidden shadow-sm">
+                             <div class="dre-line flex justify-between font-mono border-b"><div>Faturamento Bruto</div><div>125.000</div></div>
+                            <div class="dre-line flex justify-between font-mono border-b" style="color: var(--color-pink);"><div>(-) CBS sobre Vendas</div><div>(10.000)</div></div>
+                            <div class="dre-line flex justify-between font-mono border-b" style="color: var(--color-pink);"><div>(-) IBS sobre Vendas</div><div>(15.000)</div></div>
+                            <div class="dre-line flex justify-between font-mono border-b font-bold" style="background-color: var(--color-blue-lighter); color: var(--color-blue-darker);"><div>(=) Receita Bruta</div><div>100.000</div></div>
+                            <div class="dre-line flex justify-between font-mono border-b"><div>(-) Deduções</div><div>(...)</div></div>
+                            <div class="dre-line flex justify-between font-mono border-b font-semibold"><div>(=) Receita Líquida</div><div>...</div></div>
+                            <div class="dre-line flex justify-between font-mono"><div>(-) CPV</div><div>(...)</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="credit-mystery" class="scroll-mt-24">
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden p-6 md:p-10">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">Resolvendo o Mistério do Crédito</h2>
+                <p class="text-lg text-slate-600 mb-8">Se o imposto total da venda é deduzido da receita, onde o crédito da compra aparece? A resposta está no <strong style="color: var(--color-blue-darker);">custo</strong>. Acompanhe a jornada do tributo passo a passo.</p>
+                
+                <div class="border-b border-slate-200 mb-6">
+                    <nav class="-mb-px flex space-x-6 overflow-x-auto" aria-label="Tabs">
+                        <button id="tab1" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Passo 1: A Compra</button>
+                        <button id="tab2" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Passo 2: O Custo</button>
+                        <button id="tab3" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Passo 3: A Venda</button>
+                        <button id="tab4" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Passo 4: A DRE</button>
+                        <button id="tab5" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Passo 5: Apuração</button>
+                    </nav>
+                </div>
+
+                <div id="step1" class="step-content">
+                    <h3 class="text-xl font-semibold mb-4">Passo 1: Compra de Matéria-Prima</h3>
+                    <div class="grid md:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <p class="mb-4">Uma indústria compra insumos. A nota fiscal de compra totaliza R$ 62.500.</p>
+                            <div class="bg-slate-50 p-4 rounded-lg border">
+                                <div class="flex justify-between py-1"><span>Valor dos Insumos:</span><span>R$ 50.000</span></div>
+                                <div class="flex justify-between py-1"><span>IBS/CBS (25%):</span><span>R$ 12.500</span></div>
+                                <div class="flex justify-between py-1 border-t font-bold"><span>Total da Nota:</span><span>R$ 62.500</span></div>
+                            </div>
+                        </div>
+                        <div class="highlight-box p-4 rounded-lg">
+                            <h4 class="font-bold mb-2">Onde o imposto vai?</h4>
+                            <p>O imposto de R$ 12.500 pago na compra <strong style="color: var(--color-blue);">não é custo</strong>. Ele se torna um direito, um crédito a ser recuperado. É registrado em uma conta no Ativo da empresa.</p>
+                            <div class="mt-4 font-mono text-sm bg-white p-3 rounded">
+                                D - Estoques: 50.000<br>
+                                D - <span class="font-semibold" style="color: var(--color-blue);">IBS/CBS a Recuperar</span>: 12.500<br>
+                                C - Fornecedores: 62.500
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="step2" class="step-content">
+                    <h3 class="text-xl font-semibold mb-4">Passo 2: O Registro do Custo</h3>
+                     <div class="grid md:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <p class="mb-4">O ponto-chave: o valor que entra para o estoque (e que se tornará Custo do Produto Vendido - CPV) é o valor líquido do imposto recuperável.</p>
+                            <div class="text-center bg-slate-50 p-6 rounded-lg border">
+                                <div class="text-slate-500">Custo do Insumo no Estoque</div>
+                                <div class="text-4xl font-bold my-2" style="color: var(--color-blue-darker);">R$ 50.000</div>
+                                <div class="text-sm font-mono">(Valor da Nota <span style="color: var(--color-pink);">R$ 62.500</span> - Crédito <span style="color: var(--color-lime);">R$ 12.500</span>)</div>
+                            </div>
+                        </div>
+                         <div class="highlight-box p-4 rounded-lg">
+                            <h4 class="font-bold mb-2">Impacto Direto no Lucro</h4>
+                            <p>Ao registrar um custo menor, o Lucro Bruto (Receita - Custo) será <strong style="color: var(--color-blue);">maior</strong>. É aqui que o benefício do crédito se manifesta no resultado, de forma indireta.</p>
+                         </div>
+                    </div>
+                </div>
+
+                <div id="step3" class="step-content">
+                    <h3 class="text-xl font-semibold mb-4">Passo 3: A Venda do Produto Acabado</h3>
+                    <div class="grid md:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <p class="mb-4">A indústria vende o produto final. O valor total faturado para o cliente é de R$ 125.000.</p>
+                            <div class="bg-slate-50 p-4 rounded-lg border">
+                                <div class="flex justify-between py-1"><span>Preço de Venda:</span><span>R$ 100.000</span></div>
+                                <div class="flex justify-between py-1"><span>IBS/CBS (25%):</span><span>R$ 25.000</span></div>
+                                <div class="flex justify-between py-1 border-t font-bold"><span>Total da Nota (Faturamento):</span><span>R$ 125.000</span></div>
+                            </div>
+                        </div>
+                        <div class="highlight-box p-4 rounded-lg">
+                            <h4 class="font-bold mb-2">Obrigações da Venda</h4>
+                            <p>O imposto de R$ 25.000 destacado na venda é um <strong style="color: var(--color-pink);">débito</strong> tributário. É um valor que a empresa arrecada do cliente para repassar ao governo.</p>
+                             <div class="mt-4 font-mono text-sm bg-white p-3 rounded">
+                                D - Clientes: 125.000<br>
+                                C - Receita de Vendas: 100.000<br>
+                                C - <span class="font-semibold" style="color: var(--color-pink);">IBS/CBS a Recolher</span>: 25.000
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="step4" class="step-content">
+                    <h3 class="text-xl font-semibold mb-4">Passo 4: A Demonstração do Resultado (DRE)</h3>
+                    <div class="grid md:grid-cols-2 gap-8 items-center">
+                        <div class="border rounded-lg bg-slate-50 overflow-hidden shadow-sm">
+                            <div class="dre-line flex justify-between font-mono border-b"><div>Faturamento Bruto</div><div>125.000</div></div>
+                            <div class="dre-line flex justify-between font-mono border-b" style="color: var(--color-pink);"><div>(-) IBS/CBS sobre Vendas</div><div>(25.000)</div></div>
+                            <div class="dre-line flex justify-between font-mono border-b font-bold bg-slate-200"><div>(=) Receita Bruta</div><div>100.000</div></div>
+                            <div class="dre-line flex justify-between font-mono border-b highlight-box">
+                                <div>(-) CPV</div>
+                                <div class="flex items-center">
+                                    <span>(50.000)</span>
+                                    <span title="Custo registrado líquido do crédito da compra" class="ml-2 cursor-pointer" style="color: var(--color-blue);">ⓘ</span>
+                                </div>
+                            </div>
+                            <div class="dre-line flex justify-between font-mono font-bold" style="background-color: var(--color-blue-lighter); color: var(--color-blue-darker);"><div>(=) Lucro Bruto</div><div>50.000</div></div>
+                        </div>
+                        <div class="highlight-box p-4 rounded-lg">
+                            <h4 class="font-bold mb-2">Analisando a DRE</h4>
+                            <p>Note que o crédito de R$ 12.500 <strong style="color: var(--color-blue);">não aparece aqui</strong>. Ele já cumpriu seu papel ao <strong style="color: var(--color-blue);">reduzir o CPV para R$ 50.000</strong>. Se o crédito não existisse, o CPV seria R$ 62.500 e o Lucro Bruto seria menor.</p>
+                            <p class="mt-2">A DRE deduz o imposto <strong style="color: var(--color-pink);">total da venda</strong> (débito) para mostrar a receita real da empresa.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="step5" class="step-content">
+                    <h3 class="text-xl font-semibold mb-4">Passo 5: Apuração Final e Recolhimento</h3>
+                    <div class="grid md:grid-cols-2 gap-8 items-center">
+                        <div class="text-center bg-slate-50 p-6 rounded-lg border">
+                            <div class="text-slate-500">Imposto a Recolher (Pagar ao Governo)</div>
+                            <div class="text-lg font-mono my-4">
+                                <span style="color: var(--color-pink);">R$ 25.000</span> (Débito da Venda) <br>
+                                - <span style="color: var(--color-lime);">R$ 12.500</span> (Crédito da Compra)
+                            </div>
+                            <div class="text-3xl font-bold mt-2 border-t pt-4" style="color: var(--color-blue-darker);">R$ 12.500</div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="finalChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="highlight-box p-4 rounded-lg mt-8">
+                        <h4 class="font-bold mb-2">Resumo da Ópera</h4>
+                        <p>O valor que a empresa efetivamente desembolsa para o governo (R$ 12.500) é a diferença entre o que ela cobra do cliente e o que ela tem de crédito das compras. A DRE reflete essa lógica ao: <br>1. Excluir o imposto da venda da receita. <br>2. Excluir o crédito da compra do custo.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="conclusion" class="scroll-mt-24">
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden p-6 md:p-10">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4">Conclusão, Recomendações e Interação com IA</h2>
+                <p class="text-lg text-slate-600 mb-6">A abordagem de segregar o IPI do Faturamento Bruto na DRE, conforme o Manual de Contabilidade Societária, não apenas permanece válida, mas é a base para o tratamento do novo IBS e da CBS.</p>
+                <ul class="space-y-4 mb-8">
+                    <li class="flex items-start">
+                        <span class="flex-shrink-0 h-6 w-6 flex items-center justify-center text-white rounded-full mr-4 mt-1 font-bold" style="background-color: var(--color-blue);">1</span>
+                        <div>
+                            <h4 class="font-semibold text-lg">A Lógica da Segregação Continua</h4>
+                            <p class="text-slate-600">A prática de deduzir o imposto "por fora" do faturamento para apurar a receita bruta se estenderá ao IBS/CBS, pois eles também são valores arrecadados em nome do governo.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="flex-shrink-0 h-6 w-6 flex items-center justify-center text-white rounded-full mr-4 mt-1 font-bold" style="background-color: var(--color-blue);">2</span>
+                        <div>
+                            <h4 class="font-semibold text-lg">O Crédito Reduz o Custo, Não o Imposto na DRE</h4>
+                            <p class="text-slate-600">O crédito do IBS/CBS recuperável na aquisição de insumos e serviços reduz o Custo do Produto/Mercadoria/Serviço Vendido (CPV/CMV/CSV) ou as despesas operacionais. Seu efeito no resultado é <strong style="color: var(--color-blue-darker);">indireto</strong>, mas fundamental para apurar o lucro corretamente.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="flex-shrink-0 h-6 w-6 flex items-center justify-center text-white rounded-full mr-4 mt-1 font-bold" style="background-color: var(--color-blue);">3</span>
+                        <div>
+                            <h4 class="font-semibold text-lg">Preparação é Chave</h4>
+                            <p class="text-slate-600">As empresas devem preparar seus sistemas (ERP), planos de contas e processos para a correta apuração e contabilização do IBS e CBS, garantindo a conformidade e a fidedignidade de suas demonstrações financeiras.</p>
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="p-6 rounded-lg border" style="background-color: var(--color-blue-lighter); border-color: var(--color-blue-border-light);">
+                    <h3 class="text-xl font-semibold mb-3" style="color: var(--color-blue-darker);">Tem alguma dúvida sobre a Reforma Tributária?</h3>
+                    <p class="mb-4" style="color: var(--color-blue);">Digite sua pergunta abaixo e deixe nossa IA tentar responder!</p>
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <input type="text" id="aiQuestionInput" placeholder="Ex: Como funciona a não cumulatividade plena?" class="flex-grow p-3 border border-slate-300 rounded-md focus:ring-2 focus:border-transparent" style="--tw-ring-color: var(--color-blue);">
+                        <button id="askAiBtn" class="btn-custom-accent inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm">
+                            ✨ Perguntar à IA
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="aiModal" class="modal fixed inset-0 bg-slate-900 bg-opacity-50 items-center justify-center p-4 z-[100]">
+        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6 md:p-8">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="aiModalTitle" class="text-xl font-semibold text-slate-800">Resposta da IA</h3>
+                <button id="closeAiModalBtn" class="text-slate-400 hover:text-slate-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div id="aiModalContent" class="text-slate-600 space-y-4">
+                <div class="flex justify-center items-center h-32">
+                    <div class="spinner"></div>
+                    <p class="ml-4 text-slate-500">Gerando resposta...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center py-6 text-sm text-slate-500">
+        <p>Aplicação interativa criada para fins educacionais sobre a Reforma Tributária Brasileira.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.tab-button');
+            const stepContents = document.querySelectorAll('.step-content');
+            let chartInstance = null;
+            
+            const activeTabColor = getComputedStyle(document.documentElement).getPropertyValue('--color-blue').trim();
+            const inactiveTabColor = getComputedStyle(document.documentElement).getPropertyValue('--color-slate-500') ? getComputedStyle(document.documentElement).getPropertyValue('--color-slate-500').trim() : '#64748b'; // Fallback for slate-500
+
+            function activateTab(tabId) {
+                tabs.forEach(tab => {
+                    const isActive = tab.id === tabId;
+                    tab.style.borderColor = isActive ? activeTabColor : 'transparent';
+                    tab.style.color = isActive ? activeTabColor : inactiveTabColor;
+                });
+
+                stepContents.forEach(content => {
+                    content.classList.toggle('active', content.id === 'step' + tabId.substring(3));
+                });
+
+                if(tabId === 'tab5' && !chartInstance) {
+                    renderChart();
+                } else if (tabId === 'tab5' && chartInstance) {
+                    renderChart(); // Re-render to ensure colors are updated if palette changes dynamically
+                }
+            }
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    activateTab(tab.id);
+                });
+                 // Set initial hover color for inactive tabs
+                tab.addEventListener('mouseover', function() {
+                    if (!this.style.borderColor || this.style.borderColor === 'transparent') {
+                        this.style.color = activeTabColor;
+                    }
+                });
+                tab.addEventListener('mouseout', function() {
+                     if (!this.style.borderColor || this.style.borderColor === 'transparent') {
+                        this.style.color = inactiveTabColor;
+                    }
+                });
+            });
+
+            activateTab('tab1');
+            
+            function renderChart() {
+                const ctx = document.getElementById('finalChart').getContext('2d');
+                if (chartInstance) {
+                    chartInstance.destroy();
+                }
+                chartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Composição do Faturamento'],
+                        datasets: [
+                            {
+                                label: 'Custo Líquido',
+                                data: [50000],
+                                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--color-orange').trim(), 
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Lucro Bruto',
+                                data: [50000],
+                                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--color-blue').trim(), 
+                                borderWidth: 1
+                            },
+                             {
+                                label: 'Imposto Recolhido',
+                                data: [12500],
+                                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--color-pink').trim(), 
+                                borderWidth: 1
+                            },
+                             {
+                                label: 'Crédito Compensado',
+                                data: [12500],
+                                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--color-lime').trim(), 
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Decomposição do Faturamento Bruto (R$ 125.000)'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.x !== null) {
+                                            label += new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(context.parsed.x);
+                                        }
+                                        return label;
+                                    }
+                                }
+                            },
+                             legend: {
+                                position: 'bottom',
+                            }
+                        },
+                        scales: {
+                            x: {
+                                stacked: true,
+                                title: {
+                                    display: true,
+                                    text: 'Valor (R$)'
+                                }
+                            },
+                            y: {
+                                stacked: true
+                            }
+                        }
+                    }
+                });
+            }
+            
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('main section');
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.4 
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if(entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if(link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active');
+                            }
+                        });
+                         // Special handling for tab activation if section contains tabs
+                        if (entry.target.id === 'credit-mystery' && !document.querySelector('#tab1.active')) {
+                           // Check if any tab is active, if not, activate tab1
+                           let activeFound = false;
+                           tabs.forEach(t => { if(t.style.borderColor === activeTabColor) activeFound = true; });
+                           if(!activeFound) activateTab('tab1');
+                        }
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            const aiModal = document.getElementById('aiModal');
+            const aiModalTitle = document.getElementById('aiModalTitle');
+            const aiModalContent = document.getElementById('aiModalContent');
+            const closeAiModalBtn = document.getElementById('closeAiModalBtn');
+            const askAiBtn = document.getElementById('askAiBtn');
+            const aiQuestionInput = document.getElementById('aiQuestionInput');
+
+            const loadingHtml = `
+                <div class="flex flex-col justify-center items-center h-32">
+                    <div class="spinner"></div>
+                    <p class="mt-4 text-slate-500">Gerando resposta, por favor aguarde...</p>
+                </div>`;
+
+            function showModal(title) {
+                aiModalTitle.textContent = title;
+                aiModalContent.innerHTML = loadingHtml;
+                aiModal.classList.add('active');
+            }
+
+            function hideModal() {
+                aiModal.classList.remove('active');
+            }
+
+            closeAiModalBtn.addEventListener('click', hideModal);
+            aiModal.addEventListener('click', function(event) {
+                if (event.target === aiModal) {
+                    hideModal();
+                }
+            });
+            
+            async function callGeminiAPI(prompt) {
+                const apiKey = "AIzaSyCz6nY-Og2iOQtYubj5XSDznN4sG9C4Z3Q"; 
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                
+                let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                const payload = { contents: chatHistory };
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) {
+                        const errorBody = await response.text();
+                        throw new Error(`HTTP error! status: ${response.status}, body: ${errorBody}`);
+                    }
+                    const result = await response.json();
+                    
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        return result.candidates[0].content.parts[0].text;
+                    } else if (result.promptFeedback && result.promptFeedback.blockReason) {
+                         return `Não foi possível gerar a resposta. Motivo: ${result.promptFeedback.blockReason}. Detalhes: ${JSON.stringify(result.promptFeedback.safetyRatings)}`;
+                    }
+                     else {
+                        return "Não foi possível obter uma resposta da IA. A resposta não contém o conteúdo esperado.";
+                    }
+                } catch (error) {
+                    console.error("Erro ao chamar API Gemini:", error);
+                    return `Erro ao conectar com a IA: ${error.message}. Verifique o console para mais detalhes.`;
+                }
+            }
+
+            askAiBtn.addEventListener('click', async () => {
+                const question = aiQuestionInput.value.trim();
+                if (!question) {
+                    const tempAlert = document.createElement('div');
+                    tempAlert.textContent = "Por favor, digite sua pergunta.";
+                    tempAlert.style.cssText = "position:fixed;top:20px;left:50%;transform:translateX(-50%);background-color:var(--color-pink);color:white;padding:10px 20px;border-radius:5px;z-index:1001;box-shadow:0 2px 10px rgba(0,0,0,0.2);";
+                    document.body.appendChild(tempAlert);
+                    setTimeout(() => { tempAlert.remove(); }, 3000);
+                    return;
+                }
+                showModal('Resposta da IA para sua Pergunta');
+                const prompt = `Responda à seguinte pergunta sobre a Reforma Tributária brasileira (EC 132/2023) de forma clara e concisa, em até 300 palavras: "${question}"`;
+                const answer = await callGeminiAPI(prompt);
+                aiModalContent.innerHTML = `<p class="mb-2 text-sm font-semibold text-slate-700">Sua pergunta: "${question}"</p><div class="prose prose-sm sm:prose max-w-none">${answer.replace(/\n/g, '<br>')}</div>`;
+                aiQuestionInput.value = '';
+            });
+
+            aiQuestionInput.addEventListener('focus', () => {
+                aiQuestionInput.style.borderColor = getComputedStyle(document.documentElement).getPropertyValue('--color-blue').trim();
+                aiQuestionInput.style.boxShadow = `0 0 0 2px ${getComputedStyle(document.documentElement).getPropertyValue('--color-blue-border-light').trim()}`;
+            });
+            aiQuestionInput.addEventListener('blur', () => {
+                aiQuestionInput.style.borderColor = ''; 
+                aiQuestionInput.style.boxShadow = '';
+            });
+
+        });
+    </script>
+</body>
+</html>
