@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Chosen Palette: Vibrant Hex (Laranja, Verde Limão, Amarelo, Azul, Roxo, Rosa) -->
-    <!-- Application Structure Plan: A multi-section SPA with top navigation (Visão Geral, DRE Atual, DRE Futura, O Mistério do Crédito, Conclusão). This structure breaks down the complex topic into manageable, logical parts, guiding the user from general context to the specific, interactive answer to the core question about tax credits. The interactive "O Mistério do Crédito" section is the centerpiece, designed as a step-by-step explainer for maximum clarity and engagement, which is more effective than a static report. Gemini API integration adds AI-powered Q&A. -->
-    <!-- Visualization & Content Choices: 1. Tax Transition Diagram (HTML/CSS): Goal: Inform. Method: Flexbox layout with styled divs. Justification: Visually engaging. 2. DRE Comparison (HTML/CSS): Goal: Compare. Method: Styled divs. Justification: Clear comparison. 3. "Mystery of the Credit" Explainer (JS + HTML/CSS + Chart.js): Goal: Organize & Explain. Method: Interactive steps, bar chart. Justification: Dynamic narrative. 4. Gemini API for Q&A: Goal: Explore. Method: Input field + button triggers API call, displays in modal. Justification: Interactive learning. -->
+    <!-- Application Structure Plan: A multi-section SPA with top navigation. Tax names in "Visão Geral" are now interactive buttons opening a modal with detailed tax information. Gemini API for Q&A remains. -->
+    <!-- Visualization & Content Choices: Tax Transition Diagram (HTML/CSS buttons + JS modal). DRE Comparison (HTML/CSS). "Mystery of the Credit" Explainer (JS + HTML/CSS + Chart.js). Gemini API for Q&A (Input + button + modal). -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         :root {
@@ -26,14 +26,14 @@
             --color-blue-lighter: #e7f5ff;
             --color-blue-border-light: #b3daff;
 
-            --color-orange-bg: #fff3e0; /* Lighter orange for background */
-            --color-orange-text: #c65102;  /* Darker orange for text */
-            --color-lime-bg: #f1f8e9;   /* Lighter lime for background */
-            --color-lime-text: #558b2f;   /* Darker lime for text */
-            --color-yellow-bg: #fffde7; /* Lighter yellow for background */
-            --color-yellow-text: #424242; /* Dark gray for text on yellow */
-            --color-purple-bg: #f3e5f5; /* Lighter purple for background */
-            --color-purple-text: #6a1b9a; /* Darker purple for text */
+            --color-orange-bg: #fff3e0;
+            --color-orange-text: #c65102;
+            --color-lime-bg: #f1f8e9;
+            --color-lime-text: #558b2f;
+            --color-yellow-bg: #fffde7;
+            --color-yellow-text: #424242; 
+            --color-purple-bg: #f3e5f5;
+            --color-purple-text: #6a1b9a;
         }
 
         body {
@@ -113,21 +113,54 @@
             box-shadow: 0 0 0 3px var(--color-blue-border-light);
         }
 
-        .diag-box {
-            border-radius: 0.5rem; /* rounded-lg */
-            padding: 0.75rem; /* p-3 */
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+        .tax-button {
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
             text-align: center;
+            cursor: pointer;
+            transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+            width: 100%;
+            font-weight: 500;
         }
-        .diag-box-orange { background-color: var(--color-orange-bg); color: var(--color-orange-text); border: 1px solid var(--color-orange); }
-        .diag-box-lime   { background-color: var(--color-lime-bg); color: var(--color-lime-text); border: 1px solid var(--color-lime); }
-        .diag-box-yellow { background-color: var(--color-yellow-bg); color: var(--color-yellow-text); border: 1px solid var(--color-yellow); }
-        .diag-box-blue   { background-color: var(--color-blue-lighter); color: var(--color-blue-darker); border: 1px solid var(--color-blue); }
-        .diag-box-purple { background-color: var(--color-purple-bg); color: var(--color-purple-text); border: 1px solid var(--color-purple); }
+        .tax-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+        }
+        .tax-button-orange { background-color: var(--color-orange-bg); color: var(--color-orange-text); border: 1px solid var(--color-orange); }
+        .tax-button-lime   { background-color: var(--color-lime-bg); color: var(--color-lime-text); border: 1px solid var(--color-lime); }
+        .tax-button-yellow { background-color: var(--color-yellow-bg); color: var(--color-yellow-text); border: 1px solid var(--color-yellow); }
+        .tax-button-blue   { background-color: var(--color-blue-lighter); color: var(--color-blue-darker); border: 1px solid var(--color-blue); }
+        .tax-button-purple { background-color: var(--color-purple-bg); color: var(--color-purple-text); border: 1px solid var(--color-purple); }
         
-        .diag-box-blue-main { /* For CBS/IBS boxes specifically */
+        .tax-button-blue-main { 
              background-color: var(--color-blue-lighter); color: var(--color-blue-darker); border: 1px solid var(--color-blue);
-             padding: 1rem; /* p-4 */
+             padding: 1rem;
+        }
+        .tax-info-modal-content h4 {
+            font-size: 1.125rem; /* text-lg */
+            font-weight: 600; /* font-semibold */
+            color: var(--color-blue-darker);
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .tax-info-modal-content p, .tax-info-modal-content li {
+            font-size: 0.875rem; /* text-sm */
+            margin-bottom: 0.5rem;
+        }
+        .tax-info-modal-content ul {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+        }
+        .tax-info-modal-content strong {
+            font-weight: 600;
+        }
+        .tax-info-modal-content code {
+            background-color: #f1f5f9; /* slate-100 */
+            padding: 0.125rem 0.25rem;
+            border-radius: 0.25rem;
+            font-family: monospace;
+            font-size: 0.8em;
         }
 
     </style>
@@ -155,31 +188,31 @@
         <section id="overview" class="mb-16 scroll-mt-24">
             <div class="bg-white rounded-xl shadow-lg overflow-hidden p-6 md:p-10">
                 <h2 class="text-3xl font-bold text-slate-800 mb-4">A Transformação dos Tributos sobre o Consumo</h2>
-                <p class="text-lg text-slate-600 mb-8">A Reforma Tributária (EC 132/2023) simplifica o sistema brasileiro ao unificar cinco tributos sobre o consumo em um Imposto sobre Valor Agregado (IVA) de modelo dual: a CBS (federal) e o IBS (estadual/municipal). Esta aplicação interativa explica o impacto dessa mudança na Demonstração de Resultado (DRE).</p>
+                <p class="text-lg text-slate-600 mb-8">A Reforma Tributária (EC 132/2023) simplifica o sistema brasileiro ao unificar cinco tributos sobre o consumo em um Imposto sobre Valor Agregado (IVA) de modelo dual: a CBS (federal) e o IBS (estadual/municipal). Esta aplicação interativa explica o impacto dessa mudança na Demonstração de Resultado (DRE). Clique nos impostos abaixo para saber mais.</p>
                 
-                <div class="flex flex-col md:flex-row items-center justify-around gap-8">
+                <div class="flex flex-col md:flex-row items-start justify-around gap-8">
                     <div class="w-full md:w-2/5 text-center">
                         <h3 class="font-semibold text-xl mb-4 text-slate-700">Sistema Atual</h3>
                         <div class="space-y-3">
-                            <div class="diag-box diag-box-orange">IPI</div>
-                            <div class="diag-box diag-box-lime">PIS</div>
-                            <div class="diag-box diag-box-lime">COFINS</div>
-                            <div class="diag-box diag-box-purple">ICMS</div>
-                            <div class="diag-box diag-box-yellow">ISS</div>
+                            <button data-tax="IPI" class="tax-button tax-button-orange">IPI</button>
+                            <button data-tax="PIS" class="tax-button tax-button-lime">PIS</button>
+                            <button data-tax="COFINS" class="tax-button tax-button-lime">COFINS</button>
+                            <button data-tax="ICMS" class="tax-button tax-button-purple">ICMS</button>
+                            <button data-tax="ISS" class="tax-button tax-button-yellow">ISS</button>
                         </div>
                     </div>
-                    <div class="text-5xl font-thin" style="color: var(--color-blue);">&rarr;</div>
+                    <div class="text-5xl font-thin self-center" style="color: var(--color-blue);">&rarr;</div>
                     <div class="w-full md:w-2/5 text-center">
                         <h3 class="font-semibold text-xl mb-4 text-slate-700">Novo Sistema (IVA Dual)</h3>
                         <div class="space-y-3">
-                            <div class="diag-box diag-box-blue-main">
+                            <button data-tax="CBS" class="tax-button tax-button-blue-main">
                                 <span class="font-bold">CBS</span><br>
                                 <span class="text-sm">(Federal: unifica IPI, PIS, COFINS)</span>
-                            </div>
-                            <div class="diag-box diag-box-blue-main">
+                            </button>
+                            <button data-tax="IBS" class="tax-button tax-button-blue-main">
                                 <span class="font-bold">IBS</span><br>
                                 <span class="text-sm">(Estadual/Municipal: unifica ICMS, ISS)</span>
-                            </div>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -386,6 +419,7 @@
         </section>
     </main>
 
+    <!-- AI Response Modal -->
     <div id="aiModal" class="modal fixed inset-0 bg-slate-900 bg-opacity-50 items-center justify-center p-4 z-[100]">
         <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6 md:p-8">
             <div class="flex justify-between items-center mb-4">
@@ -403,6 +437,22 @@
         </div>
     </div>
 
+    <!-- Tax Info Modal -->
+    <div id="taxInfoModal" class="modal fixed inset-0 bg-slate-900 bg-opacity-50 items-center justify-center p-4 z-[100]">
+        <div class="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] flex flex-col">
+            <div class="flex justify-between items-center p-4 md:p-6 border-b">
+                <h3 id="taxInfoModalTitle" class="text-2xl font-bold" style="color: var(--color-blue);">Informações do Tributo</h3>
+                <button id="closeTaxInfoModalBtn" class="text-slate-400 hover:text-slate-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div id="taxInfoModalContent" class="p-4 md:p-6 tax-info-modal-content text-slate-700 space-y-3 overflow-y-auto">
+                <!-- Content will be injected here by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+
     <footer class="text-center py-6 text-sm text-slate-500">
         <p>Aplicação interativa criada para fins educacionais sobre a Reforma Tributária Brasileira.</p>
     </footer>
@@ -414,7 +464,7 @@
             let chartInstance = null;
             
             const activeTabColor = getComputedStyle(document.documentElement).getPropertyValue('--color-blue').trim();
-            const inactiveTabColor = getComputedStyle(document.documentElement).getPropertyValue('--color-slate-500') ? getComputedStyle(document.documentElement).getPropertyValue('--color-slate-500').trim() : '#64748b'; // Fallback for slate-500
+            const inactiveTabColor = getComputedStyle(document.documentElement).getPropertyValue('--color-slate-500') ? getComputedStyle(document.documentElement).getPropertyValue('--color-slate-500').trim() : '#64748b';
 
             function activateTab(tabId) {
                 tabs.forEach(tab => {
@@ -430,15 +480,12 @@
                 if(tabId === 'tab5' && !chartInstance) {
                     renderChart();
                 } else if (tabId === 'tab5' && chartInstance) {
-                    renderChart(); // Re-render to ensure colors are updated if palette changes dynamically
+                    renderChart();
                 }
             }
 
             tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    activateTab(tab.id);
-                });
-                 // Set initial hover color for inactive tabs
+                tab.addEventListener('click', () => activateTab(tab.id));
                 tab.addEventListener('mouseover', function() {
                     if (!this.style.borderColor || this.style.borderColor === 'transparent') {
                         this.style.color = activeTabColor;
@@ -455,115 +502,47 @@
             
             function renderChart() {
                 const ctx = document.getElementById('finalChart').getContext('2d');
-                if (chartInstance) {
-                    chartInstance.destroy();
-                }
+                if (chartInstance) chartInstance.destroy();
                 chartInstance = new Chart(ctx, {
                     type: 'bar',
                     data: {
                         labels: ['Composição do Faturamento'],
                         datasets: [
-                            {
-                                label: 'Custo Líquido',
-                                data: [50000],
-                                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--color-orange').trim(), 
-                                borderWidth: 1
-                            },
-                            {
-                                label: 'Lucro Bruto',
-                                data: [50000],
-                                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--color-blue').trim(), 
-                                borderWidth: 1
-                            },
-                             {
-                                label: 'Imposto Recolhido',
-                                data: [12500],
-                                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--color-pink').trim(), 
-                                borderWidth: 1
-                            },
-                             {
-                                label: 'Crédito Compensado',
-                                data: [12500],
-                                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--color-lime').trim(), 
-                                borderWidth: 1
-                            }
+                            { label: 'Custo Líquido', data: [50000], backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--color-orange').trim(), borderWidth: 1 },
+                            { label: 'Lucro Bruto', data: [50000], backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--color-blue').trim(), borderWidth: 1 },
+                            { label: 'Imposto Recolhido', data: [12500], backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--color-pink').trim(), borderWidth: 1 },
+                            { label: 'Crédito Compensado', data: [12500], backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--color-lime').trim(), borderWidth: 1 }
                         ]
                     },
                     options: {
-                        indexAxis: 'y',
-                        responsive: true,
-                        maintainAspectRatio: false,
+                        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
                         plugins: {
-                            title: {
-                                display: true,
-                                text: 'Decomposição do Faturamento Bruto (R$ 125.000)'
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        let label = context.dataset.label || '';
-                                        if (label) {
-                                            label += ': ';
-                                        }
-                                        if (context.parsed.x !== null) {
-                                            label += new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(context.parsed.x);
-                                        }
-                                        return label;
-                                    }
-                                }
-                            },
-                             legend: {
-                                position: 'bottom',
-                            }
+                            title: { display: true, text: 'Decomposição do Faturamento Bruto (R$ 125.000)' },
+                            tooltip: { callbacks: { label: (c) => `${c.dataset.label || ''}: ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(c.parsed.x)}`}},
+                            legend: { position: 'bottom' }
                         },
-                        scales: {
-                            x: {
-                                stacked: true,
-                                title: {
-                                    display: true,
-                                    text: 'Valor (R$)'
-                                }
-                            },
-                            y: {
-                                stacked: true
-                            }
-                        }
+                        scales: { x: { stacked: true, title: { display: true, text: 'Valor (R$)' }}, y: { stacked: true }}
                     }
                 });
             }
             
             const navLinks = document.querySelectorAll('.nav-link');
             const sections = document.querySelectorAll('main section');
-
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.4 
-            };
-
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if(entry.isIntersecting) {
                         navLinks.forEach(link => {
                             link.classList.remove('active');
-                            if(link.getAttribute('href').substring(1) === entry.target.id) {
-                                link.classList.add('active');
-                            }
+                            if(link.getAttribute('href').substring(1) === entry.target.id) link.classList.add('active');
                         });
-                         // Special handling for tab activation if section contains tabs
-                        if (entry.target.id === 'credit-mystery' && !document.querySelector('#tab1.active')) {
-                           // Check if any tab is active, if not, activate tab1
-                           let activeFound = false;
-                           tabs.forEach(t => { if(t.style.borderColor === activeTabColor) activeFound = true; });
+                        if (entry.target.id === 'credit-mystery') {
+                           let activeFound = Array.from(tabs).some(t => t.style.borderColor === activeTabColor);
                            if(!activeFound) activateTab('tab1');
                         }
                     }
                 });
-            }, observerOptions);
-
-            sections.forEach(section => {
-                observer.observe(section);
-            });
+            }, { root: null, rootMargin: '0px', threshold: 0.4 });
+            sections.forEach(section => observer.observe(section));
 
             const aiModal = document.getElementById('aiModal');
             const aiModalTitle = document.getElementById('aiModalTitle');
@@ -572,58 +551,34 @@
             const askAiBtn = document.getElementById('askAiBtn');
             const aiQuestionInput = document.getElementById('aiQuestionInput');
 
-            const loadingHtml = `
-                <div class="flex flex-col justify-center items-center h-32">
-                    <div class="spinner"></div>
-                    <p class="mt-4 text-slate-500">Gerando resposta, por favor aguarde...</p>
-                </div>`;
+            const taxInfoModal = document.getElementById('taxInfoModal');
+            const taxInfoModalTitle = document.getElementById('taxInfoModalTitle');
+            const taxInfoModalContent = document.getElementById('taxInfoModalContent');
+            const closeTaxInfoModalBtn = document.getElementById('closeTaxInfoModalBtn');
+            const taxButtons = document.querySelectorAll('.tax-button');
 
-            function showModal(title) {
+            const loadingHtml = `<div class="flex flex-col justify-center items-center h-32"><div class="spinner"></div><p class="mt-4 text-slate-500">Gerando resposta, por favor aguarde...</p></div>`;
+
+            function showAiModal(title) {
                 aiModalTitle.textContent = title;
                 aiModalContent.innerHTML = loadingHtml;
                 aiModal.classList.add('active');
             }
-
-            function hideModal() {
-                aiModal.classList.remove('active');
-            }
-
-            closeAiModalBtn.addEventListener('click', hideModal);
-            aiModal.addEventListener('click', function(event) {
-                if (event.target === aiModal) {
-                    hideModal();
-                }
-            });
+            function hideAiModal() { aiModal.classList.remove('active'); }
+            closeAiModalBtn.addEventListener('click', hideAiModal);
+            aiModal.addEventListener('click', (e) => { if (e.target === aiModal) hideAiModal(); });
             
             async function callGeminiAPI(prompt) {
                 const apiKey = "AIzaSyCz6nY-Og2iOQtYubj5XSDznN4sG9C4Z3Q"; 
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-                
-                let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
-                const payload = { contents: chatHistory };
-
+                const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
                 try {
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                    if (!response.ok) {
-                        const errorBody = await response.text();
-                        throw new Error(`HTTP error! status: ${response.status}, body: ${errorBody}`);
-                    }
+                    const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}, body: ${await response.text()}`);
                     const result = await response.json();
-                    
-                    if (result.candidates && result.candidates.length > 0 &&
-                        result.candidates[0].content && result.candidates[0].content.parts &&
-                        result.candidates[0].content.parts.length > 0) {
-                        return result.candidates[0].content.parts[0].text;
-                    } else if (result.promptFeedback && result.promptFeedback.blockReason) {
-                         return `Não foi possível gerar a resposta. Motivo: ${result.promptFeedback.blockReason}. Detalhes: ${JSON.stringify(result.promptFeedback.safetyRatings)}`;
-                    }
-                     else {
-                        return "Não foi possível obter uma resposta da IA. A resposta não contém o conteúdo esperado.";
-                    }
+                    if (result.candidates?.[0]?.content?.parts?.[0]?.text) return result.candidates[0].content.parts[0].text;
+                    if (result.promptFeedback?.blockReason) return `Não foi possível gerar a resposta. Motivo: ${result.promptFeedback.blockReason}. Detalhes: ${JSON.stringify(result.promptFeedback.safetyRatings)}`;
+                    return "Não foi possível obter uma resposta da IA. A resposta não contém o conteúdo esperado.";
                 } catch (error) {
                     console.error("Erro ao chamar API Gemini:", error);
                     return `Erro ao conectar com a IA: ${error.message}. Verifique o console para mais detalhes.`;
@@ -637,10 +592,10 @@
                     tempAlert.textContent = "Por favor, digite sua pergunta.";
                     tempAlert.style.cssText = "position:fixed;top:20px;left:50%;transform:translateX(-50%);background-color:var(--color-pink);color:white;padding:10px 20px;border-radius:5px;z-index:1001;box-shadow:0 2px 10px rgba(0,0,0,0.2);";
                     document.body.appendChild(tempAlert);
-                    setTimeout(() => { tempAlert.remove(); }, 3000);
+                    setTimeout(() => tempAlert.remove(), 3000);
                     return;
                 }
-                showModal('Resposta da IA para sua Pergunta');
+                showAiModal('Resposta da IA para sua Pergunta');
                 const prompt = `Responda à seguinte pergunta sobre a Reforma Tributária brasileira (EC 132/2023) de forma clara e concisa, em até 300 palavras: "${question}"`;
                 const answer = await callGeminiAPI(prompt);
                 aiModalContent.innerHTML = `<p class="mb-2 text-sm font-semibold text-slate-700">Sua pergunta: "${question}"</p><div class="prose prose-sm sm:prose max-w-none">${answer.replace(/\n/g, '<br>')}</div>`;
@@ -655,6 +610,115 @@
                 aiQuestionInput.style.borderColor = ''; 
                 aiQuestionInput.style.boxShadow = '';
             });
+
+            const taxData = {
+                IPI: {
+                    fullName: "Imposto sobre Produtos Industrializados",
+                    description: "Tributo federal que incide sobre produtos industrializados, nacionais ou importados, na saída do estabelecimento industrial ou equiparado, ou no desembaraço aduaneiro.",
+                    competence: "União (Federal)",
+                    type: "Por fora (calculado sobre o valor do produto e adicionado ao preço final, não compondo sua própria base de cálculo na venda).",
+                    accountingEntries: [
+                        "<strong>Venda:</strong> D - Clientes/Caixa, C - Receita de Vendas, C - IPI a Recolher (Passivo). IPI sobre Vendas é redutor da Receita Bruta na DRE.",
+                        "<strong>Compra (com crédito):</strong> D - Estoques (líquido do IPI), D - IPI a Recuperar (Ativo), C - Fornecedores."
+                    ],
+                    assessment: "Não cumulativo.",
+                    debitCredit: "Débitos pelas saídas de produtos industrializados; créditos pelas entradas de insumos (matérias-primas, produtos intermediários, material de embalagem) utilizados na industrialização. Saldo devedor é recolhido."
+                },
+                PIS: {
+                    fullName: "Contribuição para o Programa de Integração Social",
+                    description: "Contribuição social federal destinada a financiar o seguro-desemprego, abono salarial e participação na receita dos órgãos e entidades para os trabalhadores públicos e privados.",
+                    competence: "União (Federal)",
+                    type: "Por dentro (compõe a base de cálculo da própria contribuição e integra o preço).",
+                    accountingEntries: ["<strong>Despesa/Custo:</strong> D - Despesa com PIS (Resultado) ou Custo (se aplicável), C - PIS a Recolher (Passivo)."],
+                    assessment: "Pode ser cumulativo (incide em cascata sobre a receita bruta) ou não cumulativo (permite créditos sobre aquisições), dependendo do regime tributário da empresa.",
+                    debitCredit: "<strong>Regime Não Cumulativo:</strong> Débitos sobre receitas; créditos sobre aquisições permitidas por lei (ex: insumos, aluguéis de prédios e máquinas, energia elétrica consumida nos estabelecimentos, etc.)."
+                },
+                COFINS: {
+                    fullName: "Contribuição para o Financiamento da Seguridade Social",
+                    description: "Contribuição social federal destinada a financiar a seguridade social (saúde, previdência e assistência social).",
+                    competence: "União (Federal)",
+                    type: "Por dentro (compõe a base de cálculo da própria contribuição e integra o preço).",
+                    accountingEntries: ["<strong>Despesa/Custo:</strong> D - Despesa com COFINS (Resultado) ou Custo (se aplicável), C - COFINS a Recolher (Passivo)."],
+                    assessment: "Pode ser cumulativo ou não cumulativo, similar ao PIS.",
+                    debitCredit: "<strong>Regime Não Cumulativo:</strong> Débitos sobre receitas; créditos sobre aquisições permitidas por lei."
+                },
+                ICMS: {
+                    fullName: "Imposto sobre Operações relativas à Circulação de Mercadorias e sobre Prestações de Serviços de Transporte Interestadual e Intermunicipal e de Comunicação",
+                    description: "Tributo estadual que incide sobre a movimentação de mercadorias, além de serviços de transporte (interestadual/intermunicipal) e de comunicação.",
+                    competence: "Estados e Distrito Federal",
+                    type: "Por dentro (o imposto integra sua própria base de cálculo e o preço da mercadoria/serviço).",
+                    accountingEntries: [
+                        "<strong>Venda:</strong> D - Clientes/Caixa, C - Receita de Vendas, C - ICMS a Recolher (Passivo). ICMS sobre Vendas é redutor da Receita Bruta na DRE.",
+                        "<strong>Compra (com crédito):</strong> D - Estoques (líquido do ICMS recuperável), D - ICMS a Recuperar (Ativo), C - Fornecedores."
+                    ],
+                    assessment: "Não cumulativo.",
+                    debitCredit: "Débitos pelas saídas de mercadorias/serviços tributados; créditos pelas entradas de mercadorias/serviços e outros itens conforme legislação estadual."
+                },
+                ISS: {
+                    fullName: "Imposto Sobre Serviços de Qualquer Natureza",
+                    description: "Tributo municipal que incide sobre a prestação de serviços listados em lei complementar federal (Lei Complementar nº 116/2003).",
+                    competence: "Municípios e Distrito Federal",
+                    type: "Por dentro (geralmente, compõe o preço do serviço e sua própria base de cálculo).",
+                    accountingEntries: ["<strong>Receita de Serviço:</strong> D - Clientes/Caixa, C - Receita de Serviços, C - ISS a Recolher (Passivo). ISS sobre Receita de Serviços é redutor da Receita Bruta na DRE."],
+                    assessment: "Predominantemente cumulativo (não permite créditos), mas algumas legislações municipais podem prever exceções ou regimes específicos (ex: para construção civil).",
+                    debitCredit: "Predominantemente débito sobre a receita de serviços. Créditos são raros e dependem estritamente da legislação municipal."
+                },
+                CBS: {
+                    fullName: "Contribuição sobre Bens e Serviços",
+                    description: "Novo tributo federal que unificará PIS, COFINS e IPI. Fará parte do sistema IVA Dual brasileiro, caracterizado pela não cumulatividade ampla e incidência sobre uma base alargada de bens e serviços.",
+                    competence: "União (Federal)",
+                    type: "Por fora (característica do IVA, será calculado sobre o valor do bem/serviço e adicionado ao preço, não compondo sua própria base de cálculo na venda).",
+                    accountingEntries: [
+                        "<strong>Venda (Projeção):</strong> D - Clientes/Caixa, C - Receita de Vendas, C - CBS a Recolher (Passivo). CBS sobre Vendas será redutora da Receita Bruta.",
+                        "<strong>Compra (com crédito - Projeção):</strong> D - Estoques/Despesas (líquido da CBS), D - CBS a Recuperar (Ativo), C - Fornecedores."
+                    ],
+                    assessment: "Não cumulativo amplo (crédito financeiro).",
+                    debitCredit: "Débitos sobre as saídas (vendas de bens e serviços); créditos sobre as entradas (aquisições de bens e serviços), com poucas exceções previstas em lei."
+                },
+                IBS: {
+                    fullName: "Imposto sobre Bens e Serviços",
+                    description: "Novo tributo de competência compartilhada entre estados e municípios que unificará ICMS e ISS. Fará parte do sistema IVA Dual brasileiro, com características similares à CBS em termos de não cumulatividade e base de incidência.",
+                    competence: "Estados, Municípios e Distrito Federal (gestão por Comitê Gestor).",
+                    type: "Por fora (característica do IVA).",
+                    accountingEntries: [
+                        "<strong>Venda (Projeção):</strong> D - Clientes/Caixa, C - Receita de Vendas, C - IBS a Recolher (Passivo). IBS sobre Vendas será redutora da Receita Bruta.",
+                        "<strong>Compra (com crédito - Projeção):</strong> D - Estoques/Despesas (líquido do IBS), D - IBS a Recuperar (Ativo), C - Fornecedores."
+                    ],
+                    assessment: "Não cumulativo amplo (crédito financeiro).",
+                    debitCredit: "Débitos sobre as saídas; créditos sobre as entradas, com poucas exceções previstas em lei."
+                }
+            };
+
+            function showTaxInfoModal(taxKey) {
+                const data = taxData[taxKey];
+                if (!data) return;
+
+                taxInfoModalTitle.textContent = data.fullName;
+                let contentHtml = `
+                    <p><strong>O que significa:</strong> ${data.description}</p>
+                    <p><strong>Competência:</strong> ${data.competence}</p>
+                    <p><strong>Tipo (Por fora/Por dentro):</strong> ${data.type}</p>
+                    <h4>Lançamentos Contábeis (Exemplos Simplificados):</h4>
+                    <ul>${data.accountingEntries.map(entry => `<li>${entry.replace(/D - /g, "<code>D</code> - ").replace(/C - /g, "<code>C</code> - ")}</li>`).join('')}</ul>
+                    <h4>Sistema de Apuração:</h4>
+                    <p>${data.assessment}</p>
+                    <h4>Mecânica de Débito/Crédito:</h4>
+                    <p>${data.debitCredit}</p>
+                `;
+                taxInfoModalContent.innerHTML = contentHtml;
+                taxInfoModal.classList.add('active');
+            }
+
+            function hideTaxInfoModal() { taxInfoModal.classList.remove('active'); }
+
+            taxButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const taxKey = button.dataset.tax;
+                    showTaxInfoModal(taxKey);
+                });
+            });
+            closeTaxInfoModalBtn.addEventListener('click', hideTaxInfoModal);
+            taxInfoModal.addEventListener('click', (e) => { if (e.target === taxInfoModal) hideTaxInfoModal(); });
 
         });
     </script>
