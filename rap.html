@@ -145,6 +145,9 @@
         #plan-modal {
             transition: opacity 0.3s ease;
         }
+        #plan-modal > div {
+             transition: transform 0.3s ease;
+        }
     </style>
 </head>
 <body class="bg-white">
@@ -653,28 +656,33 @@
                 });
             });
 
-            // Lógica do Modal do Plano de Transição - CORRIGIDO
+            // Lógica do Modal do Plano de Transição
             const showPlanBtn = document.getElementById('show-plan-btn');
             const closePlanBtn = document.getElementById('close-plan-btn');
             const planModal = document.getElementById('plan-modal');
-            const modalContent = planModal.querySelector('div');
+            
+            if(showPlanBtn && planModal && closePlanBtn) {
+                const modalContent = planModal.querySelector('div');
 
-            if (showPlanBtn && planModal && closePlanBtn) {
                 showPlanBtn.addEventListener('click', () => {
                     planModal.classList.remove('hidden');
                     setTimeout(() => {
                         planModal.style.opacity = '1';
-                        modalContent.style.transform = 'scale(1)';
+                        if(modalContent) modalContent.style.transform = 'scale(1)';
                     }, 10);
                 });
-                closePlanBtn.addEventListener('click', () => {
+
+                const closeModal = () => {
                     planModal.style.opacity = '0';
-                    modalContent.style.transform = 'scale(0.95)';
+                    if(modalContent) modalContent.style.transform = 'scale(0.95)';
                     setTimeout(() => planModal.classList.add('hidden'), 300);
-                });
+                };
+
+                closePlanBtn.addEventListener('click', closeModal);
+                
                 planModal.addEventListener('click', (e) => {
                     if(e.target === planModal) {
-                         closePlanBtn.click();
+                         closeModal();
                     }
                 });
             }
