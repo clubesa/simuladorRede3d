@@ -380,7 +380,8 @@
                              <p id="equity-resultado-futuro" class="text-4xl font-extrabold" style="color: var(--lab-orange);">R$ 0,00</p>
                         </div>
                     </div>
-                     <p class="text-sm text-gray-500 mt-6">Baseado em um valuation de <strong>R$ 3.000.000</strong> (DCF 10 anos, taxa de desconto de 26.75%).</p>
+                     <!-- CORREÇÃO: Valuation atualizado -->
+                     <p class="text-sm text-gray-500 mt-6">Baseado em um valuation de <strong>R$ 2,9 milhões</strong> (DCF 10 anos, taxa de desconto de 26.75%).</p>
                 </div>
             </div>
         </div>
@@ -611,7 +612,8 @@
             const equityResultadoFuturo = document.getElementById('equity-resultado-futuro');
             const TICKET_MEDIO = 447;
             const RECEITA_LABIRINTAR_PERC = 0.50;
-            const VALUATION_LABIRINTAR = 3000000;
+            // CORREÇÃO: Valuation atualizado
+            const VALUATION_LABIRINTAR = 2900000;
 
             function formatCurrency(value) { return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
             function calcularComissao() { if (!escolasSlider) return; const numEscolas = parseInt(escolasSlider.value); const numAlunos = parseInt(alunosSlider.value); escolasValor.textContent = numEscolas; alunosValor.textContent = numAlunos; const receitaTotalAno = numEscolas * numAlunos * (TICKET_MEDIO * RECEITA_LABIRINTAR_PERC * 12); const comissaoMediaAno1 = 0.15; comissaoResultado.textContent = formatCurrency(receitaTotalAno * comissaoMediaAno1); }
