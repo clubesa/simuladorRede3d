@@ -64,36 +64,6 @@
             transform: translateY(0);
         }
 
-        /* Estilização customizada para os sliders */
-        input[type=range] {
-            -webkit-appearance: none;
-            width: 100%;
-            background: transparent;
-        }
-
-        input[type=range]:focus {
-            outline: none;
-        }
-
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%;
-            height: 8px;
-            cursor: pointer;
-            background: var(--lab-lightblue);
-            border-radius: 5px;
-        }
-
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            height: 24px;
-            width: 24px;
-            border-radius: 50%;
-            background: var(--rap-green);
-            cursor: pointer;
-            margin-top: -8px; 
-            box-shadow: 0 0 5px rgba(0,0,0,0.2);
-        }
-
         /* Estilos para a Curva de Valor */
         .value-curve-chart {
             position: relative;
@@ -146,6 +116,22 @@
             transition: opacity 0.3s ease;
         }
         #plan-modal > div {
+             transition: transform 0.3s ease;
+        }
+
+        /* Estilos para o Acordeão de Parceiros */
+        .partner-card .details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+        .partner-card.open .details {
+            max-height: 500px; /* Altura suficiente para o conteúdo */
+        }
+        .partner-card.open .icon {
+            transform: rotate(45deg);
+        }
+        .partner-card .icon {
              transition: transform 0.3s ease;
         }
     </style>
@@ -278,7 +264,7 @@
                 <h2 class="text-3xl md:text-4xl font-bold mb-4">A Força da Nossa Rede de Valor</h2>
                 <p class="text-xl text-gray-700 mb-12">Enquanto o Oceano Vermelho compete em uma Cadeia de Valor linear, nós criamos um ecossistema onde todos os participantes geram e capturam mais valor.</p>
             </div>
-            <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div class="grid md:grid-cols-2 gap-12 items-center mb-16">
                 <!-- Coluna Cadeia de Valor -->
                 <div class="text-center p-6 bg-white rounded-lg shadow-lg border-2 border-red-200 reveal-on-scroll">
                     <h3 class="text-2xl font-bold mb-4" style="color: var(--lab-red);">Cadeia de Valor (Oceano Vermelho)</h3>
@@ -293,8 +279,11 @@
                 </div>
             </div>
             <div class="mt-16 text-center reveal-on-scroll">
-                 <h3 class="text-2xl font-bold mb-4">O Ativo Estratégico da LABirintar é a Rede</h3>
-                 <p class="text-lg text-gray-700 max-w-3xl mx-auto">Nossa rede integra <strong style="color: var(--lab-orange);">Educadores Empreendedores</strong> que antes estavam na periferia, dando-lhes poder de barganha e escala através da nossa <strong style="color: var(--lab-lightblue);">Plataforma Tecnológica</strong> e <strong style="color: var(--lab-red);">Curadoria Pedagógica</strong>. Para a RAP, a parceria significa se conectar a este ecossistema e competir não mais como uma empresa isolada, mas como parte de uma rede de valor inovadora.</p>
+                 <h3 class="text-2xl font-bold mb-4">Os Pilares do Ecossistema LABirintar</h3>
+                 <p class="text-lg text-gray-700 max-w-4xl mx-auto mb-10">Nossa rede integra múltiplos parceiros estratégicos que fortalecem nossa oferta. Para a RAP, a parceria significa se conectar a este ecossistema e competir não mais como uma empresa isolada, mas como parte de uma rede de valor inovadora.</p>
+                 <div id="partners-accordion" class="space-y-4 max-w-4xl mx-auto text-left">
+                     <!-- Cards de Parceiros serão inseridos aqui pelo JS -->
+                 </div>
             </div>
         </div>
     </section>
@@ -569,7 +558,7 @@
                 chartHTML += '</div>';
 
                 const competitorKeys = Object.keys(competitors);
-                const jitterWidth = 12; // Largura total para espalhar os pontos
+                const jitterWidth = 12;
 
                 competitorKeys.forEach((key, competitorIndex) => {
                     const competitor = competitors[key];
@@ -577,7 +566,6 @@
                     
                     competitor.values.forEach((value, i) => {
                         const base_x = (i + 0.5) * (chartWidth / factors.length);
-                        // CORREÇÃO TOOLTIP: Adiciona um pequeno offset lateral para cada ponto
                         const x = base_x + (competitorIndex * jitterWidth) - ((competitorKeys.length - 1) * jitterWidth / 2);
                         const y = chartHeight - ((value - 0.5) * (chartHeight / 3)); 
 
@@ -610,7 +598,7 @@
             drawValueCurve();
             window.addEventListener('resize', drawValueCurve);
             
-            // Lógica do Simulador e outras seções
+            // Lógica do Simulador
             const escolasSlider = document.getElementById('escolas-slider');
             const alunosSlider = document.getElementById('alunos-slider');
             const escolasValor = document.getElementById('escolas-valor');
@@ -664,13 +652,13 @@
             if(showPlanBtn && planModal && closePlanBtn) {
                 const modalContent = planModal.querySelector('div');
 
-                showPlanBtn.addEventListener('click', () => {
+                const openModal = () => {
                     planModal.classList.remove('hidden');
                     setTimeout(() => {
                         planModal.style.opacity = '1';
                         if(modalContent) modalContent.style.transform = 'scale(1)';
                     }, 10);
-                });
+                }
 
                 const closeModal = () => {
                     planModal.style.opacity = '0';
@@ -678,12 +666,54 @@
                     setTimeout(() => planModal.classList.add('hidden'), 300);
                 };
 
+                showPlanBtn.addEventListener('click', openModal);
                 closePlanBtn.addEventListener('click', closeModal);
                 
                 planModal.addEventListener('click', (e) => {
                     if(e.target === planModal) {
                          closeModal();
                     }
+                });
+            }
+
+            // Lógica do Acordeão de Parceiros
+            const partnersData = [
+                { name: 'Agência Freela', domain: 'Marketing e Geração de Leads para escolas.', contribution: 'Expertise em branding e campanhas digitais. Ativação da sua base de contatos para gerar leads com baixo CAC.', relevance: 'Ajuda a renovar a marca RAP, associando-a à inovação, e acelera a captação de clientes para o novo modelo integrado.' },
+                { name: 'FestPay', domain: 'Fintech para gestão de pagamentos em cantinas escolares.', contribution: 'Base de 40+ escolas clientes, expertise em vendas B2B para o setor e canal para troca de indicações.', relevance: 'Canal de baixo custo para expandir a base de clientes. Os insights sobre vendas e escala da FestPay são valiosos para a operação conjunta.' },
+                { name: 'Codifica', domain: 'Programas de programação de jogos e robótica para escolas.', contribution: 'Conteúdo tecnológico que enriquece a oferta da rede. Experiência de operação em larga escala (170 escolas) em outra região.', relevance: 'Integra conteúdo de alta demanda ao portfólio, fortalecendo a proposta de Educação Integral. Valida o software e o modelo de rede da LABirintar.' },
+                { name: 'Rafael Darrouy (TI)', domain: 'Desenvolvedor responsável pelo software de gestão da LABirintar.', contribution: 'Cria e mantém o ativo tecnológico central da rede: plataforma de gestão de matrículas, pagamentos, educadores e turmas.', relevance: 'O software é o pilar que resolve a dor operacional das escolas, moderniza a operação da RAP e permite escalar o modelo de rede com eficiência.' },
+                { name: 'Semente (Socioemocional)', domain: 'Desenvolvimento e formação em competências socioemocionais.', contribution: 'Metodologia científica e formação para que os educadores trabalhem o socioemocional em qualquer atividade (esporte, artes, etc.).', relevance: 'Eleva a qualidade pedagógica da oferta conjunta, agregando valor percebido por escolas e famílias e diferenciando-a de concorrentes focados apenas no técnico.' },
+                { name: 'Investidores e Advisors', domain: 'Sara (Investidora Anjo), Daniel Branco (Advisor), rede de investidores.', contribution: 'Capital financeiro, mentoria, conexões estratégicas e validação do modelo de negócio.', relevance: 'Garantem os recursos e a expertise para a LABirintar executar a estratégia de Oceano Azul, o que torna a parceria com a RAP um investimento em um negócio com alto potencial de crescimento e exit futuro.' }
+            ];
+
+            const accordionContainer = document.getElementById('partners-accordion');
+            if (accordionContainer) {
+                partnersData.forEach(partner => {
+                    const card = document.createElement('div');
+                    card.className = 'partner-card bg-white rounded-lg shadow-md overflow-hidden';
+                    card.innerHTML = `
+                        <div class="header p-4 flex justify-between items-center cursor-pointer">
+                            <h4 class="font-bold text-lg">${partner.name}</h4>
+                            <div class="icon text-2xl font-light text-gray-500 transition-transform">+</div>
+                        </div>
+                        <div class="details p-4 border-t border-gray-200">
+                            <p class="mb-2"><strong style="color: var(--rap-blue);">Domínio:</strong> ${partner.domain}</p>
+                            <p class="mb-2"><strong style="color: var(--rap-blue);">Contribuição para a Rede:</strong> ${partner.contribution}</p>
+                            <p><strong style="color: var(--rap-blue);">Relevância para a RAP:</strong> ${partner.relevance}</p>
+                        </div>
+                    `;
+                    accordionContainer.appendChild(card);
+
+                    card.querySelector('.header').addEventListener('click', () => {
+                        // Fecha outros cards abertos
+                        document.querySelectorAll('.partner-card.open').forEach(openCard => {
+                            if (openCard !== card) {
+                                openCard.classList.remove('open');
+                            }
+                        });
+                        // Abre ou fecha o card atual
+                        card.classList.toggle('open');
+                    });
                 });
             }
         });
