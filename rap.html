@@ -613,7 +613,7 @@
             const TICKET_MEDIO = 447;
             const RECEITA_LABIRINTAR_PERC = 0.50;
             // CORREÇÃO: Valuation atualizado
-            const VALUATION_LABIRINTAR = 2900000;
+            const VALUATION_LABIRINTAR = 4300000;
 
             function formatCurrency(value) { return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
             function calcularComissao() { if (!escolasSlider) return; const numEscolas = parseInt(escolasSlider.value); const numAlunos = parseInt(alunosSlider.value); escolasValor.textContent = numEscolas; alunosValor.textContent = numAlunos; const receitaTotalAno = numEscolas * numAlunos * (TICKET_MEDIO * RECEITA_LABIRINTAR_PERC * 12); const comissaoMediaAno1 = 0.15; comissaoResultado.textContent = formatCurrency(receitaTotalAno * comissaoMediaAno1); }
