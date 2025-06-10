@@ -121,23 +121,24 @@
             opacity: 0.7;
         }
         
-        /* CORREÇÃO: Estilo para o novo tooltip consolidado */
+        /* Estilo para o tooltip consolidado */
         .consolidated-tooltip {
             position: absolute;
             display: none;
-            background-color: rgba(0, 0, 0, 0.8);
+            background-color: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(4px);
             color: white;
             padding: 12px;
             border-radius: 8px;
             font-size: 13px;
             line-height: 1.6;
-            white-space: nowrap;
+            white-space: normal;
+            width: 280px;
             top: 10px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 50;
-            pointer-events: none; /* Ignora eventos do mouse */
+            pointer-events: none;
             border: 1px solid rgba(255,255,255,0.2);
         }
 
@@ -245,7 +246,7 @@
         </div>
     </section>
     
-    <!-- Seção 4: Jornada Evolutiva (Antiga seção 5 e nova seção de plano de transição) - ATUALIZADA -->
+    <!-- Seção 4: Jornada Evolutiva -->
     <section id="jornada" class="py-20 px-6 md:px-12 bg-white overflow-hidden">
         <div class="max-w-6xl mx-auto">
             <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 reveal-on-scroll">Nossa Proposta de Colaboração: Uma Jornada Evolutiva</h2>
@@ -513,7 +514,7 @@
                 observer.observe(element);
             });
             
-            // GRÁFICO DA CURVA DE VALOR - CORRIGIDO
+            // GRÁFICO DA CURVA DE VALOR
             const factors = [
                 { name: 'Qualidade/Certificação' }, { name: 'Inovação Pedagógica' },
                 { name: 'Amplitude da Oferta' }, { name: 'Conveniência do Modelo' },
@@ -528,11 +529,12 @@
             
             function drawValueCurve() {
                 const chartContainer = document.getElementById('value-curve-container');
+                if (!chartContainer) return; // Garante que o elemento existe
                 const legendContainer = document.getElementById('chart-legend');
                 const tooltipEl = document.getElementById('consolidated-tooltip');
                 chartContainer.innerHTML = ''; 
-                legendContainer.innerHTML = ''; 
-                chartContainer.appendChild(tooltipEl); // Re-anexar tooltip
+                if (legendContainer) legendContainer.innerHTML = ''; 
+                chartContainer.appendChild(tooltipEl);
 
                 const chartWidth = chartContainer.clientWidth;
                 const chartHeight = chartContainer.clientHeight;
@@ -568,12 +570,13 @@
                         }
                         prevPoint = { x, y };
                     });
-                     legendContainer.innerHTML += `<div class="flex items-center"><span class="h-3 w-3 rounded-full mr-2" style="background-color: ${competitor.color};"></span>${key}</div>`;
+                     if (legendContainer) {
+                        legendContainer.innerHTML += `<div class="flex items-center"><span class="h-3 w-3 rounded-full mr-2" style="background-color: ${competitor.color};"></span>${key}</div>`;
+                     }
                 });
                 
                 chartHTML += '<div class="absolute -bottom-8 w-full flex">';
                 factors.forEach((factor, i) => {
-                    // Adicionando hotspots invisíveis para o hover
                     chartHTML += `<div class="w-1/6 text-center text-xs text-gray-600 font-medium relative group" data-factor-index="${i}">
                                     ${factor.name}
                                     <div class="absolute inset-0 -top-[320px] h-[350px] cursor-pointer"></div>
@@ -586,30 +589,37 @@
             drawValueCurve();
             window.addEventListener('resize', drawValueCurve);
 
-            // CORREÇÃO: Lógica do Super Tooltip
+            const chartContainerForHover = document.getElementById('value-curve-container');
             const tooltipEl = document.getElementById('consolidated-tooltip');
-            chartContainer.addEventListener('mouseover', function(e) {
-                if (e.target.dataset.factorIndex !== undefined) {
-                    const factorIndex = parseInt(e.target.dataset.factorIndex);
-                    let tooltipContent = `<div class="font-bold text-base mb-2">${factors[factorIndex].name}</div>`;
-                    
-                    Object.keys(competitors).forEach(key => {
-                        tooltipContent += `<div><strong style="color:${competitors[key].color};">${key}:</strong> ${competitors[key].tooltips[factorIndex]}</div>`;
-                    });
+            if (chartContainerForHover && tooltipEl) {
+                chartContainerForHover.addEventListener('mousemove', function(e) {
+                    const hotspot = e.target.closest('[data-factor-index]');
+                    if (hotspot) {
+                        const factorIndex = parseInt(hotspot.dataset.factorIndex);
+                        let tooltipContent = `<div class="font-bold text-base mb-2">${factors[factorIndex].name}</div>`;
+                        
+                        Object.keys(competitors).forEach(key => {
+                            tooltipContent += `<div class="flex items-center my-1"><span class="w-3 h-3 rounded-full mr-2" style="background-color:${competitors[key].color};"></span><strong>${key}:</strong><span class="ml-2 text-gray-300">${competitors[key].tooltips[factorIndex]}</span></div>`;
+                        });
 
-                    tooltipEl.innerHTML = tooltipContent;
-                    tooltipEl.style.display = 'block';
+                        tooltipEl.innerHTML = tooltipContent;
+                        tooltipEl.style.display = 'block';
 
-                    const factorX = (factorIndex + 0.5) * (chartContainer.clientWidth / factors.length);
-                    tooltipEl.style.left = `${factorX}px`;
-                }
-            });
-
-             chartContainer.addEventListener('mouseout', function(e) {
-                 if (e.target.dataset.factorIndex !== undefined) {
+                        const factorX = (factorIndex + 0.5) * (chartContainerForHover.clientWidth / factors.length);
+                        
+                        // Adjust tooltip position to stay within viewport
+                        const tooltipWidth = tooltipEl.offsetWidth;
+                        let leftPos = factorX - (tooltipWidth / 2);
+                        if (leftPos < 0) leftPos = 10;
+                        if (leftPos + tooltipWidth > chartContainerForHover.clientWidth) leftPos = chartContainerForHover.clientWidth - tooltipWidth - 10;
+                        
+                        tooltipEl.style.left = `${leftPos}px`;
+                    }
+                });
+                chartContainerForHover.addEventListener('mouseleave', function() {
                     tooltipEl.style.display = 'none';
-                 }
-            });
+                });
+            }
 
             // Lógica do Simulador
             const escolasSlider = document.getElementById('escolas-slider');
@@ -662,19 +672,21 @@
             const closePlanBtn = document.getElementById('close-plan-btn');
             const planModal = document.getElementById('plan-modal');
 
-            showPlanBtn.addEventListener('click', () => {
-                planModal.classList.remove('hidden');
-                setTimeout(() => planModal.style.opacity = 1, 10);
-            });
-            closePlanBtn.addEventListener('click', () => {
-                planModal.style.opacity = 0;
-                setTimeout(() => planModal.classList.add('hidden'), 300);
-            });
-            planModal.addEventListener('click', (e) => {
-                if(e.target === planModal) {
-                     closePlanBtn.click();
-                }
-            });
+            if (showPlanBtn && planModal && closePlanBtn) {
+                showPlanBtn.addEventListener('click', () => {
+                    planModal.classList.remove('hidden');
+                    setTimeout(() => planModal.style.opacity = 1, 10);
+                });
+                closePlanBtn.addEventListener('click', () => {
+                    planModal.style.opacity = 0;
+                    setTimeout(() => planModal.classList.add('hidden'), 300);
+                });
+                planModal.addEventListener('click', (e) => {
+                    if(e.target === planModal) {
+                         closePlanBtn.click();
+                    }
+                });
+            }
         });
     </script>
 
