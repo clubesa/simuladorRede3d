@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposta de Parceria Estratégica: LABirintar & Rent A Pro</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Definindo as paletas de cores como variáveis CSS */
+        :root {
+            --rap-blue: #18396e;
+            --rap-green: #0a9f83;
+            --lab-red: #ff595a;
+            --lab-orange: #ffa400;
+            --lab-cream: #ffe9c9;
+            --lab-lavender: #e6cbe4;
+            --lab-lightblue: #aec5e7;
+            /* Cores para concorrentes */
+            --bmq-color: #d946ef; /* Fuchsia */
+            --arc-color: #3b82f6; /* Blue */
+            --up-color: #f97316;  /* Orange */
+        }
+
+        /* Aplicando a fonte Inter e cores base */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: white;
+            color: #333;
+            scroll-behavior: smooth;
+        }
+
+        /* Estilos para títulos e botões usando as variáveis */
+        h1, h2, h3, h4 {
+            color: var(--rap-blue);
+        }
+
+        .btn-rap {
+            background-color: var(--rap-green);
+            color: white;
+            transition: background-color 0.3s;
+        }
+        .btn-rap:hover {
+            background-color: #088a70;
+        }
+        
+        /* Animação para revelar elementos ao rolar */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            transition-delay: 0.2s;
+        }
+
+        .reveal-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Estilização customizada para os sliders */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8px;
+            cursor: pointer;
+            background: var(--lab-lightblue);
+            border-radius: 5px;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: var(--rap-green);
+            cursor: pointer;
+            margin-top: -8px; 
+            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+        }
+
+        /* Estilos para a Curva de Valor */
+        .value-curve-chart {
+            position: relative;
+            background-size: 100% 33.33%;
+            background-image: 
+                linear-gradient(to right, #e5e7eb 1px, transparent 1px),
+                linear-gradient(to bottom, #e5e7eb 1px, transparent 1px);
+            background-position: 0 0, 0 33.33%, 0 66.67%, 0 100%;
+            border-left: 2px solid #9ca3af;
+            border-bottom: 2px solid #9ca3af;
+        }
+
+        .chart-point {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+
+        .chart-line {
+            position: absolute;
+            height: 2px;
+            transform-origin: left center;
+            z-index: 5;
+            opacity: 0.7;
+        }
+
+        .tooltip {
+            position: absolute;
+            display: none;
+            background-color: black;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+        }
+
+        .chart-point:hover .tooltip {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-white">
+
+    <!-- Seção 1: Abertura Impactante -->
+    <section id="inicio" class="min-h-screen flex flex-col justify-center items-center text-center p-8 bg-gray-50">
+        <div class="flex items-center space-x-4 md:space-x-8 mb-8">
+            <img src="https://placehold.co/150x60/ffe9c9/ff595a?text=LABirintar" alt="Logo LABirintar" class="h-10 md:h-16 rounded-lg">
+            <span class="text-4xl md:text-6xl font-bold text-gray-400">+</span>
+            <img src="https://placehold.co/150x60/18396e/ffffff?text=Rent+A+Pro" alt="Logo Rent A Pro" class="h-10 md:h-16 rounded-lg">
+        </div>
+        <h1 class="text-4xl md:text-6xl font-extrabold mb-4" style="color: var(--rap-blue);">Educação Integral em Rede</h1>
+        <p class="text-lg md:text-2xl text-gray-600 max-w-4xl">
+            Uma proposta de parceria estratégica para crescer com propósito, escala e impacto.
+        </p>
+        <a href="#reconhecimento" id="start-journey-btn" class="mt-12 btn-rap font-bold py-3 px-8 rounded-full text-lg animate-bounce">
+            Inicie a Jornada
+        </a>
+    </section>
+
+    <!-- Seção 2: Reconhecimento e Realidade (Oceano Vermelho) - ATUALIZADA -->
+    <section id="reconhecimento" class="py-20 px-6 md:px-12 bg-white overflow-hidden">
+        <div class="max-w-6xl mx-auto text-center">
+            <div class="reveal-on-scroll">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Vocês Construíram um Império.</h2>
+                <p class="text-xl text-gray-700 mb-12">Onde o próximo crescimento virá?</p>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16 text-left">
+                <div class="bg-gray-100 p-6 rounded-lg shadow-sm reveal-on-scroll">
+                    <h3 class="text-xl font-bold mb-2" style="color: var(--rap-green);">+20 Anos de Mercado</h3>
+                    <p class="text-gray-600">Liderança e confiança consolidadas como referência no Brasil.</p>
+                </div>
+                <div class="bg-gray-100 p-6 rounded-lg shadow-sm reveal-on-scroll" style="transition-delay: 0.3s;">
+                    <h3 class="text-xl font-bold mb-2" style="color: var(--rap-green);">+45 Modalidades</h3>
+                    <p class="text-gray-600">O portfólio de atividades mais completo do setor.</p>
+                </div>
+                <div class="bg-gray-100 p-6 rounded-lg shadow-sm reveal-on-scroll" style="transition-delay: 0.4s;">
+                    <h3 class="text-xl font-bold mb-2" style="color: var(--rap-green);">Clientes de Prestígio</h3>
+                    <p class="text-gray-600">Parcerias com escolas renomadas que atestam a qualidade.</p>
+                </div>
+                <div class="bg-gray-100 p-6 rounded-lg shadow-sm reveal-on-scroll" style="transition-delay: 0.5s;">
+                    <h3 class="text-xl font-bold mb-2" style="color: var(--rap-green);">Credibilidade na Mídia</h3>
+                    <p class="text-gray-600">Reconhecimento em veículos como TV Globo e Veja São Paulo.</p>
+                </div>
+            </div>
+
+            <div class="bg-blue-50 p-8 rounded-lg reveal-on-scroll" style="background-color: rgba(24, 57, 110, 0.05);">
+                <h3 class="text-2xl md:text-3xl font-bold mb-4">O Desafio do Oceano Vermelho</h3>
+                <p class="text-lg text-gray-800 max-w-4xl mx-auto mb-8">
+                    Analisando o mercado, vemos que a competição é intensa e baseada em fatores muito similares. Todos disputam o mesmo cliente com argumentos parecidos, criando um "Oceano Vermelho". A seguir, uma Curva de Valor que mapeia a RAP e seus concorrentes nos principais atributos valorizados pelo mercado.
+                </p>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md max-w-5xl mx-auto">
+                    <h4 class="font-bold text-xl mb-6">Curva de Valor do Mercado Atual</h4>
+                    
+                    <div class="w-full h-80 relative" id="value-curve-container">
+                        <!-- Chart will be generated by JS -->
+                    </div>
+                    <div class="flex justify-center flex-wrap gap-x-6 gap-y-2 mt-4" id="chart-legend">
+                        <!-- Legend will be generated by JS -->
+                    </div>
+                    <p class="text-sm text-gray-500 mt-4">Passe o mouse sobre os pontos para ver os diferenciais de cada concorrente.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção 3: A Virada Estratégica (Oceano Azul) -->
+    <section id="oceano-azul" class="py-20 px-6 md:px-12 overflow-hidden" style="background-color: var(--lab-cream);">
+        <div class="max-w-6xl mx-auto text-center">
+            <div class="reveal-on-scroll">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4" style="color: var(--lab-orange);">A Estratégia do Oceano Azul</h2>
+                <p class="text-xl text-gray-700 mb-12">Criando um futuro onde a concorrência se torna irrelevante através da inovação de valor.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-lg border-t-4 reveal-on-scroll" style="border-color: var(--lab-red);">
+                    <h3 class="text-2xl font-bold mb-2" style="color: var(--lab-red);">Criar</h3>
+                    <p class="text-gray-600">Uma rede autogerida de Educadores Empreendedores e uma plataforma tecnológica que integra todo o ecossistema.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg border-t-4 reveal-on-scroll" style="border-color: var(--lab-orange); transition-delay: 0.3s;">
+                    <h3 class="text-2xl font-bold mb-2" style="color: var(--lab-orange);">Elevar</h3>
+                    <p class="text-gray-600">A qualidade pedagógica das atividades e a valorização profissional e financeira do educador.</p>
+                </div>
+                 <div class="bg-white p-6 rounded-lg shadow-lg border-t-4 reveal-on-scroll" style="border-color: var(--lab-lightblue); transition-delay: 0.4s;">
+                    <h3 class="text-2xl font-bold mb-2" style="color: var(--lab-lightblue);">Reduzir</h3>
+                    <p class="text-gray-600">O custo de aquisição de clientes e a complexidade de gestão para as escolas.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg border-t-4 reveal-on-scroll" style="border-color: var(--lab-lavender); transition-delay: 0.5s;">
+                    <h3 class="text-2xl font-bold mb-2" style="color: var(--lab-lavender);">Eliminar</h3>
+                    <p class="text-gray-600">A burocracia na contratação e gestão de múltiplos fornecedores de atividades extracurriculares.</p>
+                </div>
+            </div>
+            <p class="mt-12 text-lg text-gray-800 reveal-on-scroll">E se pudéssemos juntos criar este novo espaço de mercado? <br> Apresentamos o veículo para esta jornada.</p>
+        </div>
+    </section>
+    
+    <!-- Restante do HTML continua igual a partir daqui... -->
+    <!-- Seção 4: Apresentando a LABirintar -->
+    <section id="labirintar" class="py-20 px-6 md:px-12 bg-white overflow-hidden">
+        <div class="max-w-6xl mx-auto text-center">
+            <div class="reveal-on-scroll">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">LABirintar: A EdTech de Educação Integral em Rede</h2>
+                <p class="text-xl text-gray-700 mb-12">Uma plataforma que conecta Educadores Empreendedores a escolas para uma educação viva, integral e sensível.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+                <div class="bg-gray-50 p-6 rounded-lg reveal-on-scroll">
+                    <h3 class="text-xl font-bold mb-2" style="color: var(--lab-red);">Modelo de Negócio</h3>
+                    <p>Plataforma multicomponente que integra tecnologia, pedagogia e uma rede de educadores para resolver de ponta a ponta o extracurricular das escolas.</p>
+                </div>
+                 <div class="bg-gray-50 p-6 rounded-lg reveal-on-scroll" style="transition-delay: 0.3s;">
+                    <h3 class="text-xl font-bold mb-2" style="color: var(--lab-orange);">Plataforma Tecnológica</h3>
+                    <p>Software que automatiza matrículas, pagamentos (com split automático), gestão pedagógica e operacional, liberando a escola da carga administrativa.</p>
+                </div>
+                 <div class="bg-gray-50 p-6 rounded-lg reveal-on-scroll" style="transition-delay: 0.4s;">
+                    <h3 class="text-xl font-bold mb-2" style="color: var(--lab-lavender);">Rede de Educadores</h3>
+                    <p>Curadoria e formação de Educadores Empreendedores que atuam com autonomia e protagonismo, funcionando como uma força comercial autogerida.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção 5: A Jornada Proposta -->
+    <section id="jornada" class="py-20 px-6 md:px-12 overflow-hidden" style="background-color: var(--lab-cream);">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 reveal-on-scroll">Nossa Proposta: Uma Jornada Evolutiva em 4 Fases</h2>
+            <div class="relative">
+                <!-- Linha do tempo -->
+                <div class="border-l-4 absolute h-full top-0 left-1/2 -ml-2" style="border-color: var(--rap-blue);"></div>
+                <div class="mb-12 flex justify-between items-center w-full right-timeline reveal-on-scroll">
+                    <div class="order-1 w-5/12"></div>
+                    <div class="z-20 flex items-center order-1 bg-rap-green shadow-xl w-12 h-12 rounded-full" style="background-color: var(--rap-green);"><h3 class="mx-auto font-black text-white text-lg">1</h3></div>
+                    <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 p-6">
+                        <h4 class="font-bold text-lg mb-2" style="color: var(--rap-green);">Fase 1: Teste e Tração</h4>
+                        <p class="text-sm text-gray-600">Converter 7 escolas, validar o modelo de parceria e gerar resultados imediatos. Ativos: Carteira RAP + Agilidade LABirintar.</p>
+                    </div>
+                </div>
+                <div class="mb-12 flex justify-between flex-row-reverse items-center w-full left-timeline reveal-on-scroll">
+                    <div class="order-1 w-5/12"></div>
+                    <div class="z-20 flex items-center order-1 bg-rap-green shadow-xl w-12 h-12 rounded-full" style="background-color: var(--rap-green);"><h3 class="mx-auto font-black text-white text-lg">2</h3></div>
+                    <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 p-6">
+                        <h4 class="font-bold text-lg mb-2" style="color: var(--rap-green);">Fase 2: Expansão Comercial</h4>
+                        <p class="text-sm text-gray-600">Escalar a captação, tornando a RAP um canal recorrente e prioritário. Ativo: Força comercial conjunta.</p>
+                    </div>
+                </div>
+                <div class="mb-12 flex justify-between items-center w-full right-timeline reveal-on-scroll">
+                    <div class="order-1 w-5/12"></div>
+                    <div class="z-20 flex items-center order-1 bg-rap-green shadow-xl w-12 h-12 rounded-full" style="background-color: var(--rap-green);"><h3 class="mx-auto font-black text-white text-lg">3</h3></div>
+                    <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 p-6">
+                        <h4 class="font-bold text-lg mb-2" style="color: var(--rap-green);">Fase 3: Transformação Estratégica</h4>
+                        <p class="text-sm text-gray-600">Iniciar a transição da RAP para o Oceano Azul, replicando o modelo LABirintar. Ativo: LABirintar como Consultoria + Execução.</p>
+                    </div>
+                </div>
+                <div class="mb-12 flex justify-between flex-row-reverse items-center w-full left-timeline reveal-on-scroll">
+                    <div class="order-1 w-5/12"></div>
+                    <div class="z-20 flex items-center order-1 bg-rap-green shadow-xl w-12 h-12 rounded-full" style="background-color: var(--rap-green);"><h3 class="mx-auto font-black text-white text-lg">4</h3></div>
+                    <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 p-6">
+                        <h4 class="font-bold text-lg mb-2" style="color: var(--rap-green);">Fase 4: Consolidação EdTech</h4>
+                        <p class="text-sm text-gray-600">RAP adota formalmente o modelo EdTech, alavancando a tecnologia para escala nacional. Ativo: Ecossistema tecnológico integrado.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Seção 6: O Coração da Parceria (Simulador de Cenários) -->
+    <section id="simulador" class="py-20 px-6 md:px-12 bg-white overflow-hidden">
+        <div class="max-w-6xl mx-auto text-center">
+             <div class="reveal-on-scroll">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Como Materializamos Esta Parceria?</h2>
+                <p class="text-xl text-gray-700 mb-12">Explore os cenários de forma interativa.</p>
+            </div>
+
+            <div class="mb-8 reveal-on-scroll">
+                <div class="flex justify-center space-x-2 md:space-x-4 border-b-2 border-gray-200" id="scenario-tabs">
+                     <button class="scenario-btn active py-3 px-6 text-lg font-bold" style="color: var(--rap-blue); border-bottom: 3px solid var(--rap-blue);" data-scenario="comissao">Comissão por Indicação</button>
+                    <button class="scenario-btn py-3 px-6 text-lg font-bold text-gray-500" data-scenario="equity">Participação (Equity)</button>
+                </div>
+            </div>
+
+            <div id="scenario-comissao" class="scenario-content reveal-on-scroll">
+                <div class="bg-gray-50 p-8 rounded-lg">
+                    <h3 class="text-2xl font-bold mb-4" style="color: var(--rap-green);">Ganho de Curto Prazo, Previsível e Direto</h3>
+                    <p class="mb-6 text-gray-600">Regras: <strong>20%</strong> de comissão sobre a receita LABirintar no 1º semestre, <strong>10%</strong> nos semestres seguintes. Pagamento limitado aos <strong>3 primeiros anos</strong> do contrato da escola.</p>
+                    <div class="grid md:grid-cols-2 gap-8 text-left">
+                        <div>
+                            <label for="escolas-slider" class="font-bold text-gray-700">Número de Escolas Convertidas: <span id="escolas-valor" class="font-black" style="color: var(--rap-blue);">7</span></label>
+                            <input id="escolas-slider" type="range" min="1" max="50" value="7" class="w-full mt-2">
+                        </div>
+                        <div>
+                            <label for="alunos-slider" class="font-bold text-gray-700">Média de Alunos por Escola: <span id="alunos-valor" class="font-black" style="color: var(--rap-blue);">30</span></label>
+                            <input id="alunos-slider" type="range" min="15" max="100" value="30" class="w-full mt-2">
+                        </div>
+                    </div>
+                    <div class="mt-8 bg-white p-6 rounded-lg shadow-inner">
+                        <p class="text-lg text-gray-600">Sua Receita Anual Estimada (1º Ano):</p>
+                        <p id="comissao-resultado" class="text-4xl font-extrabold" style="color: var(--rap-green);">R$ 0,00</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="scenario-equity" class="scenario-content hidden reveal-on-scroll">
+                 <div class="bg-gray-50 p-8 rounded-lg">
+                    <h3 class="text-2xl font-bold mb-4" style="color: var(--lab-orange);">Ganho de Longo Prazo, Exponencial e Estratégico</h3>
+                    <p class="mb-6 text-gray-600">Trocar um fluxo de caixa limitado por participação na valorização de uma EdTech. Um ativo para o <strong>seu futuro exit</strong>.</p>
+                    <div class="grid md:grid-cols-2 gap-8 items-center">
+                         <div class="text-left">
+                            <label for="equity-slider" class="font-bold text-gray-700">Sua Participação na LABirintar: <span id="equity-valor" class="font-black" style="color: var(--rap-blue);">5%</span></label>
+                            <input id="equity-slider" type="range" min="1" max="15" value="5" class="w-full mt-2">
+                        </div>
+                        <div class="mt-8 md:mt-0 bg-white p-6 rounded-lg shadow-inner">
+                            <p class="text-lg text-gray-600">Valor Presente do seu Equity:</p>
+                            <p id="equity-resultado-presente" class="text-3xl font-extrabold" style="color: var(--lab-orange);">R$ 0,00</p>
+                            <p class="text-lg text-gray-600 mt-4">Potencial em 5 anos (multiplicador 5x):</p>
+                             <p id="equity-resultado-futuro" class="text-4xl font-extrabold" style="color: var(--lab-orange);">R$ 0,00</p>
+                        </div>
+                    </div>
+                     <p class="text-sm text-gray-500 mt-6">Baseado em um valuation de <strong>R$ 3.000.000</strong> (DCF 10 anos, taxa de desconto de 26.75%).</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção 7: Prova Social e Tração -->
+    <section id="tracao" class="py-20 px-6 md:px-12 overflow-hidden" style="background-color: var(--lab-cream);">
+        <div class="max-w-6xl mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-12 reveal-on-scroll">Não Estamos Apenas no Papel. Estamos Executando.</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-md transform hover:scale-105 transition-transform reveal-on-scroll"><h3 class="font-bold text-lg mb-2" style="color: var(--lab-red);">Feedback Positivo</h3><p class="text-sm text-gray-600">"As crianças adoraram e pediram mais!" - Feedback de escolas parceiras.</p></div>
+                <div class="bg-white p-6 rounded-lg shadow-md transform hover:scale-105 transition-transform reveal-on-scroll" style="transition-delay: 0.3s;"><h3 class="font-bold text-lg mb-2" style="color: var(--lab-orange);">Rede de Educadores</h3><p class="text-sm text-gray-600">Mais de 12 reuniões de formação, criando uma rede engajada e autogerida.</p></div>
+                <div class="bg-white p-6 rounded-lg shadow-md transform hover:scale-105 transition-transform reveal-on-scroll" style="transition-delay: 0.4s;"><h3 class="font-bold text-lg mb-2" style="color: var(--lab-lavender);">Tecnologia em Validação</h3><p class="text-sm text-gray-600">Software de gestão sendo testado e aprimorado em ambiente real.</p></div>
+                <div class="bg-white p-6 rounded-lg shadow-md transform hover:scale-105 transition-transform reveal-on-scroll"><h3 class="font-bold text-lg mb-2" style="color: var(--lab-lightblue);">Tração de Vendas</h3><p class="text-sm text-gray-600">Negociação avançada com 4 novas escolas para o próximo semestre.</p></div>
+                <div class="bg-white p-6 rounded-lg shadow-md transform hover:scale-105 transition-transform reveal-on-scroll" style="transition-delay: 0.3s;"><h3 class="font-bold text-lg mb-2" style="color: var(--rap-green);">Parceiros Estratégicos</h3><p class="text-sm text-gray-600">Acordos com FestPay e Agência Freela para monetização e marketing.</p></div>
+                <div class="bg-white p-6 rounded-lg shadow-md transform hover:scale-105 transition-transform reveal-on-scroll" style="transition-delay: 0.4s;"><h3 class="font-bold text-lg mb-2" style="color: var(--rap-blue);">Interesse de Investidores</h3><p class="text-sm text-gray-600">Conversas com 49, Anjos do Brasil e SEBRAE validam o potencial do negócio.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção 8: O Oráculo Estratégico (IA) -->
+    <section id="oraculo" class="py-20 px-6 md:px-12 overflow-hidden" style="background-color: var(--rap-blue);">
+        <div class="max-w-4xl mx-auto text-center">
+             <div class="reveal-on-scroll">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-white">Oráculo Estratégico</h2>
+                <p class="text-xl mb-12" style="color: var(--lab-lightblue);">Tire as principais dúvidas sobre a parceria.</p>
+             </div>
+            <div class="space-y-4 text-left reveal-on-scroll" id="oracle-questions">
+                <button class="oracle-question-btn w-full p-4 bg-white bg-opacity-10 rounded-lg text-lg text-left transition-all hover:bg-opacity-20" style="color: var(--lab-cream);" data-answer-id="answer1">Como uma participação na LABirintar impacta o valuation da RAP?</button>
+                <div id="answer1" class="oracle-answer hidden p-4 bg-white bg-opacity-20 rounded-lg mt-2 text-white"><p>Ao se tornar acionista minoritária de uma edtech de alto crescimento, a RAP diversifica seus ativos e se posiciona em um mercado com múltiplos de valuation superiores. Isso pode aumentar significativamente o valor percebido da RAP no momento do seu próprio exit, apresentando aos compradores não apenas um negócio consolidado, mas também uma participação estratégica no futuro da educação.</p></div>
+                <button class="oracle-question-btn w-full p-4 bg-white bg-opacity-10 rounded-lg text-lg text-left transition-all hover:bg-opacity-20" style="color: var(--lab-cream);" data-answer-id="answer2">Qual o maior risco e como podemos mitigá-lo?</button>
+                <div id="answer2" class="oracle-answer hidden p-4 bg-white bg-opacity-20 rounded-lg mt-2 text-white"><p>O maior risco é o desalinhamento cultural. Mitigamos isso com um modelo de governança claro (Cenário 3), onde a RAP tem um assento no conselho consultivo para guiar a estratégia, mas a LABirintar mantém autonomia operacional para preservar sua cultura ágil e inovadora. A Fase 1 serve como um "período probatório" para alinhar as operações antes de aprofundar a parceria.</p></div>
+                <button class="oracle-question-btn w-full p-4 bg-white bg-opacity-10 rounded-lg text-lg text-left transition-all hover:bg-opacity-20" style="color: var(--lab-cream);" data-answer-id="answer3">Por que o Equity pode ser mais valioso que a comissão a longo prazo?</button>
+                <div id="answer3" class="oracle-answer hidden p-4 bg-white bg-opacity-20 rounded-lg mt-2 text-white"><p>A comissão é um ganho linear e com prazo limitado (3 anos por cliente). O equity é um ganho exponencial. Enquanto a comissão gera um fluxo de caixa previsível, a participação acionária permite capturar o valor de todo o crescimento futuro da LABirintar, incluindo novos produtos, mercados e a valorização da marca. O potencial de retorno em um exit pode superar em muitas vezes o valor total recebido via comissão.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção 9: Próximos Passos -->
+    <footer id="proximos-passos" class="py-20 px-6 md:px-12 bg-gray-100 overflow-hidden">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="reveal-on-scroll">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Construindo o Futuro, Juntos</h2>
+                <p class="text-xl text-gray-700 mb-12">O caminho à frente é de colaboração e construção mútua.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left max-w-2xl mx-auto mb-12 reveal-on-scroll">
+                <div class="flex items-start space-x-4"><div class="flex-shrink-0 w-8 h-8 rounded-full btn-rap flex items-center justify-center font-bold">1</div><p><strong>Discussão Aberta:</strong> Validar a percepção sobre os cenários e alinhar a visão estratégica.</p></div>
+                <div class="flex items-start space-x-4"><div class="flex-shrink-0 w-8 h-8 rounded-full btn-rap flex items-center justify-center font-bold">2</div><p><strong>Alinhamento Tático:</strong> Definir o plano para as 7 escolas da Fase 1.</p></div>
+                <div class="flex items-start space-x-4"><div class="flex-shrink-0 w-8 h-8 rounded-full btn-rap flex items-center justify-center font-bold">3</div><p><strong>Agendamento:</strong> Marcar o próximo encontro para detalhar os termos do cenário escolhido.</p></div>
+                <div class="flex items-start space-x-4"><div class="flex-shrink-0 w-8 h-8 rounded-full btn-rap flex items-center justify-center font-bold">4</div><p><strong>Formalização:</strong> Iniciar a elaboração de um Termo de Acordo.</p></div>
+            </div>
+            <div class="reveal-on-scroll">
+                <p class="text-2xl font-bold mb-8">Vamos começar?</p>
+                <div class="text-lg">
+                    <p class="font-bold" style="color: var(--rap-blue);">Maria Lívia</p>
+                    <p class="text-gray-600">Fundadora, LABirintar</p>
+                    <p class="text-gray-600">contato@labirintar.com</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- CORREÇÃO: Lógica para o botão "Inicie a Jornada" ---
+            const startBtn = document.getElementById('start-journey-btn');
+            if (startBtn) {
+                startBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            }
+
+            // --- MELHORIA: Animação de revelação ao rolar ---
+            const revealElements = document.querySelectorAll('.reveal-on-scroll');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            revealElements.forEach(element => {
+                observer.observe(element);
+            });
+            
+            // --- NOVA FEATURE: Gráfico de Curva de Valor ---
+            const factors = [
+                { name: 'Qualidade/Certificação' },
+                { name: 'Inovação Pedagógica' },
+                { name: 'Amplitude da Oferta' },
+                { name: 'Conveniência do Modelo' },
+                { name: 'Reputação da Marca' },
+                { name: 'Preço (Otimizado)' }
+            ];
+
+            // Níveis: 1 (Baixo), 2 (Médio), 3 (Alto)
+            const competitors = {
+                'RAP': { color: 'var(--rap-green)', values: [2, 2, 3, 2, 3, 2], tooltips: ['Metodologia consolidada', 'Foco na execução', '>45 modalidades', 'Modelo de parceria tradicional', 'Marca com 20+ anos e presença na mídia', 'Competitivo, mas não o principal diferencial'] },
+                'BMQ Sports': { color: 'var(--bmq-color)', values: [3, 3, 3, 2, 2, 2], tooltips: ['Certificação MEC', 'Foco em "Disciplina Positiva"', 'Ampla gama de modalidades', 'Assume encargos trabalhistas', 'Reputação em construção', 'Posicionamento por qualidade'] },
+                'ARC Sports': { color: 'var(--arc-color)', values: [2, 3, 2, 3, 2, 2], tooltips: ['Profissionais capacitados', '"Iniciação Desportiva Responsável"', 'Foco em esportes escolares', 'Modelo de "Gestão Total"', 'Fundador com boa reputação', 'Valor atrelado à conveniência'] },
+                'UP Gestão': { color: 'var(--up-color)', values: [2, 1, 3, 3, 3, 2], tooltips: ['Foco em profissionais', 'Menor ênfase em pedagogia de marca', 'Serviços muito diversificados', 'Foco em terceirização e flexibilidade', '16+ anos, forte em condomínios', 'Flexível conforme o serviço'] }
+            };
+            
+            const chartContainer = document.getElementById('value-curve-container');
+            const legendContainer = document.getElementById('chart-legend');
+            const chartWidth = chartContainer.clientWidth;
+            const chartHeight = chartContainer.clientHeight;
+            
+            // Desenhar grid e labels
+            let chartHTML = `<div class="absolute w-full h-full">`;
+            const levels = ['Alto', 'Médio', 'Baixo'];
+            levels.forEach((level, i) => {
+                const yPos = (i * (chartHeight / 3)) + (chartHeight / 6);
+                chartHTML += `<div class="absolute left-[-40px] top-0 -translate-y-1/2 text-xs text-gray-500" style="top: ${100 - (i * 33.33 + 16.67)}%;">${level}</div>`;
+                chartHTML += `<div class="absolute w-full border-t border-dashed border-gray-300" style="top: ${100 - (i * 33.33 + 16.67)}%"></div>`;
+            });
+            chartHTML += '</div>';
+
+            // Desenhar pontos e linhas
+            Object.keys(competitors).forEach(key => {
+                const competitor = competitors[key];
+                let prevPoint = null;
+
+                competitor.values.forEach((value, i) => {
+                    const x = (i + 0.5) * (chartWidth / factors.length);
+                    const y = chartHeight - ((value - 0.5) * (chartHeight / 3));
+                    const pointId = `${key}-point-${i}`;
+
+                    chartHTML += `
+                        <div id="${pointId}" class="chart-point" style="left: ${x}px; top: ${y}px; background-color: ${competitor.color};">
+                            <span class="tooltip">${competitor.tooltips[i]}</span>
+                        </div>
+                    `;
+
+                    if (prevPoint) {
+                        const prevX = prevPoint.x;
+                        const prevY = prevPoint.y;
+                        const angle = Math.atan2(y - prevY, x - prevX) * 180 / Math.PI;
+                        const distance = Math.sqrt(Math.pow(x - prevX, 2) + Math.pow(y - prevY, 2));
+
+                        chartHTML += `<div class="chart-line" style="background-color: ${competitor.color}; left: ${prevX}px; top: ${prevY}px; width: ${distance}px; transform: rotate(${angle}deg);"></div>`;
+                    }
+                    prevPoint = { x, y };
+                });
+                 legendContainer.innerHTML += `<div class="flex items-center"><span class="h-3 w-3 rounded-full mr-2" style="background-color: ${competitor.color};"></span>${key}</div>`;
+            });
+            
+            // Desenhar labels do eixo X
+            chartHTML += '<div class="absolute -bottom-8 w-full flex">';
+            factors.forEach(factor => {
+                chartHTML += `<div class="w-1/6 text-center text-xs text-gray-600 font-medium">${factor.name}</div>`;
+            });
+            chartHTML += '</div>';
+
+            chartContainer.innerHTML = chartHTML;
+
+            // Lógica do Simulador e outras seções...
+            const escolasSlider = document.getElementById('escolas-slider');
+            const alunosSlider = document.getElementById('alunos-slider');
+            const escolasValor = document.getElementById('escolas-valor');
+            const alunosValor = document.getElementById('alunos-valor');
+            const comissaoResultado = document.getElementById('comissao-resultado');
+            const equitySlider = document.getElementById('equity-slider');
+            const equityValor = document.getElementById('equity-valor');
+            const equityResultadoPresente = document.getElementById('equity-resultado-presente');
+            const equityResultadoFuturo = document.getElementById('equity-resultado-futuro');
+            const TICKET_MEDIO = 447;
+            const RECEITA_LABIRINTAR_PERC = 0.50;
+            const VALUATION_LABIRINTAR = 3000000;
+
+            function formatCurrency(value) { return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+
+            function calcularComissao() {
+                const numEscolas = parseInt(escolasSlider.value);
+                const numAlunos = parseInt(alunosSlider.value);
+                escolasValor.textContent = numEscolas;
+                alunosValor.textContent = numAlunos;
+                const receitaTotalAno = numEscolas * numAlunos * (TICKET_MEDIO * RECEITA_LABIRINTAR_PERC * 12);
+                const comissaoMediaAno1 = 0.15; // Média de 20% (6m) e 10% (6m)
+                comissaoResultado.textContent = formatCurrency(receitaTotalAno * comissaoMediaAno1);
+            }
+
+            function calcularEquity() {
+                const percEquity = parseInt(equitySlider.value);
+                equityValor.textContent = `${percEquity}%`;
+                const valorPresente = VALUATION_LABIRINTAR * (percEquity / 100);
+                equityResultadoPresente.textContent = formatCurrency(valorPresente);
+                equityResultadoFuturo.textContent = formatCurrency(valorPresente * 5);
+            }
+
+            escolasSlider.addEventListener('input', calcularComissao);
+            alunosSlider.addEventListener('input', calcularComissao);
+            equitySlider.addEventListener('input', calcularEquity);
+            
+            calcularComissao();
+            calcularEquity();
+
+            const scenarioBtns = document.querySelectorAll('.scenario-btn');
+            const scenarioContents = document.querySelectorAll('.scenario-content');
+            scenarioBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    scenarioBtns.forEach(b => {
+                        b.classList.remove('active');
+                        b.style.color = '#6b7280';
+                        b.style.borderBottom = 'none';
+                    });
+                    btn.classList.add('active');
+                    btn.style.color = 'var(--rap-blue)';
+                    btn.style.borderBottom = '3px solid var(--rap-blue)';
+                    const scenarioId = btn.dataset.scenario;
+                    scenarioContents.forEach(content => {
+                        content.classList.toggle('hidden', content.id !== `scenario-${scenarioId}`);
+                    });
+                });
+            });
+
+            const questionBtns = document.querySelectorAll('.oracle-question-btn');
+            questionBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const answerId = btn.dataset.answerId;
+                    const answerEl = document.getElementById(answerId);
+                    document.querySelectorAll('.oracle-answer').forEach(ans => {
+                        if (ans.id !== answerId) ans.classList.add('hidden');
+                    });
+                    answerEl.classList.toggle('hidden');
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
