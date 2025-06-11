@@ -156,10 +156,9 @@
     <!-- Seção 1: Abertura Impactante -->
     <section id="inicio" class="min-h-screen flex flex-col justify-center items-center text-center p-8 bg-gray-50">
         <div class="flex items-center space-x-4 md:space-x-8 mb-8">
-            <!-- Logos com tamanho aumentado -->
-            <img src="IMG_1229.png" alt="Logo LABirintar" class="h-20 md:h-28">
+            <img src="./logo-labirintar.png" alt="Logo LABirintar" class="h-20 md:h-28">
             <span class="text-4xl md:text-6xl font-bold text-gray-400">+</span>
-            <img src="IMG_3013.png" alt="Logo Rent A Pro" class="h-20 md:h-28">
+            <img src="./logo-rap.png" alt="Logo Rent A Pro" class="h-20 md:h-28">
         </div>
         <h1 class="text-4xl md:text-6xl font-extrabold mb-4" style="color: var(--rap-blue);">Educação Integral em Rede</h1>
         <p class="text-lg md:text-2xl text-gray-600 max-w-4xl">
@@ -474,7 +473,7 @@
     </section>
 
     <footer id="proximos-passos" class="py-20 px-6 md:px-12 bg-gray-100 overflow-hidden">
-        <div class="max-w-6xl mx-auto text-center">
+        <div class="max-w-4xl mx-auto text-center">
             <div class="reveal-on-scroll">
                 <h2 class="text-3xl md:text-4xl font-bold mb-4">Construindo o Futuro, Juntos</h2>
                 <p class="text-xl text-gray-700 mb-12">O caminho à frente é de colaboração e construção mútua.</p>
@@ -782,18 +781,18 @@
             const dupontEquityMultiplier = document.getElementById('dupont-equity-multiplier');
             const dupontRoe = document.getElementById('dupont-roe');
             
-            // Dados extraídos da sua planilha "Análise" do Cenário Tração
+            // Dados Corretos da Planilha (Cenário PMF)
             const dupontData = {
-                1: { profitMargin: -0.66, assetTurnover: 2.12, equityMultiplier: 1.62, roe: -2.28 },
-                2: { profitMargin: -0.05, assetTurnover: 4.14, equityMultiplier: 1.48, roe: -0.31 },
-                3: { profitMargin: 0.16, assetTurnover: 5.48, equityMultiplier: 1.25, roe: 1.09 },
-                4: { profitMargin: 0.22, assetTurnover: 6.01, equityMultiplier: 1.05, roe: 1.39 },
-                5: { profitMargin: 0.26, assetTurnover: 6.22, equityMultiplier: 0.90, roe: 1.46 },
-                6: { profitMargin: 0.27, assetTurnover: 6.22, equityMultiplier: 0.79, roe: 1.33 },
-                7: { profitMargin: 0.28, assetTurnover: 6.22, equityMultiplier: 0.70, roe: 1.22 },
-                8: { profitMargin: 0.28, assetTurnover: 6.22, equityMultiplier: 0.64, roe: 1.12 },
-                9: { profitMargin: 0.29, assetTurnover: 6.22, equityMultiplier: 0.58, roe: 1.05 },
-                10:{ profitMargin: 0.29, assetTurnover: 6.22, equityMultiplier: 0.54, roe: 0.99 }
+                1: { profitMargin: -0.6598, assetTurnover: 2.12, equityMultiplier: 1.62, roe: -2.2763 },
+                2: { profitMargin: -0.0539, assetTurnover: 4.14, equityMultiplier: 1.48, roe: -0.3299 },
+                3: { profitMargin: 0.1569, assetTurnover: 5.48, equityMultiplier: 1.25, roe: 1.0751 },
+                4: { profitMargin: 0.2206, assetTurnover: 6.01, equityMultiplier: 1.05, roe: 1.3883 },
+                5: { profitMargin: 0.2575, assetTurnover: 6.22, equityMultiplier: 0.90, roe: 1.4454 },
+                6: { profitMargin: 0.2683, assetTurnover: 6.22, equityMultiplier: 0.79, roe: 1.3251 },
+                7: { profitMargin: 0.2767, assetTurnover: 6.22, equityMultiplier: 0.70, roe: 1.2157 },
+                8: { profitMargin: 0.2834, assetTurnover: 6.22, equityMultiplier: 0.64, roe: 1.1239 },
+                9: { profitMargin: 0.2887, assetTurnover: 6.22, equityMultiplier: 0.58, roe: 1.0499 },
+                10:{ profitMargin: 0.2929, assetTurnover: 6.22, equityMultiplier: 0.54, roe: 0.9903 }
             };
 
             function updateDupontAnalysis(year) {
