@@ -881,7 +881,6 @@
             const dupontEquityMultiplier = document.getElementById('dupont-equity-multiplier');
             const dupontRoe = document.getElementById('dupont-roe');
             
-            // Dados Corrigidos da Planilha (Valuation 4.3M)
             const dupontData = {
                 1: { profitMargin: -0.6598, assetTurnover: 2.12, equityMultiplier: 1.62, roe: -2.2763 },
                 2: { profitMargin: -0.0539, assetTurnover: 4.14, equityMultiplier: 1.48, roe: -0.3299 },
@@ -978,7 +977,7 @@
                 analysisYearSlider.addEventListener('input', (e) => updateAnalysis(e.target.value));
                 updateAnalysis(10);
             }
-
+            
             // Lógica do Advisor de IA
             const chatHistory = document.getElementById('chat-history');
             const userInput = document.getElementById('user-input');
