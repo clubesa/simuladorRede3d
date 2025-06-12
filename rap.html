@@ -943,9 +943,9 @@
                     data: {
                         labels: annualData.labels,
                         datasets: [
-                            { label: 'Receita (R$)', data: annualData.receita, borderColor: 'var(--rap-green)', backgroundColor: 'var(--rap-green)', yAxisID: 'y-money', tension: 0.1 },
-                            { label: 'Custo Variável (R$)', data: annualData.custoVariavel, borderColor: 'var(--lab-red)', backgroundColor: 'var(--lab-red)', yAxisID: 'y-money', tension: 0.1, borderDash: [5, 5] },
-                            { label: 'Custo Fixo (R$)', data: annualData.custoFixo, borderColor: 'var(--lab-orange)', backgroundColor: 'var(--lab-orange)', yAxisID: 'y-money', tension: 0.1, borderDash: [5, 5] },
+                            { label: 'Receita (R$)', data: annualData.receita, borderColor: 'var(--rap-green)', backgroundColor: 'rgba(10, 159, 131, 0.2)', yAxisID: 'y-money', tension: 0.1, fill: true },
+                            { label: 'Custo Variável (R$)', data: annualData.custoVariavel, borderColor: 'var(--lab-red)', backgroundColor: 'transparent', yAxisID: 'y-money', tension: 0.1, borderDash: [5, 5] },
+                            { label: 'Custo Fixo (R$)', data: annualData.custoFixo, borderColor: 'var(--lab-orange)', backgroundColor: 'transparent', yAxisID: 'y-money', tension: 0.1, borderDash: [5, 5] },
                             { label: 'Matrículas', data: annualData.matriculas, borderColor: 'var(--lab-lavender)', backgroundColor: 'var(--lab-lavender)', yAxisID: 'y-units', tension: 0.1 },
                         ]
                     },
@@ -977,7 +977,7 @@
                 analysisYearSlider.addEventListener('input', (e) => updateAnalysis(e.target.value));
                 updateAnalysis(10);
             }
-            
+
             // Lógica do Advisor de IA
             const chatHistory = document.getElementById('chat-history');
             const userInput = document.getElementById('user-input');
