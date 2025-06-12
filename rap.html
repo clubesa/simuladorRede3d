@@ -944,10 +944,10 @@
                     data: {
                         labels: annualData.labels,
                         datasets: [
-                            { label: 'Receita (R$)', data: annualData.receita, borderColor: 'var(--rap-green)', yAxisID: 'y-money', tension: 0.1 },
-                            { label: 'Custo Variável (R$)', data: annualData.custoVariavel, borderColor: 'var(--lab-red)', yAxisID: 'y-money', tension: 0.1, borderDash: [5, 5] },
-                            { label: 'Custo Fixo (R$)', data: annualData.custoFixo, borderColor: 'var(--lab-orange)', yAxisID: 'y-money', tension: 0.1, borderDash: [5, 5] },
-                            { label: 'Matrículas', data: annualData.matriculas, borderColor: 'var(--lab-lavender)', yAxisID: 'y-units', tension: 0.1 },
+                            { label: 'Receita (R$)', data: annualData.receita, borderColor: 'var(--rap-green)', backgroundColor: 'var(--rap-green)', yAxisID: 'y-money', tension: 0.1 },
+                            { label: 'Custo Variável (R$)', data: annualData.custoVariavel, borderColor: 'var(--lab-red)', backgroundColor: 'var(--lab-red)', yAxisID: 'y-money', tension: 0.1, borderDash: [5, 5] },
+                            { label: 'Custo Fixo (R$)', data: annualData.custoFixo, borderColor: 'var(--lab-orange)', backgroundColor: 'var(--lab-orange)', yAxisID: 'y-money', tension: 0.1, borderDash: [5, 5] },
+                            { label: 'Matrículas', data: annualData.matriculas, borderColor: 'var(--lab-lavender)', backgroundColor: 'var(--lab-lavender)', yAxisID: 'y-units', tension: 0.1 },
                         ]
                     },
                     options: {
