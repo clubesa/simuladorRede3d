@@ -442,7 +442,7 @@
         <div class="max-w-6xl mx-auto text-center">
             <div class="reveal-on-scroll">
                 <h2 class="text-3xl md:text-4xl font-bold mb-4">Análise Financeira Profunda: O Potencial de Retorno</h2>
-                <p class="text-xl text-gray-700 mb-12 max-w-4xl mx-auto">Para entender o potencial de retorno do investimento, usamos a Análise DuPont. Ela mostra como a empresa gera seu Retorno sobre o Patrimônio (ROE) através de 3 alavancas: Lucratividade, Eficiência e Endividamento.</p>
+                <p class="text-xl text-gray-700 mb-12 max-w-4xl mx-auto">Para entender o potencial de retorno do investimento, usamos a Análise DuPont. Ela mostra como a empresa gera seu Retorno sobre o Patrimônio (ROE) através de 3 alavancas: Lucratividade, Eficiência e Spread.</p>
             </div>
             <div class="bg-gray-50 p-8 rounded-lg reveal-on-scroll">
                 <div class="flex flex-col md:flex-row items-center justify-center gap-4 text-2xl font-bold mb-8">
@@ -926,10 +926,10 @@
                     labels: ['Ano 1', 'Ano 2', 'Ano 3', 'Ano 4', 'Ano 5', 'Ano 6', 'Ano 7', 'Ano 8', 'Ano 9', 'Ano 10'],
                     escolas: [10, 27, 54, 87, 114, 114, 114, 114, 114, 114],
                     matriculas: [300, 945, 2160, 3915, 5700, 5700, 5700, 5700, 5700, 5700],
-                    educadores: [20, 63, 144, 261, 380, 380, 380, 380, 380, 380],
                     turmas: [30, 95, 216, 392, 570, 570, 570, 570, 570, 570],
                     receita: [804600, 2534580, 5796720, 10502940, 15303600, 15303600, 15303600, 15303600, 15303600, 15303600],
-                    custoTotal: [1337422, 2673238, 4891469, 8186716, 12000213, 11807413, 11671813, 11564413, 11477413, 11390413],
+                    custoVariavel: [669818, 1815124, 3258525, 5202860, 7127712, 7127712, 7127712, 7127712, 7127712, 7127712],
+                    custoFixo: [498000, 608400, 1374000, 2460000, 3420000, 3420000, 3420000, 3420000, 3420000, 3420000],
                     mc: [-0.17, 0.28, 0.44, 0.50, 0.53, 0.54, 0.54, 0.55, 0.55, 0.56],
                     ml: [-0.66, -0.05, 0.12, 0.18, 0.22, 0.23, 0.24, 0.24, 0.25, 0.25],
                     gao: [1.32, -4.23, 2.82, 1.83, 1.48, 1.41, 1.34, 1.30, 1.26, 1.22]
@@ -941,8 +941,9 @@
                         labels: annualData.labels,
                         datasets: [
                             { label: 'Receita (R$)', data: annualData.receita, borderColor: 'var(--rap-green)', yAxisID: 'y-money', tension: 0.1 },
-                            { label: 'Custo Total (R$)', data: annualData.custoTotal, borderColor: 'var(--lab-red)', yAxisID: 'y-money', tension: 0.1 },
-                            { label: 'Matrículas', data: annualData.matriculas, borderColor: 'var(--lab-orange)', yAxisID: 'y-units', tension: 0.1 },
+                            { label: 'Custo Variável (R$)', data: annualData.custoVariavel, borderColor: 'var(--lab-red)', yAxisID: 'y-money', tension: 0.1, borderDash: [5, 5] },
+                            { label: 'Custo Fixo (R$)', data: annualData.custoFixo, borderColor: 'var(--lab-orange)', yAxisID: 'y-money', tension: 0.1, borderDash: [5, 5] },
+                            { label: 'Matrículas', data: annualData.matriculas, borderColor: 'var(--rap-blue)', yAxisID: 'y-units', tension: 0.1 },
                         ]
                     },
                     options: {
@@ -1011,12 +1012,14 @@
                 }, 1000 + Math.random() * 500);
             };
             
-            sendBtn.addEventListener('click', handleSend);
-            userInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    handleSend();
-                }
-            });
+            if(sendBtn && userInput){
+                sendBtn.addEventListener('click', handleSend);
+                userInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        handleSend();
+                    }
+                });
+            }
 
             addMessage("Olá! Sou o Advisor de IA da LABirintar. Como posso ajudar a analisar esta oportunidade?", 'advisor');
 
