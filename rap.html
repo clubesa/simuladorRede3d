@@ -152,6 +152,25 @@
             opacity: 1;
         }
 
+        /* Estilos para o Chat Advisor */
+        .chat-bubble {
+            max-width: 75%;
+            padding: 10px 15px;
+            border-radius: 20px;
+        }
+        .user-bubble {
+            background-color: var(--rap-green);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+        .advisor-bubble {
+            background-color: #e5e7eb;
+            color: #1f2937;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+
     </style>
 </head>
 <body class="bg-white">
@@ -176,7 +195,6 @@
     <section id="reconhecimento" class="py-20 px-6 md:px-12 bg-white overflow-hidden">
         <div class="max-w-6xl mx-auto text-center">
             <div class="reveal-on-scroll">
-                <!-- CORREÇÃO DE TEXTO -->
                 <h2 class="text-3xl md:text-4xl font-bold mb-12">Vocês construíram uma grande empresa.</h2>
             </div>
             
@@ -459,14 +477,47 @@
         </div>
     </section>
 
-    <section id="projections-chart" class="py-20 px-6 md:px-12 bg-gray-50 overflow-hidden">
-        <div class="max-w-6xl mx-auto text-center">
-            <div class="reveal-on-scroll">
+    <!-- NOVO GRÁFICO DE PROJEÇÕES ANUAIS -->
+    <section id="projections-chart" class="py-20 px-6 md:px-12 bg-white overflow-hidden">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center reveal-on-scroll">
                 <h2 class="text-3xl md:text-4xl font-bold mb-4">Projeções de Crescimento Anual</h2>
-                <p class="text-xl text-gray-700 mb-12 max-w-4xl mx-auto">O gráfico a seguir ilustra a evolução projetada dos nossos principais indicadores operacionais e financeiros ao longo de 10 anos.</p>
+                <p class="text-xl text-gray-700 mb-12 max-w-4xl mx-auto">O gráfico e a tabela a seguir ilustram a evolução projetada dos nossos principais indicadores operacionais e financeiros ao longo de 10 anos.</p>
             </div>
-            <div class="bg-white p-6 rounded-lg shadow-md reveal-on-scroll">
-                 <canvas id="annual-growth-chart"></canvas>
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                 <div class="bg-gray-50 p-6 rounded-lg shadow-md reveal-on-scroll h-[500px]">
+                     <canvas id="annual-growth-chart"></canvas>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-lg shadow-md reveal-on-scroll h-[500px] flex flex-col">
+                    <h3 class="text-xl font-bold mb-4 text-center">Análise de Indicadores Chave (<span id="analysis-year-label">Ano 10</span>)</h3>
+                    <div class="flex-grow space-y-6 text-left">
+                        <div>
+                            <div class="flex justify-between items-baseline">
+                                <h4 class="font-bold text-lg" style="color: var(--rap-green);">Margem de Contribuição</h4>
+                                <p id="analysis-mc" class="text-3xl font-extrabold" style="color: var(--rap-green);">0%</p>
+                            </div>
+                            <p class="text-sm text-gray-600">Percentual da receita que sobra para cobrir os custos fixos após pagar os custos variáveis.</p>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-baseline">
+                                <h4 class="font-bold text-lg" style="color: var(--lab-orange);">Margem Líquida</h4>
+                                <p id="analysis-ml" class="text-3xl font-extrabold" style="color: var(--lab-orange);">0%</p>
+                            </div>
+                             <p class="text-sm text-gray-600">O lucro líquido como percentual da receita total. Mostra a lucratividade final.</p>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-baseline">
+                                <h4 class="font-bold text-lg" style="color: var(--lab-lightblue);">Alavancagem Operacional (GAO)</h4>
+                                <p id="analysis-gao" class="text-3xl font-extrabold" style="color: var(--lab-lightblue);">0.0</p>
+                            </div>
+                            <p class="text-sm text-gray-600">Mede o quanto o lucro operacional aumenta para cada 1% de aumento nas vendas. Indica o "risco" do negócio.</p>
+                        </div>
+                    </div>
+                     <div class="mt-8">
+                        <label for="analysis-year-slider" class="font-bold text-gray-700">Selecione o Ano:</label>
+                        <input id="analysis-year-slider" type="range" min="1" max="10" value="10" class="w-full mt-2">
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -485,14 +536,23 @@
         </div>
     </section>
 
-    <section id="oraculo" class="py-20 px-6 md:px-12 overflow-hidden" style="background-color: var(--rap-blue);">
+    <!-- SEÇÃO CONVERSE COM O ADVISOR -->
+    <section id="advisor" class="py-20 px-6 md:px-12 overflow-hidden" style="background-color: var(--rap-blue);">
         <div class="max-w-4xl mx-auto text-center">
              <div class="reveal-on-scroll">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-white">Oráculo Estratégico</h2>
-                <p class="text-xl mb-12" style="color: var(--lab-lightblue);">Tire as principais dúvidas sobre a parceria.</p>
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-white">Converse com nosso Advisor de IA</h2>
+                <p class="text-xl mb-12" style="color: var(--lab-lightblue);">Faça perguntas sobre estratégia, finanças ou mercado. Nosso advisor, treinado com todos os dados desta proposta, irá responder.</p>
              </div>
-            <div class="grid md:grid-cols-2 gap-4 text-left reveal-on-scroll" id="oracle-questions">
-                <!-- Perguntas serão inseridas aqui pelo JS -->
+            <div class="bg-white rounded-lg shadow-xl p-4 reveal-on-scroll">
+                <div id="chat-history" class="h-80 overflow-y-auto p-4 space-y-4 flex flex-col mb-4">
+                    <!-- Mensagens do chat aparecem aqui -->
+                </div>
+                <div class="flex space-x-2">
+                    <input type="text" id="user-input" class="flex-grow border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-rap-blue" placeholder="Digite sua pergunta aqui...">
+                    <button id="send-btn" class="btn-rap font-bold rounded-full w-12 h-12 flex items-center justify-center">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    </button>
+                </div>
             </div>
         </div>
     </section>
@@ -736,38 +796,6 @@
                 });
             });
 
-            // Lógica do Oráculo
-            const oracleContainer = document.getElementById('oracle-questions');
-            const oracleData = [
-                { q: "Como a participação na LABirintar impacta o valuation da RAP?", a: "Ao se tornar acionista minoritária de uma edtech de alto crescimento, a RAP diversifica seus ativos e se posiciona em um mercado com múltiplos de valuation superiores. Isso pode aumentar significativamente o valor percebido da RAP no momento do seu próprio exit, apresentando aos compradores não apenas um negócio consolidado, mas também uma participação estratégica no futuro da educação." },
-                { q: "Qual o maior risco e como podemos mitigá-lo?", a: "O maior risco é o desalinhamento cultural. Mitigamos isso com um modelo de governança claro (Cenário 3), onde a RAP tem um assento no conselho consultivo para guiar a estratégia, mas a LABirintar mantém autonomia operacional para preservar sua cultura ágil e inovadora. A Fase 1 serve como um 'período probatório' para alinhar as operações antes de aprofundar a parceria." },
-                { q: "Por que o Equity pode ser mais valioso que a comissão?", a: "A comissão é um ganho linear e com prazo limitado. O equity é um ganho exponencial, permitindo capturar o valor de todo o crescimento futuro da LABirintar, incluindo novos produtos e mercados. O potencial de retorno em um exit pode superar em muitas vezes o valor total recebido via comissão." },
-                { q: "Como a Rede de Valor da LABirintar reduz o CAC?", a: "Através de múltiplos canais de baixo custo: os Educadores Empreendedores atuam como força comercial orgânica, e parceiros como Freela e FestPay trazem indicações diretas de suas bases de clientes, diminuindo a necessidade de investimento em marketing tradicional." },
-                { q: "Qual o papel da tecnologia da LABirintar na parceria?", a: "O software é o pilar que resolve dores operacionais das escolas (gestão, burocracia), moderniza a operação da RAP, e permite escalar o modelo de rede com eficiência, além de gerar dados valiosos sobre o desenvolvimento dos alunos." },
-                { q: "Como a parceria ajuda a RAP a competir com players como BMQ e ARC Sports?", a: "A parceria move a RAP da competição por fatores isolados para uma competição de 'rede contra rede'. A oferta integrada (esportes + tecnologia + artes + socioemocional) cria uma proposta de valor única, muito mais difícil de ser copiada do que uma metodologia isolada." }
-            ];
-
-            if(oracleContainer) {
-                oracleData.forEach((item, index) => {
-                    const questionId = `answer${index + 1}`;
-                    const div = document.createElement('div');
-                    div.innerHTML = `
-                        <button class="oracle-question-btn w-full p-4 bg-white bg-opacity-10 rounded-lg text-lg text-left transition-all hover:bg-opacity-20" style="color: var(--lab-cream);" data-answer-id="${questionId}">${item.q}</button>
-                        <div id="${questionId}" class="oracle-answer hidden p-4 bg-white bg-opacity-20 rounded-lg mt-2 text-white"><p>${item.a}</p></div>
-                    `;
-                    oracleContainer.appendChild(div);
-                });
-
-                document.querySelectorAll('.oracle-question-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const answerId = btn.dataset.answerId;
-                        const answerEl = document.getElementById(answerId);
-                        document.querySelectorAll('.oracle-answer').forEach(ans => { if (ans.id !== answerId) ans.classList.add('hidden'); });
-                        answerEl.classList.toggle('hidden');
-                    });
-                });
-            }
-            
             // Lógica do Modal do Plano de Transição
             const showPlanBtn = document.getElementById('show-plan-btn');
             const closePlanBtn = document.getElementById('close-plan-btn');
@@ -890,8 +918,9 @@
                 updateDupontAnalysis(10);
             }
 
-            // Lógica do Gráfico Anual
+            // Lógica do Gráfico Anual e Análise
             const annualChartCanvas = document.getElementById('annual-growth-chart');
+            const analysisYearSlider = document.getElementById('analysis-year-slider');
             if (annualChartCanvas) {
                 const annualData = {
                     labels: ['Ano 1', 'Ano 2', 'Ano 3', 'Ano 4', 'Ano 5', 'Ano 6', 'Ano 7', 'Ano 8', 'Ano 9', 'Ano 10'],
@@ -901,6 +930,9 @@
                     turmas: [30, 95, 216, 392, 570, 570, 570, 570, 570, 570],
                     receita: [804600, 2534580, 5796720, 10502940, 15303600, 15303600, 15303600, 15303600, 15303600, 15303600],
                     custoTotal: [1337422, 2673238, 4891469, 8186716, 12000213, 11807413, 11671813, 11564413, 11477413, 11390413],
+                    mc: [-0.17, 0.28, 0.44, 0.50, 0.53, 0.54, 0.54, 0.55, 0.55, 0.56],
+                    ml: [-0.66, -0.05, 0.12, 0.18, 0.22, 0.23, 0.24, 0.24, 0.25, 0.25],
+                    gao: [1.32, -4.23, 2.82, 1.83, 1.48, 1.41, 1.34, 1.30, 1.26, 1.22]
                 };
 
                 new Chart(annualChartCanvas, {
@@ -911,51 +943,82 @@
                             { label: 'Receita (R$)', data: annualData.receita, borderColor: 'var(--rap-green)', yAxisID: 'y-money', tension: 0.1 },
                             { label: 'Custo Total (R$)', data: annualData.custoTotal, borderColor: 'var(--lab-red)', yAxisID: 'y-money', tension: 0.1 },
                             { label: 'Matrículas', data: annualData.matriculas, borderColor: 'var(--lab-orange)', yAxisID: 'y-units', tension: 0.1 },
-                            { label: 'Escolas', data: annualData.escolas, borderColor: 'var(--rap-blue)', yAxisID: 'y-units', tension: 0.1, hidden: true },
-                            { label: 'Educadores', data: annualData.educadores, borderColor: 'var(--lab-lavender)', yAxisID: 'y-units', tension: 0.1, hidden: true },
                         ]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
                         scales: {
-                            'y-money': {
-                                type: 'linear',
-                                position: 'left',
-                                title: { display: true, text: 'Valor (R$)'},
-                                ticks: {
-                                    callback: function(value, index, values) {
-                                        return 'R$ ' + (value / 1000000).toFixed(1) + 'M';
-                                    }
-                                }
-                            },
-                            'y-units': {
-                                type: 'linear',
-                                position: 'right',
-                                title: { display: true, text: 'Unidades'},
-                                grid: { drawOnChartArea: false }
-                            }
+                            'y-money': { type: 'linear', position: 'left', title: { display: true, text: 'Valor (R$)'}, ticks: { callback: function(value) { return 'R$ ' + (value / 1000000).toFixed(1) + 'M'; } } },
+                            'y-units': { type: 'linear', position: 'right', title: { display: true, text: 'Unidades'}, grid: { drawOnChartArea: false } }
                         },
                         plugins: {
-                            tooltip: {
-                                mode: 'index',
-                                intersect: false,
-                                callbacks: {
-                                    footer: function(tooltipItems) {
-                                        const index = tooltipItems[0].dataIndex;
-                                        const escolas = annualData.escolas[index];
-                                        const matriculas = annualData.matriculas[index];
-                                        const turmas = annualData.turmas[index];
-                                        const mediaMatriculas = (matriculas / escolas).toFixed(1);
-                                        const mediaTurmas = (turmas / escolas).toFixed(1);
-                                        return `\nMatrículas/Escola: ${mediaMatriculas}\nTurmas/Escola: ${mediaTurmas}`;
-                                    }
-                                }
-                            }
+                            tooltip: { mode: 'index', intersect: false, callbacks: { footer: function(tooltipItems) { const index = tooltipItems[0].dataIndex; return `\nMatrículas/Escola: ${(annualData.matriculas[index] / annualData.escolas[index]).toFixed(1)}\nTurmas/Escola: ${(annualData.turmas[index] / annualData.escolas[index]).toFixed(1)}`; } } }
                         }
                     }
                 });
+
+                const analysisYearLabel = document.getElementById('analysis-year-label');
+                const analysisMC = document.getElementById('analysis-mc');
+                const analysisML = document.getElementById('analysis-ml');
+                const analysisGAO = document.getElementById('analysis-gao');
+
+                function updateAnalysis(year) {
+                    const index = year - 1;
+                    analysisYearLabel.textContent = `Ano ${year}`;
+                    analysisMC.textContent = `${(annualData.mc[index] * 100).toFixed(0)}%`;
+                    analysisML.textContent = `${(annualData.ml[index] * 100).toFixed(0)}%`;
+                    analysisGAO.textContent = `${annualData.gao[index].toFixed(2)}`;
+                }
+                analysisYearSlider.addEventListener('input', (e) => updateAnalysis(e.target.value));
+                updateAnalysis(10);
             }
+
+            // Lógica do Advisor de IA
+            const chatHistory = document.getElementById('chat-history');
+            const userInput = document.getElementById('user-input');
+            const sendBtn = document.getElementById('send-btn');
+
+            const addMessage = (message, sender) => {
+                const bubble = document.createElement('div');
+                bubble.classList.add('chat-bubble', sender === 'user' ? 'user-bubble' : 'advisor-bubble');
+                bubble.textContent = message;
+                chatHistory.appendChild(bubble);
+                chatHistory.scrollTop = chatHistory.scrollHeight;
+            };
+
+            const getAdvisorResponse = (question) => {
+                const q = question.toLowerCase();
+                if (q.includes('risco') || q.includes('cultural')) return "O maior risco é o desalinhamento cultural entre a cultura mais rígida da RAP e a cultura ágil da LABirintar. Mitigamos isso com governança clara, autonomia operacional para a LABirintar e uma Fase 1 de alinhamento prático.";
+                if (q.includes('valuation') || q.includes('exit')) return "A parceria com a LABirintar, uma edtech de Rede de Valor, posiciona a RAP em um mercado com múltiplos de valuation superiores. Isso agrega um ativo de alto crescimento ao portfólio da RAP, aumentando significativamente seu valor percebido em um futuro exit.";
+                if (q.includes('equity') || q.includes('comissão')) return "A comissão gera um fluxo de caixa previsível, mas limitado a 24 meses por cliente. O equity, por outro lado, permite que a RAP participe de forma exponencial e perene de todo o crescimento da LABirintar, incluindo novos produtos, mercados e a valorização da marca, com um potencial de retorno muito superior no longo prazo.";
+                if (q.includes('dupont') || q.includes('roe')) return "A Análise DuPont mostra que, após uma fase inicial de investimento, o modelo de negócio atinge um alto ROE. Isso é impulsionado pelo aumento da eficiência (Giro do Ativo) e pela melhoria da lucratividade (Margem Líquida), enquanto o endividamento diminui, provando a sustentabilidade e o potencial de retorno do negócio.";
+                if (q.includes('concorrentes') || q.includes('bmq') || q.includes('arc')) return "A parceria move a RAP da competição direta para a criação de um novo espaço de mercado. Em vez de competir nos mesmos fatores, criamos uma oferta integrada (esportes, tecnologia, artes) baseada em uma Rede de Valor, o que é muito mais difícil para os concorrentes copiarem.";
+                if (q.includes('parceiros') || q.includes('rede')) return "A Rede de Valor é o nosso maior ativo. Parceiros como Freela e FestPay nos dão acesso a canais de venda de baixo custo. Codifica e Semente enriquecem nosso portfólio com conteúdo de ponta. A tecnologia do nosso parceiro de TI permite a escala, e a rede de investidores valida o modelo. A RAP se conecta a todo este ecossistema.";
+                return "Não tenho certeza se entendi sua pergunta. Poderia reformular? Posso falar sobre riscos, valuation, análise financeira, concorrência ou sobre nossa rede de parceiros.";
+            };
+
+            const handleSend = () => {
+                const question = userInput.value.trim();
+                if (question === '') return;
+
+                addMessage(question, 'user');
+                userInput.value = '';
+
+                setTimeout(() => {
+                    const response = getAdvisorResponse(question);
+                    addMessage(response, 'advisor');
+                }, 1000 + Math.random() * 500);
+            };
+            
+            sendBtn.addEventListener('click', handleSend);
+            userInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    handleSend();
+                }
+            });
+
+            addMessage("Olá! Sou o Advisor de IA da LABirintar. Como posso ajudar a analisar esta oportunidade?", 'advisor');
 
         });
     </script>
