@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Investidor - LABirintar</title>
+    
+    <!-- Importando a biblioteca de gráficos Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- CSS para estilização -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+        :root {
+            --primary-color: #003366;
+            --secondary-color: #005f9e;
+            --accent-color: #f7b733;
+            --background-color: #f4f7f6;
+            --text-color: #333;
+            --card-bg-color: #ffffff;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-weight: 700;
+        }
+
+        main {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .card {
+            background-color: var(--card-bg-color);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .controls h2 {
+            margin-top: 0;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 5px;
+        }
+
+        #query-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+            min-height: 60px;
+            box-sizing: border-box;
+        }
+        
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: background-color 0.3s ease;
+        }
+
+        #ask-button {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        #ask-button:hover {
+            background-color: var(--primary-color);
+        }
+
+        .suggestions .btn {
+            width: 100%;
+            background-color: #e7e7e7;
+            color: var(--text-color);
+            text-align: left;
+            margin-bottom: 8px;
+        }
+
+        .suggestions .btn:hover {
+            background-color: #ddd;
+        }
+
+        .display {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        #response-area {
+            min-height: 80px;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        #response-area .value {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-top: 5px;
+        }
+
+        #chart-container {
+            position: relative;
+            height: 60vh;
+        }
+
+        @media (max-width: 900px) {
+            main {
+                grid-template-columns: 1fr;
+            }
+            #chart-container {
+                height: 50vh;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Painel do Investidor - LABirintar</h1>
+        </header>
+        
+        <main>
+            <div class="controls card">
+                <h2>Faça sua pergunta</h2>
+                <textarea id="query-input" placeholder="Ex: Qual o VPL do projeto?"></textarea>
+                <button id="ask-button" class="btn">Perguntar</button>
+                
+                <div class="suggestions">
+                    <h2>Sugestões</h2>
+                    <button class="btn suggestion-btn">Qual o VPL?</button>
+                    <button class="btn suggestion-btn">Qual a TIR?</button>
+                    <button class="btn suggestion-btn">Gráfico de Receita Anual</button>
+                    <button class="btn suggestion-btn">Gráfico de Lucro Anual</button>
+                    <button class="btn suggestion-btn">Comparar Receita e Custo Anual</button>
+                    <button class="btn suggestion-btn">Evolução do Saldo de Caixa Mensal (Ano 1)</button>
+                </div>
+            </div>
+            
+            <div class="display">
+                <div id="response-area" class="card">
+                    Bem-vindo! Faça uma pergunta ou clique em uma sugestão ao lado.
+                </div>
+                <div id="chart-container" class="card">
+                    <canvas id="myChart"></canvas>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript com os dados e a lógica -->
+    <script>
+        // --- DADOS EMBUTIDOS (Processados do CSV) ---
+        // Para simplificar, selecionei as linhas mais importantes do seu CSV
+        const valuationData = [
+            { "Conta": "Receita", "Anos": [394254, 2111859, 4769850, 8413223, 13195897, 14438940, 14446600, 14438940, 14438940, 14438940], "Meses": [4381, 4381, 4381, 4381, 4381, 4381, 61328, 61328, 61328, 61328, 61328, 61328, 137989, 137989, 137989, 137989, 137989, 137989, 213988, 213988, 213988, 213988, 213988, 213988, 345512, 345513, 345513, 345513, 345513, 345513, 449461, 449462, 449462, 449462, 449462, 449462, 616884, 616886, 616886, 616886, 616886, 616886, 785317, 785319, 785319, 785319, 785319, 785319, 994951, 994954, 994954, 994954, 994954, 994954, 1204361, 1204363, 1204363, 1204363, 1204363, 1204363, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1210905, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245] },
+            { "Conta": "Custo", "Anos": [-565054, -2089907, -4207853, -6809434, -10286108, -11084483, -11087245, -11084483, -11084483, -11084483], "Meses": [] },
+            { "Conta": "RLE", "Anos": [-170800, 21952, 561998, 1603789, 2909789, 3354457, 3359355, 3354457, 3354457, 3354457], "Meses": [-22422, -22422, -22422, -22422, -22422, -22422, -6045, -6045, -6045, -6045, -6045, -6045, -14129, -14129, -14129, -14129, -14129, -14129, 17787, 17787, 17787, 17787, 17787, 17787, 29429, 29429, 29429, 29429, 29429, 29429, 64237, 64237, 64237, 64237, 64237, 64237, 112696, 112697, 112697, 112697, 112697, 112697, 154601, 154602, 154602, 154602, 154602, 154602, 212703, 212704, 212704, 212704, 212704, 212704, 272260, 272261, 272261, 272261, 272261, 272261, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 284436, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538] },
+            { "Conta": "Saldo de caixa", "Anos": [], "Meses": [299363, 277800, 256238, 234675, 213113, 191550, 165371, 164392, 163412, 162433, 161454, 160474, 129817, 120759, 111701, 102644, 93586, 84529, 80652, 105576, 130500, 155424, 180348, 205271, 213120, 256969, 300818, 344668, 388517, 432366, 477637, 558910, 640182, 660428, 680675, 700922, 780819, 811256, 841692, 979190, 1009627, 1040063, 1166033, 1202731, 1239429, 1276128, 1312826, 1349524, 1526826, 1574059, 1621293, 1668526, 1715760, 1762993, 2005081, 2060522, 2115964, 2171405, 2226846, 2282288, 2326093, 2369898, 2413703, 2457508, 2501314, 2545119, 2588924, 2632729, 2676534, 2720340, 2764145, 2807950, 2851755, 2895560, 2939366, 2983171, 3026976, 3070781, 3114831, 3158636, 3202442, 3246247, 3290052, 3333857, 3377662, 3421468, 3465273, 3509078, 3552883, 3596688, 3640494, 3684299, 3728104, 3771909, 3815714, 3859519, 3903325, 3947130, 3990935, 4034740, 4078545, 4122351, 4166156, 4209961, 4519327, 4563133, 4606938, 4650743, 4694548, 4738353, 4782159, 4825964, 4869769, 4913574, 4957379, 5001184, 5044990, 5088795, 5132600, 5176405] },
+            { "Conta": "TIR", "Valor": "98,69%" },
+            { "Conta": "VPL", "Valor": 4317619 }
+        ];
+
+        // --- LÓGICA DA PÁGINA ---
+        
+        // Elementos do DOM
+        const queryInput = document.getElementById('query-input');
+        const askButton = document.getElementById('ask-button');
+        const responseArea = document.getElementById('response-area');
+        const suggestionButtons = document.querySelectorAll('.suggestion-btn');
+        const chartCanvas = document.getElementById('myChart');
+        let myChart; // Variável para armazenar a instância do gráfico
+
+        // Função para formatar números como moeda brasileira
+        const formatCurrency = (value) => {
+            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+        };
+
+        // Função para buscar um dado específico
+        const getData = (conta) => {
+            return valuationData.find(item => item.Conta.toLowerCase() === conta.toLowerCase());
+        };
+
+        // Função para limpar a tela
+        const clearDisplay = () => {
+            responseArea.innerHTML = '';
+            if (myChart) {
+                myChart.destroy();
+            }
+        };
+
+        // Função principal para processar as perguntas
+        const handleQuery = (query) => {
+            clearDisplay();
+            const q = query.toLowerCase();
+
+            if (q.includes('vpl')) {
+                const vplData = getData('vpl');
+                responseArea.innerHTML = `
+                    <span>Valor Presente Líquido (VPL) do Projeto:</span>
+                    <div class="value">${formatCurrency(vplData.Valor)}</div>
+                `;
+            } else if (q.includes('tir')) {
+                const tirData = getData('tir');
+                responseArea.innerHTML = `
+                    <span>Taxa Interna de Retorno (TIR) do Projeto:</span>
+                    <div class="value">${tirData.Valor}</div>
+                `;
+            } else if (q.includes('receita') && q.includes('anual')) {
+                const receitaData = getData('receita');
+                createChart(
+                    'Receita Bruta Anual',
+                    'line',
+                    Array.from({length: 10}, (_, i) => `Ano ${i + 1}`),
+                    [{ label: 'Receita (R$)', data: receitaData.Anos, backgroundColor: 'rgba(0, 95, 158, 0.2)', borderColor: 'rgba(0, 95, 158, 1)' }]
+                );
+            } else if (q.includes('lucro') && q.includes('anual')) {
+                 const lucroData = getData('rle');
+                 createChart(
+                    'Resultado Líquido do Exercício (Lucro) Anual',
+                    'bar',
+                    Array.from({length: 10}, (_, i) => `Ano ${i + 1}`),
+                    [{ label: 'Lucro (R$)', data: lucroData.Anos, backgroundColor: 'rgba(0, 51, 102, 0.8)', borderColor: 'rgba(0, 51, 102, 1)' }]
+                );
+            } else if (q.includes('comparar') && q.includes('receita') && q.includes('custo')) {
+                const receitaData = getData('receita');
+                const custoData = getData('custo');
+                createChart(
+                    'Comparativo Anual: Receita vs. Custo',
+                    'line',
+                     Array.from({length: 10}, (_, i) => `Ano ${i + 1}`),
+                    [
+                        { label: 'Receita (R$)', data: receitaData.Anos, backgroundColor: 'rgba(0, 95, 158, 0.2)', borderColor: 'rgba(0, 95, 158, 1)', tension: 0.1 },
+                        { label: 'Custo (R$)', data: custoData.Anos.map(c => Math.abs(c)), backgroundColor: 'rgba(247, 183, 51, 0.2)', borderColor: 'rgba(247, 183, 51, 1)', tension: 0.1 }
+                    ]
+                );
+            } else if (q.includes('caixa') && q.includes('mensal')) {
+                const caixaData = getData('saldo de caixa');
+                 createChart(
+                    'Evolução do Saldo de Caixa Mensal (Primeiro Ano)',
+                    'line',
+                    Array.from({length: 12}, (_, i) => `Mês ${i + 1}`),
+                    [{ label: 'Saldo de Caixa (R$)', data: caixaData.Meses.slice(0, 12), backgroundColor: 'rgba(0, 102, 51, 0.2)', borderColor: 'rgba(0, 102, 51, 1)' }]
+                );
+            }
+            else {
+                responseArea.innerHTML = `Não entendi a pergunta. Tente usar uma das sugestões ou reformular sua questão.`;
+            }
+        };
+
+        // Função para criar/atualizar o gráfico
+        const createChart = (title, type, labels, datasets) => {
+            if (myChart) {
+                myChart.destroy();
+            }
+            const ctx = chartCanvas.getContext('2d');
+            myChart = new Chart(ctx, {
+                type: type,
+                data: {
+                    labels: labels,
+                    datasets: datasets.map(ds => ({ ...ds, borderWidth: 2, pointRadius: 4, pointBackgroundColor: ds.borderColor }))
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: title,
+                            font: { size: 18, weight: 'bold' },
+                            color: var(--primary-color)
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += formatCurrency(context.parsed.y);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return formatCurrency(value);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        };
+
+        // Event Listeners
+        askButton.addEventListener('click', () => {
+            const query = queryInput.value;
+            if (query) handleQuery(query);
+        });
+        
+        queryInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                const query = queryInput.value;
+                if (query) handleQuery(query);
+            }
+        });
+
+        suggestionButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const query = button.textContent;
+                queryInput.value = query;
+                handleQuery(query);
+            });
+        });
+
+    </script>
+</body>
+</html>
