@@ -13,6 +13,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
     
+    <!-- Chart.js para o novo gráfico -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
         /* Definindo as paletas de cores como variáveis CSS */
         :root {
@@ -173,10 +176,10 @@
     <section id="reconhecimento" class="py-20 px-6 md:px-12 bg-white overflow-hidden">
         <div class="max-w-6xl mx-auto text-center">
             <div class="reveal-on-scroll">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4">Vocês Construíram uma Grande Empresa.</h2>
+                <!-- CORREÇÃO DE TEXTO -->
+                <h2 class="text-3xl md:text-4xl font-bold mb-12">Vocês construíram uma grande empresa.</h2>
             </div>
-
-        
+            
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16 text-left">
                 <div class="bg-gray-100 p-6 rounded-lg shadow-sm reveal-on-scroll">
                     <h3 class="text-xl font-bold mb-2" style="color: var(--rap-green);">+20 Anos de Mercado</h3>
@@ -214,10 +217,14 @@
                     
                     <p class="text-sm text-gray-500 mt-12">Passe o mouse sobre os pontos para comparar os concorrentes em cada fator.</p>
                 </div>
-                            <p class="text-xl text-gray-700 mb-12">Mas de onde virá o próximo crescimento?</p>
             </div>
         </div>
     </section>
+
+    <!-- FAIXA DE TRANSIÇÃO -->
+    <div class="bg-rap-blue py-12 text-center text-white reveal-on-scroll">
+        <h2 class="text-3xl md:text-4xl font-bold">Onde o próximo crescimento virá?</h2>
+    </div>
 
     <!-- Seção 3: A Virada Estratégica (Oceano Azul) -->
     <section id="oceano-azul" class="py-20 px-6 md:px-12 overflow-hidden" style="background-color: var(--lab-cream);">
@@ -316,7 +323,8 @@
                     <div class="z-20 flex items-center order-1 shadow-xl w-12 h-12 rounded-full" style="background-color: var(--lab-red);"><h3 class="mx-auto font-black text-white text-lg" style="text-shadow: 0 1px 2px rgba(0,0,0,0.4);">1</h3></div>
                     <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 p-6">
                         <h4 class="font-bold text-lg mb-2" style="color: var(--lab-red);">Fase 1: Teste e Tração</h4>
-                        <p class="text-sm text-gray-600">Converter 7 escolas, validar o modelo de parceria e gerar resultados imediatos. Ativos: Carteira RAP + Agilidade LABirintar.</p>
+                        <p class="text-sm text-gray-600"><strong>Prazo:</strong> Semestre 2 2025</p>
+                        <p class="text-sm text-gray-600"><strong>Remuneração:</strong> 15% do GMV</p>
                     </div>
                 </div>
                 <div class="mb-12 flex justify-between flex-row-reverse items-center w-full left-timeline reveal-on-scroll">
@@ -324,7 +332,8 @@
                     <div class="z-20 flex items-center order-1 shadow-xl w-12 h-12 rounded-full" style="background-color: var(--lab-orange);"><h3 class="mx-auto font-black text-white text-lg" style="text-shadow: 0 1px 2px rgba(0,0,0,0.4);">2</h3></div>
                     <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 p-6">
                         <h4 class="font-bold text-lg mb-2" style="color: var(--lab-orange);">Fase 2: Expansão Comercial</h4>
-                        <p class="text-sm text-gray-600">Escalar a captação, tornando a RAP um canal recorrente e prioritário. Ativo: Força comercial conjunta.</p>
+                         <p class="text-sm text-gray-600"><strong>Prazo:</strong> Ano 2026</p>
+                        <p class="text-sm text-gray-600"><strong>Remuneração:</strong> 5% de equity</p>
                     </div>
                 </div>
                 <div class="mb-12 flex justify-between items-center w-full right-timeline reveal-on-scroll">
@@ -332,7 +341,8 @@
                     <div class="z-20 flex items-center order-1 shadow-xl w-12 h-12 rounded-full" style="background-color: var(--lab-lavender);"><h3 class="mx-auto font-black text-lg" style="color: var(--rap-blue); text-shadow: none;">3</h3></div>
                     <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 p-6">
                         <h4 class="font-bold text-lg mb-2" style="color: var(--lab-lavender);">Fase 3: Transformação Estratégica</h4>
-                        <p class="text-sm text-gray-600">Iniciar a transição da RAP para o Oceano Azul. Aqui, a LABirintar atua como consultoria e plataforma de execução.</p>
+                        <p class="text-sm text-gray-600"><strong>Prazo:</strong> Anos 2027 e 2028</p>
+                        <p class="text-sm text-gray-600"><strong>Remuneração:</strong> Consultoria com contrapartida em equity</p>
                         <button id="show-plan-btn" class="mt-4 text-sm font-bold py-2 px-4 rounded-full text-white" style="background-color: var(--lab-orange);">Ver Plano de Transição</button>
                     </div>
                 </div>
@@ -340,8 +350,9 @@
                     <div class="order-1 w-5/12"></div>
                     <div class="z-20 flex items-center order-1 shadow-xl w-12 h-12 rounded-full" style="background-color: var(--lab-lightblue);"><h3 class="mx-auto font-black text-lg" style="color: var(--rap-blue); text-shadow: none;">4</h3></div>
                     <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 p-6">
-                        <h4 class="font-bold text-lg mb-2" style="color: var(--lab-lightblue);">Fase 4: Consolidação EdTech</h4>
-                        <p class="text-sm text-gray-600">RAP adota formalmente o modelo EdTech, alavancando a tecnologia para escala nacional. Ativo: Ecossistema tecnológico integrado.</p>
+                        <h4 class="font-bold text-lg mb-2" style="color: var(--lab-lightblue);">Fase 4: Consolidação e Exit</h4>
+                         <p class="text-sm text-gray-600"><strong>Prazo:</strong> Anos 2029 a 2031</p>
+                        <p class="text-sm text-gray-600"><strong>Remuneração:</strong> Exit da LABirintar</p>
                     </div>
                 </div>
             </div>
@@ -363,7 +374,7 @@
             <div id="scenario-comissao" class="scenario-content reveal-on-scroll">
                 <div class="bg-white p-8 rounded-lg">
                     <h3 class="text-2xl font-bold mb-4" style="color: var(--rap-green);">Ganho de Curto Prazo, Previsível e Direto</h3>
-                    <p class="mb-6 text-gray-600">Regras: <strong>20%</strong> de comissão sobre a receita LABirintar no 1º semestre, <strong>10%</strong> nos semestres seguintes. Pagamento limitado aos <strong>3 primeiros anos</strong> do contrato da escola.</p>
+                    <p class="mb-6 text-gray-600">Regras: <strong>15%</strong> de comissão sobre o GMV nos primeiros 6 meses, <strong>10%</strong> nos 18 meses seguintes (Total de 24 meses).</p>
                     <div class="grid md:grid-cols-2 gap-8 text-left">
                         <div>
                             <label for="escolas-slider" class="font-bold text-gray-700">Número de Escolas Convertidas: <span id="escolas-valor" class="font-black" style="color: var(--rap-blue);">7</span></label>
@@ -374,9 +385,15 @@
                             <input id="alunos-slider" type="range" min="15" max="100" value="30" class="w-full mt-2">
                         </div>
                     </div>
-                    <div class="mt-8 bg-gray-100 p-6 rounded-lg shadow-inner">
-                        <p class="text-lg text-gray-600">Sua Receita Anual Estimada (1º Ano):</p>
-                        <p id="comissao-resultado" class="text-4xl font-extrabold" style="color: var(--rap-green);">R$ 0,00</p>
+                    <div class="mt-8 grid md:grid-cols-2 gap-4">
+                        <div class="bg-gray-100 p-6 rounded-lg shadow-inner">
+                            <p class="text-lg text-gray-600">Sua Receita Mensal Média (24m):</p>
+                            <p id="comissao-resultado-mensal" class="text-4xl font-extrabold" style="color: var(--rap-green);">R$ 0,00</p>
+                        </div>
+                        <div class="bg-gray-100 p-6 rounded-lg shadow-inner">
+                            <p class="text-lg text-gray-600">Sua Receita Total em 24 Meses:</p>
+                            <p id="comissao-resultado-total" class="text-4xl font-extrabold" style="color: var(--rap-green);">R$ 0,00</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -407,7 +424,7 @@
         <div class="max-w-6xl mx-auto text-center">
             <div class="reveal-on-scroll">
                 <h2 class="text-3xl md:text-4xl font-bold mb-4">Análise Financeira Profunda: O Potencial de Retorno</h2>
-                <p class="text-xl text-gray-700 mb-12 max-w-4xl mx-auto">Para entender o potencial de retorno do investimento, usamos a Análise DuPont. Ela mostra como a empresa gera seu Retorno sobre o Patrimônio (ROE) através de 3 alavancas: Lucratividade, Eficiência e Spread</p>
+                <p class="text-xl text-gray-700 mb-12 max-w-4xl mx-auto">Para entender o potencial de retorno do investimento, usamos a Análise DuPont. Ela mostra como a empresa gera seu Retorno sobre o Patrimônio (ROE) através de 3 alavancas: Lucratividade, Eficiência e Endividamento.</p>
             </div>
             <div class="bg-gray-50 p-8 rounded-lg reveal-on-scroll">
                 <div class="flex flex-col md:flex-row items-center justify-center gap-4 text-2xl font-bold mb-8">
@@ -442,6 +459,18 @@
         </div>
     </section>
 
+    <section id="projections-chart" class="py-20 px-6 md:px-12 bg-gray-50 overflow-hidden">
+        <div class="max-w-6xl mx-auto text-center">
+            <div class="reveal-on-scroll">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Projeções de Crescimento Anual</h2>
+                <p class="text-xl text-gray-700 mb-12 max-w-4xl mx-auto">O gráfico a seguir ilustra a evolução projetada dos nossos principais indicadores operacionais e financeiros ao longo de 10 anos.</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md reveal-on-scroll">
+                 <canvas id="annual-growth-chart"></canvas>
+            </div>
+        </div>
+    </section>
+
     <section id="tracao" class="py-20 px-6 md:px-12 overflow-hidden" style="background-color: var(--lab-cream);">
         <div class="max-w-6xl mx-auto text-center">
             <h2 class="text-3xl md:text-4xl font-bold mb-12 reveal-on-scroll">Não Estamos Apenas no Papel. Estamos Executando.</h2>
@@ -462,13 +491,8 @@
                 <h2 class="text-3xl md:text-4xl font-bold mb-4 text-white">Oráculo Estratégico</h2>
                 <p class="text-xl mb-12" style="color: var(--lab-lightblue);">Tire as principais dúvidas sobre a parceria.</p>
              </div>
-            <div class="space-y-4 text-left reveal-on-scroll" id="oracle-questions">
-                <button class="oracle-question-btn w-full p-4 bg-white bg-opacity-10 rounded-lg text-lg text-left transition-all hover:bg-opacity-20" style="color: var(--lab-cream);" data-answer-id="answer1">Como uma participação na LABirintar impacta o valuation da RAP?</button>
-                <div id="answer1" class="oracle-answer hidden p-4 bg-white bg-opacity-20 rounded-lg mt-2 text-white"><p>Ao se tornar acionista minoritária de uma edtech de alto crescimento, a RAP diversifica seus ativos e se posiciona em um mercado com múltiplos de valuation superiores. Isso pode aumentar significativamente o valor percebido da RAP no momento do seu próprio exit, apresentando aos compradores não apenas um negócio consolidado, mas também uma participação estratégica no futuro da educação.</p></div>
-                <button class="oracle-question-btn w-full p-4 bg-white bg-opacity-10 rounded-lg text-lg text-left transition-all hover:bg-opacity-20" style="color: var(--lab-cream);" data-answer-id="answer2">Qual o maior risco e como podemos mitigá-lo?</button>
-                <div id="answer2" class="oracle-answer hidden p-4 bg-white bg-opacity-20 rounded-lg mt-2 text-white"><p>O maior risco é o desalinhamento cultural. Mitigamos isso com um modelo de governança claro (Cenário 3), onde a RAP tem um assento no conselho consultivo para guiar a estratégia, mas a LABirintar mantém autonomia operacional para preservar sua cultura ágil e inovadora. A Fase 1 serve como um "período probatório" para alinhar as operações antes de aprofundar a parceria.</p></div>
-                <button class="oracle-question-btn w-full p-4 bg-white bg-opacity-10 rounded-lg text-lg text-left transition-all hover:bg-opacity-20" style="color: var(--lab-cream);" data-answer-id="answer3">Por que o Equity pode ser mais valioso que a comissão a longo prazo?</button>
-                <div id="answer3" class="oracle-answer hidden p-4 bg-white bg-opacity-20 rounded-lg mt-2 text-white"><p>A comissão é um ganho linear e com prazo limitado (3 anos por cliente). O equity é um ganho exponencial. Enquanto a comissão gera um fluxo de caixa previsível, a participação acionária permite capturar o valor de todo o crescimento futuro da LABirintar, incluindo novos produtos, mercados e a valorização da marca. O potencial de retorno em um exit pode superar em muitas vezes o valor total recebido via comissão.</p></div>
+            <div class="grid md:grid-cols-2 gap-4 text-left reveal-on-scroll" id="oracle-questions">
+                <!-- Perguntas serão inseridas aqui pelo JS -->
             </div>
         </div>
     </section>
@@ -582,7 +606,7 @@
             
             // GRÁFICO DA CURVA DE VALOR
             const factors = [
-                { name: 'Qualidade' }, { name: 'Inovação Pedagógica' },
+                { name: 'Qualidade/Certificação' }, { name: 'Inovação Pedagógica' },
                 { name: 'Amplitude da Oferta' }, { name: 'Conveniência do Modelo' },
                 { name: 'Reputação da Marca' }, { name: 'Preço (Otimizado)' }
             ];
@@ -660,18 +684,40 @@
             const alunosSlider = document.getElementById('alunos-slider');
             const escolasValor = document.getElementById('escolas-valor');
             const alunosValor = document.getElementById('alunos-valor');
-            const comissaoResultado = document.getElementById('comissao-resultado');
+            const comissaoResultadoMensal = document.getElementById('comissao-resultado-mensal');
+            const comissaoResultadoTotal = document.getElementById('comissao-resultado-total');
             const equitySlider = document.getElementById('equity-slider');
             const equityValor = document.getElementById('equity-valor');
             const equityResultadoPresente = document.getElementById('equity-resultado-presente');
             const equityResultadoFuturo = document.getElementById('equity-resultado-futuro');
             const TICKET_MEDIO = 447;
-            const RECEITA_LABIRINTAR_PERC = 0.50;
             const VALUATION_LABIRINTAR = 4300000;
 
             function formatCurrency(value) { return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
-            function calcularComissao() { if (!escolasSlider) return; const numEscolas = parseInt(escolasSlider.value); const numAlunos = parseInt(alunosSlider.value); escolasValor.textContent = numEscolas; alunosValor.textContent = numAlunos; const receitaTotalAno = numEscolas * numAlunos * (TICKET_MEDIO * RECEITA_LABIRINTAR_PERC * 12); const comissaoMediaAno1 = 0.15; comissaoResultado.textContent = formatCurrency(receitaTotalAno * comissaoMediaAno1); }
-            function calcularEquity() { if (!equitySlider) return; const percEquity = parseInt(equitySlider.value); equityValor.textContent = `${percEquity}%`; const valorPresente = VALUATION_LABIRINTAR * (percEquity / 100); equityResultadoPresente.textContent = formatCurrency(valorPresente); equityResultadoFuturo.textContent = formatCurrency(valorPresente * 5); }
+            
+            function calcularComissao() { 
+                if (!escolasSlider) return; 
+                const numEscolas = parseInt(escolasSlider.value); 
+                const numAlunos = parseInt(alunosSlider.value); 
+                escolasValor.textContent = numEscolas; 
+                alunosValor.textContent = numAlunos; 
+                
+                const gmvMensal = numEscolas * numAlunos * TICKET_MEDIO;
+                const receitaTotal24m = (gmvMensal * 0.15 * 6) + (gmvMensal * 0.10 * 18);
+                const receitaMediaMensal = receitaTotal24m / 24;
+
+                comissaoResultadoMensal.textContent = formatCurrency(receitaMediaMensal);
+                comissaoResultadoTotal.textContent = formatCurrency(receitaTotal24m);
+            }
+
+            function calcularEquity() { 
+                if (!equitySlider) return; 
+                const percEquity = parseInt(equitySlider.value); 
+                equityValor.textContent = `${percEquity}%`; 
+                const valorPresente = VALUATION_LABIRINTAR * (percEquity / 100); 
+                equityResultadoPresente.textContent = formatCurrency(valorPresente); 
+                equityResultadoFuturo.textContent = formatCurrency(valorPresente * 5); 
+            }
             if (escolasSlider) escolasSlider.addEventListener('input', calcularComissao);
             if (alunosSlider) alunosSlider.addEventListener('input', calcularComissao);
             if (equitySlider) equitySlider.addEventListener('input', calcularEquity);
@@ -691,16 +737,37 @@
             });
 
             // Lógica do Oráculo
-            const questionBtns = document.querySelectorAll('.oracle-question-btn');
-            questionBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const answerId = btn.dataset.answerId;
-                    const answerEl = document.getElementById(answerId);
-                    document.querySelectorAll('.oracle-answer').forEach(ans => { if (ans.id !== answerId) ans.classList.add('hidden'); });
-                    answerEl.classList.toggle('hidden');
-                });
-            });
+            const oracleContainer = document.getElementById('oracle-questions');
+            const oracleData = [
+                { q: "Como a participação na LABirintar impacta o valuation da RAP?", a: "Ao se tornar acionista minoritária de uma edtech de alto crescimento, a RAP diversifica seus ativos e se posiciona em um mercado com múltiplos de valuation superiores. Isso pode aumentar significativamente o valor percebido da RAP no momento do seu próprio exit, apresentando aos compradores não apenas um negócio consolidado, mas também uma participação estratégica no futuro da educação." },
+                { q: "Qual o maior risco e como podemos mitigá-lo?", a: "O maior risco é o desalinhamento cultural. Mitigamos isso com um modelo de governança claro (Cenário 3), onde a RAP tem um assento no conselho consultivo para guiar a estratégia, mas a LABirintar mantém autonomia operacional para preservar sua cultura ágil e inovadora. A Fase 1 serve como um 'período probatório' para alinhar as operações antes de aprofundar a parceria." },
+                { q: "Por que o Equity pode ser mais valioso que a comissão?", a: "A comissão é um ganho linear e com prazo limitado. O equity é um ganho exponencial, permitindo capturar o valor de todo o crescimento futuro da LABirintar, incluindo novos produtos e mercados. O potencial de retorno em um exit pode superar em muitas vezes o valor total recebido via comissão." },
+                { q: "Como a Rede de Valor da LABirintar reduz o CAC?", a: "Através de múltiplos canais de baixo custo: os Educadores Empreendedores atuam como força comercial orgânica, e parceiros como Freela e FestPay trazem indicações diretas de suas bases de clientes, diminuindo a necessidade de investimento em marketing tradicional." },
+                { q: "Qual o papel da tecnologia da LABirintar na parceria?", a: "O software é o pilar que resolve dores operacionais das escolas (gestão, burocracia), moderniza a operação da RAP, e permite escalar o modelo de rede com eficiência, além de gerar dados valiosos sobre o desenvolvimento dos alunos." },
+                { q: "Como a parceria ajuda a RAP a competir com players como BMQ e ARC Sports?", a: "A parceria move a RAP da competição por fatores isolados para uma competição de 'rede contra rede'. A oferta integrada (esportes + tecnologia + artes + socioemocional) cria uma proposta de valor única, muito mais difícil de ser copiada do que uma metodologia isolada." }
+            ];
 
+            if(oracleContainer) {
+                oracleData.forEach((item, index) => {
+                    const questionId = `answer${index + 1}`;
+                    const div = document.createElement('div');
+                    div.innerHTML = `
+                        <button class="oracle-question-btn w-full p-4 bg-white bg-opacity-10 rounded-lg text-lg text-left transition-all hover:bg-opacity-20" style="color: var(--lab-cream);" data-answer-id="${questionId}">${item.q}</button>
+                        <div id="${questionId}" class="oracle-answer hidden p-4 bg-white bg-opacity-20 rounded-lg mt-2 text-white"><p>${item.a}</p></div>
+                    `;
+                    oracleContainer.appendChild(div);
+                });
+
+                document.querySelectorAll('.oracle-question-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const answerId = btn.dataset.answerId;
+                        const answerEl = document.getElementById(answerId);
+                        document.querySelectorAll('.oracle-answer').forEach(ans => { if (ans.id !== answerId) ans.classList.add('hidden'); });
+                        answerEl.classList.toggle('hidden');
+                    });
+                });
+            }
+            
             // Lógica do Modal do Plano de Transição
             const showPlanBtn = document.getElementById('show-plan-btn');
             const closePlanBtn = document.getElementById('close-plan-btn');
@@ -782,18 +849,18 @@
             const dupontEquityMultiplier = document.getElementById('dupont-equity-multiplier');
             const dupontRoe = document.getElementById('dupont-roe');
             
-            // Dados Corrigidos da Planilha (Cenário PMF - Valuation 4.3M)
+            // Dados Corrigidos da Planilha (Valuation 4.3M)
             const dupontData = {
-                1: { profitMargin: -0.43, assetTurnover: 0.44, equityMultiplier: 1.01, roe: -0.19 },
-                2: { profitMargin: 0.01, assetTurnover: 1.24, equityMultiplier: 1.01, roe: 0.01 },
-                3: { profitMargin: 0.12, assetTurnover: 2.22, equityMultiplier: 1.02, roe: 0.27 },
-                4: { profitMargin: 0.19, assetTurnover: 3.11, equityMultiplier: 1.03, roe: 0.61 },
-                5: { profitMargin: 0.22, assetTurnover: 3.78, equityMultiplier: 1.04, roe: 0.87 },
-                6: { profitMargin: 0.23, assetTurnover: 3.80, equityMultiplier: 1.03, roe: 0.91 },
-                7: { profitMargin: 0.23, assetTurnover: 3.52, equityMultiplier: 1.03, roe: 0.84 },
-                8: { profitMargin: 0.23, assetTurnover: 3.27, equityMultiplier: 1.03, roe: 0.78 },
-                9: { profitMargin: 0.23, assetTurnover: 2.89, equityMultiplier: 1.03, roe: 0.69 },
-                10:{ profitMargin: 0.23, assetTurnover: 2.72, equityMultiplier: 1.03, roe: 0.65 }
+                1: { profitMargin: -0.6598, assetTurnover: 2.12, equityMultiplier: 1.62, roe: -2.2763 },
+                2: { profitMargin: -0.0539, assetTurnover: 4.14, equityMultiplier: 1.48, roe: -0.3299 },
+                3: { profitMargin: 0.1178, assetTurnover: 5.48, equityMultiplier: 1.25, roe: 0.8064 },
+                4: { profitMargin: 0.1806, assetTurnover: 6.01, equityMultiplier: 1.05, roe: 1.1388 },
+                5: { profitMargin: 0.2165, assetTurnover: 6.22, equityMultiplier: 0.90, roe: 1.2172 },
+                6: { profitMargin: 0.2284, assetTurnover: 6.22, equityMultiplier: 0.79, roe: 1.1190 },
+                7: { profitMargin: 0.2375, assetTurnover: 6.22, equityMultiplier: 0.70, roe: 1.0434 },
+                8: { profitMargin: 0.2446, assetTurnover: 6.22, equityMultiplier: 0.64, roe: 0.9745 },
+                9: { profitMargin: 0.2504, assetTurnover: 6.22, equityMultiplier: 0.58, roe: 0.9187 },
+                10:{ profitMargin: 0.2550, assetTurnover: 6.22, equityMultiplier: 0.54, roe: 0.8800 }
             };
 
             function updateDupontAnalysis(year) {
@@ -821,6 +888,73 @@
                     updateDupontAnalysis(e.target.value);
                 });
                 updateDupontAnalysis(10);
+            }
+
+            // Lógica do Gráfico Anual
+            const annualChartCanvas = document.getElementById('annual-growth-chart');
+            if (annualChartCanvas) {
+                const annualData = {
+                    labels: ['Ano 1', 'Ano 2', 'Ano 3', 'Ano 4', 'Ano 5', 'Ano 6', 'Ano 7', 'Ano 8', 'Ano 9', 'Ano 10'],
+                    escolas: [10, 27, 54, 87, 114, 114, 114, 114, 114, 114],
+                    matriculas: [300, 945, 2160, 3915, 5700, 5700, 5700, 5700, 5700, 5700],
+                    educadores: [20, 63, 144, 261, 380, 380, 380, 380, 380, 380],
+                    turmas: [30, 95, 216, 392, 570, 570, 570, 570, 570, 570],
+                    receita: [804600, 2534580, 5796720, 10502940, 15303600, 15303600, 15303600, 15303600, 15303600, 15303600],
+                    custoTotal: [1337422, 2673238, 4891469, 8186716, 12000213, 11807413, 11671813, 11564413, 11477413, 11390413],
+                };
+
+                new Chart(annualChartCanvas, {
+                    type: 'line',
+                    data: {
+                        labels: annualData.labels,
+                        datasets: [
+                            { label: 'Receita (R$)', data: annualData.receita, borderColor: 'var(--rap-green)', yAxisID: 'y-money', tension: 0.1 },
+                            { label: 'Custo Total (R$)', data: annualData.custoTotal, borderColor: 'var(--lab-red)', yAxisID: 'y-money', tension: 0.1 },
+                            { label: 'Matrículas', data: annualData.matriculas, borderColor: 'var(--lab-orange)', yAxisID: 'y-units', tension: 0.1 },
+                            { label: 'Escolas', data: annualData.escolas, borderColor: 'var(--rap-blue)', yAxisID: 'y-units', tension: 0.1, hidden: true },
+                            { label: 'Educadores', data: annualData.educadores, borderColor: 'var(--lab-lavender)', yAxisID: 'y-units', tension: 0.1, hidden: true },
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            'y-money': {
+                                type: 'linear',
+                                position: 'left',
+                                title: { display: true, text: 'Valor (R$)'},
+                                ticks: {
+                                    callback: function(value, index, values) {
+                                        return 'R$ ' + (value / 1000000).toFixed(1) + 'M';
+                                    }
+                                }
+                            },
+                            'y-units': {
+                                type: 'linear',
+                                position: 'right',
+                                title: { display: true, text: 'Unidades'},
+                                grid: { drawOnChartArea: false }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                callbacks: {
+                                    footer: function(tooltipItems) {
+                                        const index = tooltipItems[0].dataIndex;
+                                        const escolas = annualData.escolas[index];
+                                        const matriculas = annualData.matriculas[index];
+                                        const turmas = annualData.turmas[index];
+                                        const mediaMatriculas = (matriculas / escolas).toFixed(1);
+                                        const mediaTurmas = (turmas / escolas).toFixed(1);
+                                        return `\nMatrículas/Escola: ${mediaMatriculas}\nTurmas/Escola: ${mediaTurmas}`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
             }
 
         });
