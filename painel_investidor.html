@@ -4,255 +4,129 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel do Investidor - LABirintar</title>
-    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
-
-        :root {
-            --primary-color: #ff595a; --secondary-color: #aec5e7; --accent-color: #ffa400;
-            --background-color: #ffe9c9; --text-color: #333; --card-bg-color: #ffffff;
-            --border-radius: 8px; --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        body { font-family: 'Roboto', sans-serif; background-color: var(--background-color); color: var(--text-color); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .container { width: 100%; max-width: 1400px; display: flex; flex-direction: column; gap: 20px; }
-        .card { background-color: var(--card-bg-color); padding: 20px; border-radius: var(--border-radius); box-shadow: var(--box-shadow); }
-        
-        header { background-color: var(--card-bg-color); color: var(--text-color); padding: 15px 25px; border-radius: var(--border-radius); box-shadow: var(--box-shadow); display: flex; align-items: center; justify-content: center; gap: 20px; }
-        header img { height: 50px; width: auto; }
-        header h1 { margin: 0; font-weight: 700; color: #333; }
-
-        main { display: grid; grid-template-columns: 300px 1fr; gap: 20px; width: 100%; }
-        
-        .controls { display: flex; flex-direction: column; gap: 15px; }
-        .controls h2 { margin-top: 0; color: var(--primary-color); border-bottom: 2px solid var(--primary-color); padding-bottom: 5px; }
-        #query-input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; resize: vertical; min-height: 60px; box-sizing: border-box; }
-        .btn { padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-weight: 700; transition: background-color 0.3s ease, color 0.3s ease; }
-        #ask-button { background-color: var(--primary-color); color: white; }
-        #ask-button:hover { opacity: 0.9; }
-        .suggestions .btn { width: 100%; background-color: #f0f0f0; color: var(--text-color); text-align: left; margin-bottom: 8px; }
-        .suggestions .btn:hover { background-color: var(--secondary-color); color: white; }
-        
-        .display { display: flex; flex-direction: column; gap: 20px; }
-        #response-area { min-height: 80px; font-size: 1.2em; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-        #response-area .value { font-size: 2.5em; font-weight: 700; color: var(--primary-color); margin-top: 5px; }
-        #chart-container { position: relative; height: 60vh; }
-
-        /* Estilos para a nova seção de relatório */
-        .report-section { margin-top: 20px; line-height: 1.6; }
-        .report-section h2 { color: var(--primary-color); border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; margin-bottom: 20px; }
-        .report-section h3 { color: #333; margin-top: 30px; }
-        .report-section ul { list-style-type: '◦ '; padding-left: 20px; }
-        .report-section li { margin-bottom: 10px; }
-        .report-section strong { color: #333; }
-
-        @media (max-width: 900px) {
-            main { grid-template-columns: 1fr; }
-            header { flex-direction: column; gap: 10px; }
-            #chart-container { height: 50vh; }
-        }
+        :root { --primary-color: #ff595a; --secondary-color: #aec5e7; --background-color: #ffe9c9; --card-bg-color: #ffffff; --text-color: #333; }
+        body { font-family: 'Roboto', sans-serif; background-color: var(--background-color); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { width: 100%; max-width: 900px; display: flex; flex-direction: column; gap: 20px; }
+        header { background-color: var(--card-bg-color); padding: 15px 25px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; gap: 20px; }
+        header img { height: 50px; }
+        header h1 { margin: 0; font-weight: 700; color: #333; font-size: 1.5em; }
+        #chat-container { display: flex; flex-direction: column; height: 80vh; width: 100%; background-color: var(--card-bg-color); border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        #message-area { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
+        .message { margin-bottom: 15px; padding: 10px 15px; border-radius: 18px; max-width: 85%; line-height: 1.5; box-sizing: border-box; }
+        .user-message { background-color: var(--secondary-color); color: var(--text-color); align-self: flex-end; border-bottom-right-radius: 4px; }
+        .ai-message { background-color: #f1f0f0; color: var(--text-color); align-self: flex-start; border-bottom-left-radius: 4px; white-space: pre-wrap; }
+        .ai-message.error { background-color: #ffebee; color: #c62828; }
+        #input-area { display: flex; padding: 10px; border-top: 1px solid #ddd; }
+        #query-input { flex-grow: 1; border: 1px solid #ccc; border-radius: 20px; padding: 10px 20px; font-size: 1em; resize: none; }
+        #ask-button { background-color: var(--primary-color); color: white; border: none; border-radius: 50%; width: 45px; height: 45px; margin-left: 10px; cursor: pointer; font-size: 1.5em; display: flex; align-items: center; justify-content: center; transition: background-color 0.3s; }
+        #ask-button:disabled { background-color: #cccccc; cursor: not-allowed; }
+        .loading-dots { text-align: center; } .loading-dots span { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: #aaa; margin: 0 3px; animation: bounce 1.4s infinite ease-in-out both; }
+        .loading-dots span:nth-child(1) { animation-delay: -0.32s; } .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
+        @media (max-width: 600px) { header h1 { font-size: 1.2em; } }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
             <img src="https://raw.githubusercontent.com/labirintar/site/main/assets/images/IMG_1229.png" alt="Logo LABirintar">
-            <h1>Painel do Investidor</h1>
+            <h1>Assistente do Investidor</h1>
         </header>
-
-        <main>
-            <div class="controls card">
-                <h2>Faça sua pergunta</h2>
-                <textarea id="query-input" placeholder="Ex: Qual o VPL do projeto?"></textarea>
-                <button id="ask-button" class="btn">Perguntar</button>
-                <div class="suggestions">
-                    <h2>Sugestões</h2>
-                    <button class="btn suggestion-btn">Qual o VPL?</button>
-                    <button class="btn suggestion-btn">Qual a TIR?</button>
-                    <button class="btn suggestion-btn">Gráfico de Receita Anual</button>
-                    <button class="btn suggestion-btn">Gráfico de Lucro Anual</button>
-                    <button class="btn suggestion-btn">Comparar Receita e Custo Anual</button>
-                    <button class="btn suggestion-btn">Evolução do Saldo de Caixa Mensal (Ano 1)</button>
-                </div>
+        <div id="chat-container">
+            <div id="message-area">
+                <div class="message ai-message">Olá! Sou o assistente de investimentos da LABirintar. Em que posso ajudar? Faça perguntas sobre nosso modelo de negócio, valuation, riscos ou diferenciais competitivos.</div>
             </div>
-            <div class="display">
-                <div id="response-area" class="card">
-                    Bem-vindo! Faça uma pergunta ou clique em uma sugestão ao lado.
-                </div>
-                <div id="chart-container" class="card">
-                    <canvas id="myChart"></canvas>
-                </div>
+            <div id="input-area">
+                <input type="text" id="query-input" placeholder="Pergunte sobre o valuation, mercado, riscos...">
+                <button id="ask-button" title="Enviar">➤</button>
             </div>
-        </main>
-
-        <!-- Nova seção com o conteúdo do relatório -->
-        <div class="report-section card">
-            <h2>Relatório Abrangente para Investidores: LABirintar</h2>
-            
-            <h3>1. Visão Geral da LABirintar</h3>
-            <p>A LABirintar é uma plataforma de EdTech inovadora que conecta Educadores Empreendedores (EE) a escolas para oferecer atividades extracurriculares no contraturno escolar. Opera como um agente integrador, fornecendo uma solução completa que abrange curadoria de experiências, formação contínua de educadores e um sistema tecnológico robusto para gestão pedagógica e operacional. Sua essência é promover uma "educação viva, integral e sensível", valorizando o protagonismo dos educadores e a experiência das crianças.</p>
-            <ul>
-                <li><strong>Modelo de Negócio LABirintar:</strong> A empresa se posiciona como um ecossistema de serviços para escolas, integrando diversos negócios e oferecendo uma solução extracurricular completa. A LABirintar acredita na "Rede de Valor" em oposição à "Cadeia de Valor" tradicional, buscando capturar valor ao aumentar a economia de escala e escopo para seus clientes.</li>
-                <li><strong>Proposição de Valor:</strong>
-                    <ul>
-                        <li><strong>Para Escolas:</strong> Ocupar espaços ociosos e gerar receita sem o ônus da gestão, com conteúdo de qualidade e alinhamento ao desenvolvimento integral.</li>
-                        <li><strong>Para Famílias:</strong> Acesso a atividades de qualidade que promovem o desenvolvimento integral das crianças e uma conexão emocional.</li>
-                        <li><strong>Para Educadores Empreendedores (EEs):</strong> Acesso ao mercado, modelo de remuneração diferenciado (porcentagem do faturamento), sistema de gestão e formação, e a possibilidade de se tornarem sócios minoritários com base em um score de engajamento.</li>
-                    </ul>
-                </li>
-                <li><strong>Diferenciais Competitivos:</strong>
-                    <ul>
-                        <li><strong>Tecnologia:</strong> Software próprio de gestão automatizada com desenvolvimento "no-code", facilitando a escalabilidade.</li>
-                        <li><strong>Pedagogia Inovadora:</strong> Abordagem focada na educação integral, diferenciando-se de ofertas tradicionais.</li>
-                        <li><strong>Comunidade e Engajamento:</strong> Criação de uma comunidade para educadores, fomentando um senso de pertencimento.</li>
-                        <li><strong>Rede de Valor:</strong> Capacidade de competir como um ecossistema, gerando maior valor para os demandantes.</li>
-                    </ul>
-                </li>
-                 <li><strong>Time:</strong> Equipe complementar com Maria Lívia (especialista em educação), Rafael Darrouy (tecnologia e startups) e Edu Moreira (inteligência de negócios).</li>
-            </ul>
-
-            <h3>2. Momento da Empresa e Estratégia de Crescimento</h3>
-            <p>A LABirintar está em fase de validação do modelo comercial e de expansão (entre Operação e Tração).</p>
-            <ul>
-                <li><strong>Objetivos:</strong> Conquistar 4 novas escolas no próximo semestre e negociar o novo modelo de parceria (10% de take rate) com as existentes. A longo prazo, escalar nacionalmente.</li>
-                <li><strong>Estratégia de Expansão:</strong> Foco em prospecção direta, parcerias estratégicas (Rent A Pro, FestPay) para reduzir o CAC, e expansão geográfica partindo de São Paulo.</li>
-            </ul>
-
-            <h3>3. Análise de Mercado</h3>
-            <ul>
-                <li><strong>Tamanho do Mercado:</strong> O mercado de atividades extracurriculares no Brasil é estimado em R$40 bilhões anuais.</li>
-                <li><strong>Cenário Competitivo:</strong> O mercado é um "Oceano Vermelho", com competição acirrada. A LABirintar busca criar um "Oceano Azul" através da inovação no modelo de negócio e na pedagogia.</li>
-            </ul>
-
-            <h3>4. Indicadores Econômico-Financeiros e Valuation</h3>
-            <ul>
-                <li><strong>Saúde Financeira:</strong> A meta de margem de contribuição mínima é de 40%. A gestão financeira transparente é vital.</li>
-                <li><strong>Modelo de Receita:</strong> Baseado em comissionamento (take rate de 10%) sobre o faturamento (GMV). Um gateway de pagamento realiza o "split" automático dos valores.</li>
-                <li><strong>Capital de Giro (CDG):</strong> O modelo Fleuriet é usado para analisar a saúde da liquidez. Indicadores como CCL, NCG e Saldo de Tesouraria são monitorados.</li>
-                <li><strong>Valuation:</strong> Avaliação baseada no potencial de crescimento futuro. Metodologias como Fluxo de Caixa Descontado (DCF) são aplicáveis.</li>
-                <li><strong>KPIs Essenciais:</strong> GMV, Take Rate, CAC (Custo de Aquisição de Clientes), LTV (Lifetime Value), Ticket Médio e Cash Burn.</li>
-            </ul>
-
-             <h3>5. Governança Corporativa e Riscos</h3>
-            <ul>
-                <li><strong>Princípios:</strong> Transparência, Equidade, Prestação de Contas e Responsabilidade Corporativa.</li>
-                <li><strong>Estrutura:</strong> A estruturação de um conselho consultivo é recomendada na fase de tração.</li>
-                <li><strong>Principais Riscos:</strong>
-                    <ul>
-                        <li>Disparidade salarial entre educadores de parceiros e da LABirintar.</li>
-                        <li>Riscos legais relacionados à propriedade intelectual e formalização dos educadores.</li>
-                        <li>Diferenças culturais com parceiros (ex: RAP).</li>
-                        <li>Validação do Product Market Fit e escalabilidade das vendas.</li>
-                    </ul>
-                </li>
-            </ul>
-            
-            <h3>6. Estratégia de Saída (Exit Strategy)</h3>
-            <p>A principal estratégia de saída para investidores é a aquisição por uma empresa maior (M&A). Cláusulas como Drag-Along e Tag-Along no Acordo de Acionistas são fundamentais para alinhar os interesses em uma futura venda.</p>
-            
-            <h3>7. Impacto Socioambiental (ESG)</h3>
-            <p>A LABirintar tem um forte impacto social positivo ao focar na educação integral, valorizar a infância e capacitar educadores, inclusive de comunidades de baixa renda. A empresa busca alinhar suas métricas com os Objetivos de Desenvolvimento Sustentável (ODS).</p>
         </div>
     </div>
 
     <script>
-        const valuationData = [
-            { "Conta": "Receita", "Anos": [394254, 2111859, 4769850, 8413223, 13195897, 14438940, 14446600, 14438940, 14438940, 14438940], "Meses": [4381, 4381, 4381, 4381, 4381, 4381, 61328, 61328, 61328, 61328, 61328, 61328, 137989, 137989, 137989, 137989, 137989, 137989, 213988, 213988, 213988, 213988, 213988, 213988, 345512, 345513, 345513, 345513, 345513, 345513, 449461, 449462, 449462, 449462, 449462, 449462, 616884, 616886, 616886, 616886, 616886, 616886, 785317, 785319, 785319, 785319, 785319, 785319, 994951, 994954, 994954, 994954, 994954, 994954, 1204361, 1204363, 1204363, 1204363, 1204363, 1204363, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1210905, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245, 1203245] },
-            { "Conta": "Custo", "Anos": [-565054, -2089907, -4207853, -6809434, -10286108, -11084483, -11087245, -11084483, -11084483, -11084483], "Meses": [] },
-            { "Conta": "RLE", "Anos": [-170800, 21952, 561998, 1603789, 2909789, 3354457, 3359355, 3354457, 3354457, 3354457], "Meses": [-22422, -22422, -22422, -22422, -22422, -22422, -6045, -6045, -6045, -6045, -6045, -6045, -14129, -14129, -14129, -14129, -14129, -14129, 17787, 17787, 17787, 17787, 17787, 17787, 29429, 29429, 29429, 29429, 29429, 29429, 64237, 64237, 64237, 64237, 64237, 64237, 112696, 112697, 112697, 112697, 112697, 112697, 154601, 154602, 154602, 154602, 154602, 154602, 212703, 212704, 212704, 212704, 212704, 212704, 272260, 272261, 272261, 272261, 272261, 272261, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 284436, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538, 279538] },
-            { "Conta": "Saldo de caixa", "Anos": [], "Meses": [299363, 277800, 256238, 234675, 213113, 191550, 165371, 164392, 163412, 162433, 161454, 160474, 129817, 120759, 111701, 102644, 93586, 84529, 80652, 105576, 130500, 155424, 180348, 205271, 213120, 256969, 300818, 344668, 388517, 432366, 477637, 558910, 640182, 660428, 680675, 700922, 780819, 811256, 841692, 979190, 1009627, 1040063, 1166033, 1202731, 1239429, 1276128, 1312826, 1349524, 1526826, 1574059, 1621293, 1668526, 1715760, 1762993, 2005081, 2060522, 2115964, 2171405, 2226846, 2282288, 2326093, 2369898, 2413703, 2457508, 2501314, 2545119, 2588924, 2632729, 2676534, 2720340, 2764145, 2807950, 2851755, 2895560, 2939366, 2983171, 3026976, 3070781, 3114831, 3158636, 3202442, 3246247, 3290052, 3333857, 3377662, 3421468, 3465273, 3509078, 3552883, 3596688, 3640494, 3684299, 3728104, 3771909, 3815714, 3859519, 3903325, 3947130, 3990935, 4034740, 4078545, 4122351, 4166156, 4209961, 4519327, 4563133, 4606938, 4650743, 4694548, 4738353, 4782159, 4825964, 4869769, 4913574, 4957379, 5001184, 5044990, 5088795, 5132600, 5176405] },
-            { "Conta": "TIR", "Valor": "98,69%" },
-            { "Conta": "VPL", "Valor": 4317619 }
-        ];
         const queryInput = document.getElementById('query-input');
         const askButton = document.getElementById('ask-button');
-        const responseArea = document.getElementById('response-area');
-        const suggestionButtons = document.querySelectorAll('.suggestion-btn');
-        const chartCanvas = document.getElementById('myChart');
-        let myChart;
-        const formatCurrency = (value) => {
-            if (typeof value !== 'number') return value;
-            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-        };
-        const getData = (conta) => {
-            return valuationData.find(item => item.Conta.toLowerCase() === conta.toLowerCase());
-        };
-        const clearDisplay = () => {
-            responseArea.innerHTML = '';
-            if (myChart) {
-                myChart.destroy();
+        const messageArea = document.getElementById('message-area');
+        
+        // ********************************************************************
+        //   !!! AÇÃO NECESSÁRIA: COLE O URL DO SEU SERVIÇO CLOUD RUN AQUI !!!
+        // ********************************************************************
+        const cloudRunUrl = 'https://ask-labirintar-ai-491841060860.southamerica-east1.run.app'; 
+
+        function addMessage(text, sender) {
+            const messageContainer = document.createElement('div');
+            messageContainer.className = `message ${sender}-message`;
+            messageContainer.innerText = text; // Usar innerText para segurança, prevenindo injeção de HTML.
+            messageArea.appendChild(messageContainer);
+            messageArea.scrollTop = messageArea.scrollHeight;
+            return messageContainer;
+        }
+
+        function showLoading() {
+            const loadingContainer = document.createElement('div');
+            loadingContainer.className = 'message ai-message';
+            loadingContainer.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div>';
+            messageArea.appendChild(loadingContainer);
+            messageArea.scrollTop = messageArea.scrollHeight;
+            return loadingContainer;
+        }
+
+        async function handleQuery() {
+            const query = queryInput.value.trim();
+            if (!query) return;
+
+            addMessage(query, 'user');
+            queryInput.value = '';
+            askButton.disabled = true;
+            const loadingElement = showLoading();
+            
+            // Verifique se o URL foi substituído
+            if (cloudRunUrl === 'SEU_URL_DO_CLOUD_RUN_AQUI' || !cloudRunUrl) {
+                 messageArea.removeChild(loadingElement);
+                 addMessage('Erro de configuração: O URL do serviço na nuvem não foi definido no código HTML. Por favor, adicione o URL do seu serviço Cloud Run.', 'ai error');
+                 askButton.disabled = false;
+                 return;
             }
-        };
-        const handleQuery = (query) => {
-            clearDisplay();
-            const q = query.toLowerCase();
-            if (q.includes('vpl')) {
-                const vplData = getData('vpl');
-                if (vplData) {
-                    responseArea.innerHTML = `<span>Valor Presente Líquido (VPL):</span><div class="value">${formatCurrency(vplData.Valor)}</div>`;
-                }
-            } else if (q.includes('tir')) {
-                const tirData = getData('tir');
-                if (tirData) {
-                    responseArea.innerHTML = `<span>Taxa Interna de Retorno (TIR):</span><div class="value">${tirData.Valor}</div>`;
-                }
-            } else if (q.includes('comparar') && q.includes('receita') && q.includes('custo')) {
-                const receitaData = getData('receita');
-                const custoData = getData('custo');
-                if (receitaData && custoData) {
-                    createChart(
-                        'Comparativo Anual: Receita vs. Custo', 'line', Array.from({length: 10}, (_, i) => `Ano ${i + 1}`),
-                        [
-                            { label: 'Receita (R$)', data: receitaData.Anos, backgroundColor: 'rgba(255, 164, 0, 0.2)', borderColor: '#ffa400', tension: 0.1 },
-                            { label: 'Custo (R$)', data: custoData.Anos.map(c => Math.abs(c)), backgroundColor: 'rgba(255, 89, 90, 0.2)', borderColor: '#ff595a', tension: 0.1 }
-                        ]
-                    );
-                }
-            } else if (q.includes('receita') && q.includes('anual')) {
-                const receitaData = getData('receita');
-                if (receitaData) {
-                    createChart('Receita Bruta Anual', 'line', Array.from({length: 10}, (_, i) => `Ano ${i + 1}`),
-                        [{ label: 'Receita (R$)', data: receitaData.Anos, backgroundColor: 'rgba(255, 164, 0, 0.2)', borderColor: '#ffa400' }]
-                    );
-                }
-            } else if (q.includes('lucro') && q.includes('anual')) {
-                 const lucroData = getData('rle');
-                 if (lucroData) {
-                     createChart('Resultado Líquido (Lucro) Anual', 'bar', Array.from({length: 10}, (_, i) => `Ano ${i + 1}`),
-                        [{ label: 'Lucro (R$)', data: lucroData.Anos, backgroundColor: '#aec5e7' }]
-                    );
-                 }
-            } else if (q.includes('caixa') && q.includes('mensal')) {
-                const caixaData = getData('saldo de caixa');
-                if (caixaData) {
-                     createChart('Evolução do Saldo de Caixa Mensal (Ano 1)', 'line', Array.from({length: 12}, (_, i) => `Mês ${i + 1}`),
-                        [{ label: 'Saldo de Caixa (R$)', data: caixaData.Meses.slice(0, 12), backgroundColor: 'rgba(174, 197, 231, 0.2)', borderColor: '#aec5e7' }]
-                    );
-                }
-            } else {
-                responseArea.innerHTML = `Não entendi a pergunta. Tente uma das sugestões.`;
-            }
-        };
-        const createChart = (title, type, labels, datasets) => {
-            if (myChart) myChart.destroy();
-            const ctx = chartCanvas.getContext('2d');
-            myChart = new Chart(ctx, {
-                type: type, data: { labels: labels, datasets: datasets.map(ds => ({ ...ds, borderWidth: 2, pointRadius: 4, pointBackgroundColor: ds.borderColor })) },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: {
-                        title: { display: true, text: title, font: { size: 18, weight: 'bold' }, color: '#333' },
-                        tooltip: { callbacks: { label: (c) => `${c.dataset.label || ''}: ${formatCurrency(c.parsed.y)}` } }
+
+            try {
+                // A comunicação com o Cloud Run Function/Service deve ser feita desta forma
+                const response = await fetch(`${cloudRunUrl}/perguntar`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
                     },
-                    scales: { y: { ticks: { callback: (v) => new Intl.NumberFormat('pt-BR', { notation: 'compact', compactDisplay: 'short' }).format(v) } } }
+                    body: JSON.stringify({ pergunta: query }), // Removido o encapsulamento em "data"
+                });
+
+                messageArea.removeChild(loadingElement);
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `Erro do servidor: ${response.statusText}`);
                 }
-            });
-        };
-        askButton.addEventListener('click', () => { if (queryInput.value) handleQuery(queryInput.value); });
-        queryInput.addEventListener('keypress', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (queryInput.value) handleQuery(queryInput.value); } });
-        suggestionButtons.forEach(button => { button.addEventListener('click', () => { queryInput.value = button.textContent; handleQuery(button.textContent); }); });
+                
+                const data = await response.json();
+                addMessage(data.resposta, 'ai');
+
+            } catch (error) {
+                messageArea.removeChild(loadingElement);
+                console.error("Erro:", error);
+                addMessage(`Desculpe, houve um erro ao processar sua pergunta. Verifique o console para mais detalhes. (${error.message})`, 'ai error');
+            } finally {
+                askButton.disabled = false;
+                queryInput.focus();
+            }
+        }
+
+        askButton.addEventListener('click', handleQuery);
+        queryInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleQuery();
+            }
+        });
     </script>
 </body>
 </html>
