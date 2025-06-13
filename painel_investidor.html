@@ -50,15 +50,12 @@
         const askButton = document.getElementById('ask-button');
         const messageArea = document.getElementById('message-area');
         
-        // ********************************************************************
-        //   !!! AÇÃO NECESSÁRIA: COLE O URL DO SEU SERVIÇO CLOUD RUN AQUI !!!
-        // ********************************************************************
         const cloudRunUrl = 'https://ask-labirintar-ai-491841060860.southamerica-east1.run.app'; 
 
         function addMessage(text, sender) {
             const messageContainer = document.createElement('div');
             messageContainer.className = `message ${sender}-message`;
-            messageContainer.innerText = text; // Usar innerText para segurança, prevenindo injeção de HTML.
+            messageContainer.innerText = text;
             messageArea.appendChild(messageContainer);
             messageArea.scrollTop = messageArea.scrollHeight;
             return messageContainer;
@@ -81,30 +78,19 @@
             queryInput.value = '';
             askButton.disabled = true;
             const loadingElement = showLoading();
-            
-            // Verifique se o URL foi substituído
-            if (cloudRunUrl === 'https://ask-labirintar-ai-491841060860.southamerica-east1.run.app' || !cloudRunUrl) {
-                 messageArea.removeChild(loadingElement);
-                 addMessage('Erro de configuração: O URL do serviço na nuvem não foi definido no código HTML. Por favor, adicione o URL do seu serviço Cloud Run.', 'ai error');
-                 askButton.disabled = false;
-                 return;
-            }
 
             try {
-                // A comunicação com o Cloud Run Function/Service deve ser feita desta forma
                 const response = await fetch(`${cloudRunUrl}/perguntar`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ pergunta: query }), // Removido o encapsulamento em "data"
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pergunta: query }),
                 });
 
                 messageArea.removeChild(loadingElement);
 
                 if (!response.ok) {
                     const errorData = await response.json();
-                    throw new Error(errorData.error || `Erro do servidor: ${response.statusText}`);
+                    throw new Error(errorData.error?.message || `Erro do servidor: ${response.statusText}`);
                 }
                 
                 const data = await response.json();
