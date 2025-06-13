@@ -83,7 +83,7 @@
             const loadingElement = showLoading();
             
             // Verifique se o URL foi substituído
-            if (cloudRunUrl === 'SEU_URL_DO_CLOUD_RUN_AQUI' || !cloudRunUrl) {
+            if (cloudRunUrl === 'https://ask-labirintar-ai-491841060860.southamerica-east1.run.app' || !cloudRunUrl) {
                  messageArea.removeChild(loadingElement);
                  addMessage('Erro de configuração: O URL do serviço na nuvem não foi definido no código HTML. Por favor, adicione o URL do seu serviço Cloud Run.', 'ai error');
                  askButton.disabled = false;
