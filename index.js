@@ -12,7 +12,7 @@ const CUSTOM_SEARCH_API_KEY = process.env.CUSTOM_SEARCH_API_KEY;
 const CUSTOM_SEARCH_CX = process.env.CUSTOM_SEARCH_CX;
 
 // Inicialize o Vertex AI - Use a detecção automática do Google
-const vertex_ai = new VertexAI({ project: process.env.GCLOUD_PROJECT, location: 'southamerica-east1' });
+const vertex_ai = new VertexAI({ project: process.env.GCLOUD_PROJECT, location: 'us-central1' });
 const model = 'gemini-1.0-pro';
 const generativeModel = vertex_ai.getGenerativeModel({ model });
 
