@@ -1,23 +1,55 @@
-// index.js (Versão para Cloud Run Service com Express)
+// index.js (Versão Final com Chave de Serviço Explícita)
 const express = require('express');
 const { VertexAI } = require('@google-cloud/vertexai');
 const axios = require('axios');
 const cors = require('cors');
+const fs = require('fs'); // Importa o módulo File System do Node.js
 
 const app = express();
+app.use(cors({ origin: true })); // Permite requisições de qualquer origem
 app.use(express.json());
-app.use(cors());
 
+// --- INÍCIO DA CONFIGURAÇÃO DE AUTENTICAÇÃO EXPLÍCITA ---
+
+// O Cloud Run montará o secret que criamos no Secret Manager neste caminho
+const serviceAccountPath = '/secrets/google_credentials';
+let serviceAccountCredentials;
+
+// Tenta ler o arquivo de credenciais. Se não encontrar, avisa no log.
+try {
+    if (fs.existsSync(serviceAccountPath)) {
+        const serviceAccountFile = fs.readFileSync(serviceAccountPath, 'utf8');
+        serviceAccountCredentials = JSON.parse(serviceAccountFile);
+        console.log("Credenciais da conta de serviço carregadas com sucesso.");
+    } else {
+        console.warn("Arquivo de chave de serviço não encontrado em:", serviceAccountPath, ". Tentando autenticação padrão.");
+    }
+} catch (error) {
+    console.error("Erro ao carregar ou parsear a chave de serviço:", error);
+}
+
+// Inicialize o Vertex AI com a chave, se ela foi encontrada
+const vertex_ai = new VertexAI({
+    project: process.env.GCLOUD_PROJECT || serviceAccountCredentials?.project_id,
+    location: 'us-central1', // Região global recomendada para modelos Gemini
+    credentials: serviceAccountCredentials // Fornece as credenciais explicitamente
+});
+
+const model = 'gemini-1.5-flash-001'; // Mantendo seu modelo preferido
+const generativeModel = vertex_ai.getGenerativeModel({ model });
+
+// --- FIM DA CONFIGURAÇÃO DE AUTENTICAÇÃO ---
+
+
+// Variáveis de ambiente para a busca na web
 const CUSTOM_SEARCH_API_KEY = process.env.CUSTOM_SEARCH_API_KEY;
 const CUSTOM_SEARCH_CX = process.env.CUSTOM_SEARCH_CX;
 
-// Inicialize o Vertex AI - Use a detecção automática do Google
-const vertex_ai = new VertexAI({ project: process.env.GCLOUD_PROJECT, location: 'southamerica-east1' });
-const model = 'gemini-1.5-flash-001';
-const generativeModel = vertex_ai.getGenerativeModel({ model });
 
 const labirintarContext = `
-    --- INÍCIO DO CONTEXTO ESTRATÉGICO E DE NEGÓCIOS ---
+    Você é um assistente financeiro especialista na startup de EdTech LABirintar. Sua função é responder perguntas de investidores de forma clara, objetiva e usando APENAS o contexto fornecido abaixo. Se a informação não estiver no contexto, use as informações da busca na web para complementar. Combine as informações internas e externas para dar a melhor resposta possível. Se não encontrar a informação em nenhuma das fontes, responda "Esta informação não está disponível no material fornecido."
+
+    --- INÍCIO DO CONTEXTO INTERNO (LABIRINTAR) ---
 
     Relatório Abrangente para Investidores: LABirintar
     Este documento organiza informações cruciais sobre a LABirintar, seu modelo de negócio, estratégias, contexto de mercado e saúde financeira, visando fornecer uma base de conhecimento para investidores.
@@ -129,16 +161,20 @@ const labirintarContext = `
 `;
 
 async function searchWeb(query) {
-    if (!CUSTOM_SEARCH_API_KEY || !CUSTOM_SEARCH_CX) return "Busca na web não configurada.";
+    if (!CUSTOM_SEARCH_API_KEY || !CUSTOM_SEARCH_CX) {
+        console.warn("Variáveis de ambiente da busca não definidas. Pulando busca na web.");
+        return "Busca na web não configurada.";
+    }
     const url = `https://www.googleapis.com/customsearch/v1?key=${CUSTOM_SEARCH_API_KEY}&cx=${CUSTOM_SEARCH_CX}&q=${encodeURIComponent(query)}`;
     try {
         const { data } = await axios.get(url);
         if (data.items && data.items.length > 0) {
             return data.items.slice(0, 4).map(item => `Fonte: ${item.link}\nTítulo: ${item.title}\nConteúdo: ${item.snippet}`).join('\n\n');
         }
-        return "Nenhum resultado relevante encontrado na web.";
+        return "Nenhum resultado relevante foi encontrado na web para esta consulta.";
     } catch (error) {
-        return "Não foi possível realizar a busca na web no momento.";
+        console.error("Erro na busca na web:", error.response ? error.response.data.error.message : error.message);
+        return "Não foi possível realizar a busca na web no momento devido a um erro.";
     }
 }
 
@@ -151,23 +187,31 @@ app.post('/perguntar', async (req, res) => {
         const webContext = await searchWeb(pergunta);
         const fullContextPrompt = `
             ${labirintarContext}
-            --- CONTEXTO DA WEB ---
+            
+            --- INÍCIO DO CONTEXTO DA WEB ---
             ${webContext}
-            --- FIM DO CONTEXTO ---
-            Pergunta do Investidor: "${pergunta}"`;
+            --- FIM DO CONTEXTO DA WEB ---
+            
+            Com base em todo o contexto acima (interno e da web), responda de forma direta e concisa à seguinte pergunta do investidor: "${pergunta}"`;
         
         const request = { contents: [{ role: 'user', parts: [{ text: fullContextPrompt }] }] };
         const result = await generativeModel.generateContent(request);
+
+        if (!result.response.candidates || result.response.candidates.length === 0 || !result.response.candidates[0].content.parts[0].text) {
+             throw new Error("A IA não retornou uma resposta válida.");
+        }
+
         const responseText = result.response.candidates[0].content.parts[0].text;
         
         res.status(200).json({ resposta: responseText });
+
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Erro ao processar a pergunta com a IA." });
+        console.error("Erro no endpoint /perguntar:", error);
+        res.status(500).json({ error: `Erro ao processar a pergunta com a IA: ${error.message}` });
     }
 });
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => {
-    console.log(`Servidor rodando na porta ${port}`);
+    console.log(`Servidor rodando e ouvindo na porta ${port}`);
 });
