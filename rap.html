@@ -13,9 +13,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
     
-    <!-- Chart.js para o novo gráfico -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <style>
         /* Definindo as paletas de cores como variáveis CSS */
         :root {
@@ -151,6 +148,26 @@
             visibility: visible;
             opacity: 1;
         }
+
+        /* Estilos para o Chat Advisor */
+        .chat-bubble {
+            max-width: 75%;
+            padding: 10px 15px;
+            border-radius: 20px;
+        }
+        .user-bubble {
+            background-color: var(--rap-green);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+        .advisor-bubble {
+            background-color: #e5e7eb;
+            color: #1f2937;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+
     </style>
 </head>
 <body class="bg-white">
