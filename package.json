@@ -1,15 +1,12 @@
 {
-  "name": "labirintar-ai-cloud-run",
-  "version": "1.0.0",
-  "description": "Assistente IA para investidores da LABirintar",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
   "dependencies": {
-    "@google-cloud/vertexai": "^0.5.0",
-    "axios": "^1.6.8",
+    "express": "^4.19.2",
     "cors": "^2.8.5",
-    "express": "^4.19.2"
+    "@google-cloud/vertexai": "^0.6.0",
+    "axios": "^1.6.8"
   }
 }
