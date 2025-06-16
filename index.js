@@ -1,4 +1,4 @@
-```javascript
+
 // index.js (Versão Final e Correta que usa a Vertex AI)
 const express = require('express');
 const { VertexAI } = require('@google-cloud/vertexai');
@@ -65,5 +65,3 @@ const port = process.env.PORT || 8080;
 app.listen(port, () => {
     console.log(`Servidor de IA da LABirintar rodando na porta ${port}`);
 });
-
-```
