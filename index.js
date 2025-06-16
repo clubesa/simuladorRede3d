@@ -1,4 +1,7 @@
-
+// VERSÃO FINAL - 16 de Junho
+// index.js (Versão Final para Vertex AI RAG Agent/App)
+const express = require('express');
+// ... resto do código ...
 // index.js (Versão Final e Correta que usa a Vertex AI)
 const express = require('express');
 const { VertexAI } = require('@google-cloud/vertexai');
