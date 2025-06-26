@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposta de Parceria Estratégica: LABirintar & BMQ Sports</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutral Harmony -->
+    <!-- Application Structure Plan: A single-page application designed as an interactive dashboard. The structure uses a main navigation to jump to key sections: Overview, Company Profiles, Partnership Scenarios, and Comparative Analysis. The core of the application is a tab-based interface for the "Scenarios" section, allowing users to dynamically switch between different partnership models. This non-linear structure was chosen to transform the static report into an exploratory tool, enabling easy comparison and deep dives into specific details, which is more effective for strategic decision-making than a linear document. -->
+    <!-- Visualization & Content Choices: 
+        - Company Profiles: Report Info -> Key assets of LABirintar & BMQ. Goal -> Compare company strengths. Viz/Presentation -> Side-by-side card layout using HTML/Tailwind. Interaction -> None. Justification -> Clear, direct visual comparison of core competencies.
+        - Partnership Scenarios: Report Info -> Detailed descriptions of 3 scenarios. Goal -> Allow detailed exploration. Viz/Presentation -> Tabbed content sections. Interaction -> Clicking tabs reveals corresponding scenario details. Justification -> Organizes complex information cleanly, preventing cognitive overload and allowing focused review of each option.
+        - Financial Simulation: Report Info -> Monthly earnings projections for BMQ in Scenarios 1 & 2. Goal -> Compare financial outcomes. Viz/Presentation -> Vertical Bar Chart (Chart.js/Canvas). Interaction -> Tooltips on hover showing precise values. Justification -> Bar charts are ideal for direct comparison of discrete financial data points.
+        - Comparative Analysis: Report Info -> Qualitative attributes from the comparison table. Goal -> Visually compare the strategic profile of each scenario. Viz/Presentation -> Radar Chart (Chart.js/Canvas). Interaction -> Tooltips on hover, clear legends. Justification -> Provides a compelling visual "shape" for each scenario, making their multi-faceted profiles instantly comparable and adding a "wow" factor to the data presentation.
+        - Process Flow: Report Info -> The "Modelo de Atuação" for each scenario. Goal -> Illustrate workflow. Viz/Presentation -> Structured HTML with icons (Unicode characters) and Tailwind CSS. Interaction -> None. Justification -> Simple, clean, and effective visualization without violating the NO SVG/Mermaid rule.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #3D405B;
+        }
+        .tab-button.active {
+            background-color: #3D405B;
+            color: #FFFFFF;
+            font-weight: 600;
+        }
+        .tab-button {
+            transition: all 0.3s ease-in-out;
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 350px;
+            width: 100%;
+            max-width: 600px;
+        }
+        .kpi-card {
+            background-color: #FFFFFF;
+            border: 1px solid #E0E0E0;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        .section-title {
+            color: #81B29A;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm border-b border-gray-200">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-gray-800">
+                <span class="text-emerald-500">LABirintar</span> & <span class="text-amber-500">BMQ</span>
+            </h1>
+            <nav class="hidden md:flex space-x-6">
+                <a href="#overview" class="text-gray-600 hover:text-gray-900 transition">Visão Geral</a>
+                <a href="#companies" class="text-gray-600 hover:text-gray-900 transition">As Empresas</a>
+                <a href="#scenarios" class="text-gray-600 hover:text-gray-900 transition">Cenários</a>
+                <a href="#analysis" class="text-gray-600 hover:text-gray-900 transition">Análise</a>
+                <a href="#recommendations" class="text-gray-600 hover:text-gray-900 transition">Recomendações</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+
+        <section id="overview" class="mb-20 scroll-mt-24">
+            <div class="text-center mb-12">
+                <h2 class="section-title text-3xl font-bold text-[#3D405B] md:text-4xl">Proposta de Parceria Estratégica</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Uma análise interativa sobre a união de forças da LABirintar e Bem Me Quer Sports para inovar no mercado de educação extracurricular.</p>
+            </div>
+            <div class="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                <h3 class="font-bold text-xl mb-4 text-[#81B29A]">Sumário Executivo</h3>
+                <p class="text-gray-700 leading-relaxed">
+                    Esta proposta delineia cenários para uma parceria estratégica entre a LABirintar, edtech inovadora focada na transformação do contraturno escolar, e a Bem Me Quer Sports (BMQ), empresa líder e consolidada no mercado de assessoria esportiva. A análise das sinergias revela uma oportunidade única: a BMQ possui uma base de clientes robusta, uma reputação de 27 anos no mercado e a credibilidade de seu fundador, Marcello Cafaro, para captação de escolas em um alto nível estratégico. A LABirintar, por sua vez, oferece uma plataforma tecnológica de gestão, um portfólio de atividades extracurriculares diversificado e um modelo escalável de crescimento da rede de Educadores Empreendedores (EE). A união dessas forças pode acelerar a captação de escolas para a LABirintar, ao mesmo tempo que permite à BMQ inovar, ampliar seu portfólio e gerar novas fontes de receita com menor risco operacional.
+                </p>
+            </div>
+        </section>
+
+        <section id="companies" class="mb-20 scroll-mt-24">
+             <div class="text-center mb-12">
+                <h2 class="section-title text-3xl font-bold text-[#3D405B] md:text-4xl">Análise das Partes</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Conheça os ativos e forças que cada empresa traz para a parceria, criando uma sinergia poderosa para o mercado.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                <div class="kpi-card">
+                    <h3 class="font-bold text-2xl mb-4 text-emerald-600">LABirintar: A Plataforma de Inovação</h3>
+                    <ul class="space-y-4 text-gray-700">
+                        <li class="flex items-start"><span class="text-emerald-500 mr-3 mt-1">➔</span> <div><strong class="font-semibold text-gray-800">Tecnologia de Gestão:</strong> Software próprio para automação de matrículas, pagamentos, gestão de turmas e comunicação.</div></li>
+                        <li class="flex items-start"><span class="text-emerald-500 mr-3 mt-1">➔</span> <div><strong class="font-semibold text-gray-800">Portfólio Diversificado:</strong> Oferta de atividades inovadoras como programação, marcenaria, circo e artes.</div></li>
+                        <li class="flex items-start"><span class="text-emerald-500 mr-3 mt-1">➔</span> <div><strong class="font-semibold text-gray-800">Modelo de Talentos Escalável:</strong> Rede de "Educadores Empreendedores" com remuneração variável e potencial de sociedade.</div></li>
+                    </ul>
+                </div>
+                <div class="kpi-card">
+                    <h3 class="font-bold text-2xl mb-4 text-amber-600">Bem Me Quer Sports: A Força de Mercado</h3>
+                    <ul class="space-y-4 text-gray-700">
+                        <li class="flex items-start"><span class="text-amber-500 mr-3 mt-1">➔</span> <div><strong class="font-semibold text-gray-800">Reputação e Liderança:</strong> Mais de duas décadas de atuação, com equipe de 200 profissionais no modelo CLT.</div></li>
+                        <li class="flex items-start"><span class="text-amber-500 mr-3 mt-1">➔</span> <div><strong class="font-semibold text-gray-800">Credibilidade Pedagógica:</strong> Metodologia própria com chancela do MEC para ballet, judô e natação.</div></li>
+                        <li class="flex items-start"><span class="text-amber-500 mr-3 mt-1">➔</span> <div><strong class="font-semibold text-gray-800">Acesso Estratégico:</strong> Rede de contatos e credibilidade do fundador, Marcello Cafaro, para acesso a decisores-chave.</div></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="scenarios" class="mb-20 scroll-mt-24">
+            <div class="text-center mb-12">
+                <h2 class="section-title text-3xl font-bold text-[#3D405B] md:text-4xl">Cenários de Parceria</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Explore os três modelos de colaboração propostos, cada um com diferentes níveis de integração, remuneração e vantagens estratégicas. Clique em cada cenário para ver os detalhes.</p>
+            </div>
+            
+            <div class="flex justify-center mb-8 bg-gray-100 p-2 rounded-full max-w-lg mx-auto">
+                <button class="tab-button active w-1/3 py-2 px-4 rounded-full text-center text-sm md:text-base" onclick="changeScenario(0)">Cenário 1: Indicação</button>
+                <button class="tab-button w-1/3 py-2 px-4 rounded-full text-center text-sm md:text-base" onclick="changeScenario(1)">Cenário 2: Integração</button>
+                <button class="tab-button w-1/3 py-2 px-4 rounded-full text-center text-sm md:text-base" onclick="changeScenario(2)">Cenário 3: Sociedade</button>
+            </div>
+
+            <div id="scenario-content" class="max-w-5xl mx-auto">
+            </div>
+        </section>
+
+        <section id="analysis" class="mb-20 scroll-mt-24">
+            <div class="text-center mb-12">
+                <h2 class="section-title text-3xl font-bold text-[#3D405B] md:text-4xl">Análise Comparativa</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Compare visualmente os cenários através de seus principais atributos estratégicos e projeções financeiras para uma decisão informada.</p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="kpi-card">
+                    <h3 class="font-bold text-xl mb-4 text-[#81B29A]">Simulação de Receita Mensal para BMQ</h3>
+                     <p class="text-sm text-gray-500 mb-4">Estimativa de receita por escola captada, com duas turmas de 15 alunos cada.</p>
+                    <div class="chart-container h-[300px] md:h-[350px]">
+                        <canvas id="financialChart"></canvas>
+                    </div>
+                </div>
+                 <div class="kpi-card">
+                    <h3 class="font-bold text-xl mb-4 text-[#81B29A]">Perfil Estratégico dos Cenários</h3>
+                    <p class="text-sm text-gray-500 mb-4">Comparação dos cenários em eixos chave (0=Baixo, 5=Alto).</p>
+                    <div class="chart-container h-[300px] md:h-[350px]">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+             <div class="mt-12 overflow-x-auto">
+                    <h3 class="font-bold text-xl mb-4 text-center text-[#81B29A]">Tabela Comparativa Detalhada</h3>
+                    <table class="min-w-full bg-white rounded-lg shadow-md border border-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="py-3 px-4 text-left font-semibold text-gray-600">Atributo</th>
+                                <th class="py-3 px-4 text-left font-semibold text-gray-600">Cenário 1: Indicação</th>
+                                <th class="py-3 px-4 text-left font-semibold text-gray-600">Cenário 2: Integração</th>
+                                <th class="py-3 px-4 text-left font-semibold text-gray-600">Cenário 3: Sociedade</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <tr>
+                                <td class="py-3 px-4 font-semibold">Papel da BMQ</td>
+                                <td class="py-3 px-4">Indicação Estratégica</td>
+                                <td class="py-3 px-4">Parceiro Operacional</td>
+                                <td class="py-3 px-4">Sócio Estratégico</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 font-semibold">Nível de Integração</td>
+                                <td class="py-3 px-4">Baixo (Comercial)</td>
+                                <td class="py-3 px-4">Alto (Operacional)</td>
+                                <td class="py-3 px-4">Total (Societário)</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 font-semibold">Remuneração</td>
+                                <td class="py-3 px-4">Comissão (5%/12m)</td>
+                                <td class="py-3 px-4">Revenue Share (35%)</td>
+                                <td class="py-3 px-4">Equity + Comissão</td>
+                            </tr>
+                             <tr>
+                                <td class="py-3 px-4 font-semibold">Gestão de Talentos</td>
+                                <td class="py-3 px-4">Não aplicável</td>
+                                <td class="py-3 px-4">Transição como carreira</td>
+                                <td class="py-3 px-4">Plano de Stock Options</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 font-semibold">Vantagens Principais</td>
+                                <td class="py-3 px-4">Simplicidade, baixo risco</td>
+                                <td class="py-3 px-4">Oferta superior, sinergia</td>
+                                <td class="py-3 px-4">Alinhamento total, retenção</td>
+                            </tr>
+                             <tr>
+                                <td class="py-3 px-4 font-semibold">Complexidade / Riscos</td>
+                                <td class="py-3 px-4">Baixa (Dependência)</td>
+                                <td class="py-3 px-4">Alta (Alinhamento cultural)</td>
+                                <td class="py-3 px-4">Muito Alta (Due diligence)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+        </section>
+        
+        <section id="recommendations" class="scroll-mt-24">
+            <div class="text-center mb-12">
+                <h2 class="section-title text-3xl font-bold text-[#3D405B] md:text-4xl">Recomendações e Próximos Passos</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Um plano de ação faseado para construir a parceria de forma gradual, validando sinergias e construindo confiança.</p>
+            </div>
+            <div class="max-w-4xl mx-auto grid md:grid-cols-3 gap-6 text-center">
+                <div class="kpi-card">
+                    <div class="text-3xl mb-2">1️⃣</div>
+                    <h4 class="font-bold text-lg mb-2">Fase 1: Curto Prazo</h4>
+                    <p class="text-sm text-gray-600">Iniciar com o Cenário 1 (Indicação). Formalizar a proposta comercial para gerar resultados rapidamente.</p>
+                </div>
+                 <div class="kpi-card">
+                    <div class="text-3xl mb-2">2️⃣</div>
+                    <h4 class="font-bold text-lg mb-2">Fase 2: Médio Prazo</h4>
+                    <p class="text-sm text-gray-600">Evoluir para o Cenário 2 (Integração). Propor um projeto piloto para integrar modalidades e testar o modelo.</p>
+                </div>
+                 <div class="kpi-card">
+                    <div class="text-3xl mb-2">3️⃣</div>
+                    <h4 class="font-bold text-lg mb-2">Fase 3: Longo Prazo</h4>
+                    <p class="text-sm text-gray-600">Considerar o Cenário 3 (Sociedade). Se a parceria for estratégica, discutir equity para solidificar a aliança.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const scenariosData = [
+            {
+                title: 'Cenário 1: Parceria de Indicação Estratégica (O Modelo "Abridor de Portas")',
+                description: 'Este cenário capitaliza a rede e a credibilidade de Marcello Cafaro para gerar oportunidades comerciais qualificadas para a LABirintar.',
+                details: [
+                    { 
+                        title: 'Modelo de Atuação', 
+                        content: `
+                            <p class="mb-2"><strong class="font-semibold text-gray-800">BMQ/Marcello:</strong> Atua como um parceiro estratégico de indicação. Sua função é identificar oportunidades e agendar a reunião inicial entre a LABirintar e os decisores da escola. A partir desse ponto, a equipe da LABirintar assume todo o processo comercial.</p>
+                            <p><strong class="font-semibold text-gray-800">LABirintar:</strong> Assume 100% da condução do funil de vendas após a introdução, fornecendo todo o material e realizando as etapas de "closing".</p>
+                        `
+                    },
+                    { 
+                        title: 'Proposta de Remuneração', 
+                        content: `
+                            <p class="mb-2"><strong class="font-semibold text-gray-800">Comissão por Performance:</strong> A BMQ recebe um percentual sobre o faturamento líquido (GMV) gerado pelas escolas cujo contrato foi originado por sua indicação.</p>
+                            <p><strong class="font-semibold text-gray-800">Estrutura Sugerida:</strong> 5% de comissão sobre o faturamento líquido mensal, com um período de vigência de 12 meses a contar do início do contrato com cada escola.</p>
+                            <p class="text-sm mt-2 text-gray-500"><strong class="font-semibold">Simulação:</strong> 1 Escola (30 matrículas) resulta em R$ 670,50/mês para a BMQ.</p>
+                        `
+                    },
+                    { 
+                        title: 'Vantagens', 
+                        content: `
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Simplicidade e Foco:</strong> Papéis e responsabilidades claramente definidos.</li>
+                                <li><strong>Alinhamento de Interesses:</strong> A remuneração está diretamente atrelada ao sucesso da indicação.</li>
+                                <li><strong>Capitaliza o Ponto Forte:</strong> Utiliza a maior força de Marcello – sua rede e credibilidade – para a tarefa mais estratégica: abrir portas.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            {
+                title: 'Cenário 2: Integração de Portfólios e Co-Branding (O Modelo "Oferta Integrada")',
+                description: 'Neste cenário, as modalidades esportivas da BMQ são integradas à plataforma da LABirintar, criando uma oferta extracurricular completa e unificada para as escolas.',
+                details: [
+                    { 
+                        title: 'Modelo de Atuação', 
+                        content: `
+                            <p class="mb-2"><strong class="font-semibold text-gray-800">Oferta Conjunta:</strong> As escolas contratam uma solução única que combina as atividades de inovação da LABirintar com as atividades esportivas "by BMQ Sports".</p>
+                            <p class="mb-2"><strong class="font-semibold text-gray-800">Gestão Tecnológica:</strong> Todas as modalidades são gerenciadas através da plataforma da LABirintar.</p>
+                            <p><strong class="font-semibold text-gray-800">Operação das Modalidades:</strong> LABirintar opera com Educadores Empreendedores; BMQ opera com sua equipe CLT.</p>
+                        `
+                    },
+                    { 
+                        title: 'Proposta de Remuneração', 
+                        content: `
+                            <p class="mb-2"><strong class="font-semibold text-gray-800">Revenue Share por Modalidade:</strong> A BMQ recebe 35% do GMV de suas próprias modalidades.</p>
+                             <p class="text-sm mt-2 text-gray-500"><strong class="font-semibold">Simulação:</strong> 1 Escola (30 matrículas) gera R$ 6.034,50 de receita para a BMQ. Após custos, a margem de contribuição estimada é de R$ 2.073,81/mês.</p>
+                        `
+                    },
+                    { 
+                        title: 'Vantagens', 
+                        content: `
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Oferta de Valor Superior e Unificada:</strong> Posiciona a parceria como "one-stop-shop" para as escolas.</li>
+                                <li><strong>Sinergia de Vendas e Economia de Escala:</strong> Otimiza o processo e reduz o Custo de Aquisição de Clientes (CAC).</li>
+                                <li><strong>Eficiência Operacional Centralizada:</strong> A plataforma da LABirintar reduz a carga administrativa para todos.</li>
+                                <li><strong>Retenção Estratégica de Talentos:</strong> Oferece uma progressão de carreira clara para os profissionais da BMQ.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            },
+            {
+                title: 'Cenário 3: Aliança Estratégica com Participação Societária (O Modelo "Equity Partnership")',
+                description: 'O cenário mais profundo, onde a BMQ se torna sócia minoritária da LABirintar, alinhando completamente os interesses de longo prazo e criando mecanismos de retenção de talentos.',
+                details: [
+                     { 
+                        title: 'Modelo de Atuação', 
+                        content: `
+                            <p class="mb-2"><strong class="font-semibold text-gray-800">BMQ como Investidor Estratégico:</strong> Em troca de uma participação acionária (equity) na LABirintar, a BMQ compromete-se a uma colaboração profunda, incluindo a abertura de sua rede de contatos e o envolvimento de Marcello em um conselho consultivo.</p>
+                        `
+                    },
+                    { 
+                        title: 'Alinhamento de Talentos via Stock Options', 
+                        content: `
+                            <p class="mb-2">Como parte da aliança, a LABirintar pode estruturar um Plano de Opção de Compra de Ações (Stock Options) destinado aos educadores da BMQ.</p>
+                            <p>Este plano funcionaria como um poderoso mecanismo de premiação e retenção, oferecendo aos funcionários-chave da BMQ a oportunidade de adquirir participação societária na LABirintar, transformando o "risco de migração" em "oportunidade de engajamento".</p>
+                        `
+                    },
+                     { 
+                        title: 'Proposta de Remuneração', 
+                        content: `
+                            <p class="mb-2"><strong class="font-semibold text-gray-800">Participação Societária (Equity):</strong> A BMQ recebe uma participação minoritária na LABirintar (ex: 5% do equity). A comissão por indicação pode ser mantida ou substituída por metas de crescimento atreladas à valorização do equity.</p>
+                        `
+                    },
+                    { 
+                        title: 'Vantagens', 
+                        content: `
+                             <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Alinhamento Total:</strong> Ambas as empresas e seus talentos-chave passam a ter interesses convergentes.</li>
+                                <li><strong>Solução Estratégica de RH:</strong> A parceria se torna uma ferramenta para a BMQ reter e premiar seus melhores profissionais.</li>
+                            </ul>
+                        `
+                    }
+                ]
+            }
+        ];
+
+        const scenarioContentEl = document.getElementById('scenario-content');
+        const tabButtons = document.querySelectorAll('.tab-button');
+
+        function changeScenario(index) {
+            const scenario = scenariosData[index];
+            
+            let contentHTML = `
+                <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 animate-fade-in">
+                    <h3 class="font-bold text-2xl mb-2 text-[#3D405B]">${scenario.title}</h3>
+                    <p class="text-gray-600 mb-6">${scenario.description}</p>
+                    <div class="space-y-6">
+            `;
+
+            scenario.details.forEach(detail => {
+                contentHTML += `
+                    <div>
+                        <h4 class="font-semibold text-lg mb-2 text-[#81B29A]">${detail.title}</h4>
+                        <div class="text-gray-700 leading-relaxed">${detail.content}</div>
+                    </div>
+                `;
+            });
+
+            contentHTML += `
+                    </div>
+                </div>
+            `;
+
+            scenarioContentEl.innerHTML = contentHTML;
+
+            tabButtons.forEach((button, i) => {
+                if (i === index) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            changeScenario(0);
+
+            const financialCtx = document.getElementById('financialChart').getContext('2d');
+            new Chart(financialCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Cenário 1: Indicação', 'Cenário 2: Integração'],
+                    datasets: [{
+                        label: 'Margem de Contribuição Mensal (R$)',
+                        data: [670.50, 2073.81],
+                        backgroundColor: [
+                            'rgba(129, 178, 154, 0.6)',
+                            'rgba(244, 162, 97, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(129, 178, 154, 1)',
+                            'rgba(244, 162, 97, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return 'R$ ' + value.toLocaleString('pt-BR');
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                             callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += 'R$ ' + context.parsed.y.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const radarCtx = document.getElementById('radarChart').getContext('2d');
+            new Chart(radarCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Integração', 'Complexidade', 'Potencial de Receita', 'Alinhamento Estratégico', 'Risco'],
+                    datasets: [
+                        {
+                            label: 'Cenário 1: Indicação',
+                            data: [1, 1, 2, 2, 1],
+                            fill: true,
+                            backgroundColor: 'rgba(129, 178, 154, 0.2)',
+                            borderColor: 'rgb(129, 178, 154)',
+                            pointBackgroundColor: 'rgb(129, 178, 154)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgb(129, 178, 154)'
+                        }, 
+                        {
+                            label: 'Cenário 2: Integração',
+                            data: [4, 3, 4, 4, 3],
+                             fill: true,
+                            backgroundColor: 'rgba(244, 162, 97, 0.2)',
+                            borderColor: 'rgb(244, 162, 97)',
+                            pointBackgroundColor: 'rgb(244, 162, 97)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgb(244, 162, 97)'
+                        },
+                         {
+                            label: 'Cenário 3: Sociedade',
+                            data: [5, 5, 5, 5, 4],
+                            fill: true,
+                            backgroundColor: 'rgba(61, 64, 91, 0.2)',
+                            borderColor: 'rgb(61, 64, 91)',
+                            pointBackgroundColor: 'rgb(61, 64, 91)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgb(61, 64, 91)'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    elements: {
+                      line: {
+                        borderWidth: 3
+                      }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: false
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 5,
+                             pointLabels: {
+                                font: {
+                                    size: 12
+                                }
+                            },
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fade-in {
+                    from { opacity: 0; transform: translateY(10px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                .animate-fade-in {
+                    animation: fade-in 0.5s ease-in-out forwards;
+                }
+            `;
+            document.head.append(style);
+
+        });
+    </script>
+</body>
+</html>
