@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Warm Neutral Harmony -->
+    <!-- Chosen Palette: Custom LABirintar & BMQ Palette -->
     <!-- Application Structure Plan: A single-page application designed as an interactive dashboard. The structure uses a main navigation to jump to key sections: Overview, Company Profiles, Partnership Scenarios, and Comparative Analysis. The core of the application is a tab-based interface for the "Scenarios" section, allowing users to dynamically switch between different partnership models. This non-linear structure was chosen to transform the static report into an exploratory tool, enabling easy comparison and deep dives into specific details, which is more effective for strategic decision-making than a linear document. -->
     <!-- Visualization & Content Choices: 
         - Company Profiles: Report Info -> Key assets of LABirintar & BMQ. Goal -> Compare company strengths. Viz/Presentation -> Side-by-side card layout using HTML/Tailwind. Interaction -> None. Justification -> Clear, direct visual comparison of core competencies.
@@ -20,13 +20,24 @@
     -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
+        :root {
+            --bmq-red: #c20f0f;
+            --bmq-blue: #29368f;
+            --lab-red: #ff595a;
+            --lab-yellow: #ffa400;
+            --lab-peach: #ffe9c9;
+            --lab-lavender: #e6cbe4;
+            --lab-lightblue: #aec5e7;
+            --text-dark: #333333;
+            --bg-light: #fefcfb;
+        }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #FDFBF8;
-            color: #3D405B;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
         }
         .tab-button.active {
-            background-color: #3D405B;
+            background-color: var(--bmq-blue);
             color: #FFFFFF;
             font-weight: 600;
         }
@@ -50,29 +61,37 @@
         }
         .kpi-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 15px rgba(61, 64, 91, 0.1);
         }
         .section-title {
-            color: #81B29A;
+            color: var(--bmq-blue);
             font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+        }
+        .accordion-title {
+            cursor: pointer;
+            border-bottom: 1px solid #ddd;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
         }
     </style>
 </head>
 <body class="antialiased">
 
     <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm border-b border-gray-200">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <h1 class="text-xl md:text-2xl font-bold text-gray-800">
-                <span class="text-emerald-500">LABirintar</span> & <span class="text-amber-500">BMQ</span>
-            </h1>
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                 <div class="h-10 w-28 bg-gray-200 rounded flex items-center justify-center text-sm text-gray-500">Logo LABirintar</div>
+                 <div class="h-10 w-28 bg-gray-200 rounded flex items-center justify-center text-sm text-gray-500">Logo BMQ Sports</div>
+            </div>
             <nav class="hidden md:flex space-x-6">
                 <a href="#overview" class="text-gray-600 hover:text-gray-900 transition">Visão Geral</a>
                 <a href="#companies" class="text-gray-600 hover:text-gray-900 transition">As Empresas</a>
                 <a href="#scenarios" class="text-gray-600 hover:text-gray-900 transition">Cenários</a>
                 <a href="#analysis" class="text-gray-600 hover:text-gray-900 transition">Análise</a>
-                <a href="#recommendations" class="text-gray-600 hover:text-gray-900 transition">Recomendações</a>
+                <a href="#faq" class="text-gray-600 hover:text-gray-900 transition">FAQ</a>
             </nav>
         </div>
     </header>
@@ -81,25 +100,28 @@
 
         <section id="overview" class="mb-20 scroll-mt-24">
             <div class="text-center mb-12">
-                <h2 class="section-title text-3xl font-bold text-[#3D405B] md:text-4xl">Proposta de Parceria Estratégica</h2>
+                <h2 class="section-title text-3xl font-bold md:text-4xl">Proposta de Parceria Estratégica</h2>
                 <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Uma análise interativa sobre a união de forças da LABirintar e Bem Me Quer Sports para inovar no mercado de educação extracurricular.</p>
             </div>
             <div class="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-lg border border-gray-200">
-                <h3 class="font-bold text-xl mb-4 text-[#81B29A]">Sumário Executivo</h3>
-                <p class="text-gray-700 leading-relaxed">
-                    Esta proposta delineia cenários para uma parceria estratégica entre a LABirintar, edtech inovadora focada na transformação do contraturno escolar, e a Bem Me Quer Sports (BMQ), empresa líder e consolidada no mercado de assessoria esportiva. A análise das sinergias revela uma oportunidade única: a BMQ possui uma base de clientes robusta, uma reputação de 27 anos no mercado e a credibilidade de seu fundador, Marcello Cafaro, para captação de escolas em um alto nível estratégico. A LABirintar, por sua vez, oferece uma plataforma tecnológica de gestão, um portfólio de atividades extracurriculares diversificado e um modelo escalável de crescimento da rede de Educadores Empreendedores (EE). A união dessas forças pode acelerar a captação de escolas para a LABirintar, ao mesmo tempo que permite à BMQ inovar, ampliar seu portfólio e gerar novas fontes de receita com menor risco operacional.
-                </p>
+                <h3 class="font-bold text-xl mb-4" style="color: var(--lab-red);">Sumário Executivo</h3>
+                <ul class="list-disc list-inside space-y-3 text-gray-700 leading-relaxed">
+                    <li><b>Oportunidade Estratégica:</b> Unir a credibilidade e acesso a mercado da BMQ Sports com a plataforma tecnológica e portfólio inovador da LABirintar.</li>
+                    <li><b>Sinergias Chave:</b> A BMQ, com 27 anos de mercado e forte base de clientes, acelera a captação de escolas. A LABirintar oferece um modelo escalável e diversificado de atividades.</li>
+                    <li><b>Benefícios Mútuos:</b> A parceria permite à BMQ inovar e gerar novas receitas com baixo risco, enquanto a LABirintar reduz seu Custo de Aquisição de Clientes (CAC) e valida seu modelo comercial.</li>
+                    <li><b>Cenários de Colaboração:</b> A proposta apresenta três modelos de parceria com níveis crescentes de integração, desde a indicação estratégica até uma aliança com participação societária.</li>
+                </ul>
             </div>
         </section>
 
         <section id="companies" class="mb-20 scroll-mt-24">
              <div class="text-center mb-12">
-                <h2 class="section-title text-3xl font-bold text-[#3D405B] md:text-4xl">Análise das Partes</h2>
+                <h2 class="section-title text-3xl font-bold md:text-4xl">Análise das Partes</h2>
                 <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Conheça os ativos e forças que cada empresa traz para a parceria, criando uma sinergia poderosa para o mercado.</p>
             </div>
             <div class="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
                 <div class="kpi-card">
-                    <h3 class="font-bold text-2xl mb-4 text-emerald-600">LABirintar: A Plataforma de Inovação</h3>
+                    <h3 class="font-bold text-2xl mb-4" style="color: var(--lab-yellow);">LABirintar: A Plataforma de Inovação</h3>
                     <ul class="space-y-4 text-gray-700">
                         <li class="flex items-start"><span class="text-emerald-500 mr-3 mt-1">➔</span> <div><strong class="font-semibold text-gray-800">Tecnologia de Gestão:</strong> Software próprio para automação de matrículas, pagamentos, gestão de turmas e comunicação.</div></li>
                         <li class="flex items-start"><span class="text-emerald-500 mr-3 mt-1">➔</span> <div><strong class="font-semibold text-gray-800">Portfólio Diversificado:</strong> Oferta de atividades inovadoras como programação, marcenaria, circo e artes.</div></li>
@@ -107,7 +129,7 @@
                     </ul>
                 </div>
                 <div class="kpi-card">
-                    <h3 class="font-bold text-2xl mb-4 text-amber-600">Bem Me Quer Sports: A Força de Mercado</h3>
+                    <h3 class="font-bold text-2xl mb-4" style="color: var(--bmq-red);">Bem Me Quer Sports: A Força de Mercado</h3>
                     <ul class="space-y-4 text-gray-700">
                         <li class="flex items-start"><span class="text-amber-500 mr-3 mt-1">➔</span> <div><strong class="font-semibold text-gray-800">Reputação e Liderança:</strong> Mais de duas décadas de atuação, com equipe de 200 profissionais no modelo CLT.</div></li>
                         <li class="flex items-start"><span class="text-amber-500 mr-3 mt-1">➔</span> <div><strong class="font-semibold text-gray-800">Credibilidade Pedagógica:</strong> Metodologia própria com chancela do MEC para ballet, judô e natação.</div></li>
@@ -119,7 +141,7 @@
 
         <section id="scenarios" class="mb-20 scroll-mt-24">
             <div class="text-center mb-12">
-                <h2 class="section-title text-3xl font-bold text-[#3D405B] md:text-4xl">Cenários de Parceria</h2>
+                <h2 class="section-title text-3xl font-bold md:text-4xl">Cenários de Parceria</h2>
                 <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Explore os três modelos de colaboração propostos, cada um com diferentes níveis de integração, remuneração e vantagens estratégicas. Clique em cada cenário para ver os detalhes.</p>
             </div>
             
@@ -135,20 +157,20 @@
 
         <section id="analysis" class="mb-20 scroll-mt-24">
             <div class="text-center mb-12">
-                <h2 class="section-title text-3xl font-bold text-[#3D405B] md:text-4xl">Análise Comparativa</h2>
+                <h2 class="section-title text-3xl font-bold md:text-4xl">Análise Comparativa</h2>
                 <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Compare visualmente os cenários através de seus principais atributos estratégicos e projeções financeiras para uma decisão informada.</p>
             </div>
 
             <div class="grid lg:grid-cols-2 gap-12 items-center">
                 <div class="kpi-card">
-                    <h3 class="font-bold text-xl mb-4 text-[#81B29A]">Simulação de Receita Mensal para BMQ</h3>
+                    <h3 class="font-bold text-xl mb-4" style="color: var(--bmq-blue);">Simulação de Receita Mensal para BMQ</h3>
                      <p class="text-sm text-gray-500 mb-4">Estimativa de receita por escola captada, com duas turmas de 15 alunos cada.</p>
                     <div class="chart-container h-[300px] md:h-[350px]">
                         <canvas id="financialChart"></canvas>
                     </div>
                 </div>
                  <div class="kpi-card">
-                    <h3 class="font-bold text-xl mb-4 text-[#81B29A]">Perfil Estratégico dos Cenários</h3>
+                    <h3 class="font-bold text-xl mb-4" style="color: var(--bmq-blue);">Perfil Estratégico dos Cenários</h3>
                     <p class="text-sm text-gray-500 mb-4">Comparação dos cenários em eixos chave (0=Baixo, 5=Alto).</p>
                     <div class="chart-container h-[300px] md:h-[350px]">
                         <canvas id="radarChart"></canvas>
@@ -156,7 +178,7 @@
                 </div>
             </div>
              <div class="mt-12 overflow-x-auto">
-                    <h3 class="font-bold text-xl mb-4 text-center text-[#81B29A]">Tabela Comparativa Detalhada</h3>
+                    <h3 class="font-bold text-xl mb-4 text-center" style="color: var(--bmq-blue);">Tabela Comparativa Detalhada</h3>
                     <table class="min-w-full bg-white rounded-lg shadow-md border border-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
@@ -182,7 +204,7 @@
                             <tr>
                                 <td class="py-3 px-4 font-semibold">Remuneração</td>
                                 <td class="py-3 px-4">Comissão (5%/12m)</td>
-                                <td class="py-3 px-4">Revenue Share (35%)</td>
+                                <td class="py-3 px-4">Revenue Share (45%)</td>
                                 <td class="py-3 px-4">Equity + Comissão</td>
                             </tr>
                              <tr>
@@ -208,26 +230,38 @@
                 </div>
         </section>
         
-        <section id="recommendations" class="scroll-mt-24">
+        <section id="faq" class="scroll-mt-24">
             <div class="text-center mb-12">
-                <h2 class="section-title text-3xl font-bold text-[#3D405B] md:text-4xl">Recomendações e Próximos Passos</h2>
-                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Um plano de ação faseado para construir a parceria de forma gradual, validando sinergias e construindo confiança.</p>
+                <h2 class="section-title text-3xl font-bold md:text-4xl">Perguntas e Respostas</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Esclarecimentos sobre os pontos-chave da parceria para guiar a tomada de decisão.</p>
             </div>
-            <div class="max-w-4xl mx-auto grid md:grid-cols-3 gap-6 text-center">
-                <div class="kpi-card">
-                    <div class="text-3xl mb-2">1️⃣</div>
-                    <h4 class="font-bold text-lg mb-2">Fase 1: Curto Prazo</h4>
-                    <p class="text-sm text-gray-600">Iniciar com o Cenário 1 (Indicação). Formalizar a proposta comercial para gerar resultados rapidamente.</p>
+            <div class="max-w-3xl mx-auto space-y-4">
+                <div class="accordion-item bg-white rounded-lg shadow-sm border border-gray-200">
+                    <div class="accordion-title p-4 flex justify-between items-center">
+                        <h4 class="font-semibold text-gray-800">Qual o papel esperado de Marcello Cafaro no dia a dia?</h4>
+                        <span class="text-xl transform transition-transform duration-300">▼</span>
+                    </div>
+                    <div class="accordion-content px-4">
+                        <p class="py-4 text-gray-600">No Cenário 1, o papel é estritamente de "abridor de portas": usar sua rede para agendar a reunião inicial. A LABirintar conduz o resto. Nos cenários mais avançados, ele poderia atuar como conselheiro estratégico, transferindo seu know-how em vendas, ou como membro de um conselho em caso de sociedade, mas não se envolveria na operação diária da LABirintar.</p>
+                    </div>
                 </div>
-                 <div class="kpi-card">
-                    <div class="text-3xl mb-2">2️⃣</div>
-                    <h4 class="font-bold text-lg mb-2">Fase 2: Médio Prazo</h4>
-                    <p class="text-sm text-gray-600">Evoluir para o Cenário 2 (Integração). Propor um projeto piloto para integrar modalidades e testar o modelo.</p>
+                 <div class="accordion-item bg-white rounded-lg shadow-sm border border-gray-200">
+                    <div class="accordion-title p-4 flex justify-between items-center">
+                        <h4 class="font-semibold text-gray-800">Como a parceria lida com a diferença entre os modelos de contratação (CLT vs. Empreendedor)?</h4>
+                        <span class="text-xl transform transition-transform duration-300">▼</span>
+                    </div>
+                    <div class="accordion-content px-4">
+                        <p class="py-4 text-gray-600">Os modelos coexistem. A BMQ continua operando com sua equipe CLT e a LABirintar com seus Educadores Empreendedores. Para mitigar o risco de "canibalização" de talentos, no Cenário 3 (Sociedade), é proposto um plano de Stock Options. Isso permite que os educadores da BMQ participem do sucesso da parceria, alinhando interesses e criando uma nova forma de retenção e premiação.</p>
+                    </div>
                 </div>
-                 <div class="kpi-card">
-                    <div class="text-3xl mb-2">3️⃣</div>
-                    <h4 class="font-bold text-lg mb-2">Fase 3: Longo Prazo</h4>
-                    <p class="text-sm text-gray-600">Considerar o Cenário 3 (Sociedade). Se a parceria for estratégica, discutir equity para solidificar a aliança.</p>
+                 <div class="accordion-item bg-white rounded-lg shadow-sm border border-gray-200">
+                    <div class="accordion-title p-4 flex justify-between items-center">
+                        <h4 class="font-semibold text-gray-800">Por que começar pelo Cenário 1?</h4>
+                        <span class="text-xl transform transition-transform duration-300">▼</span>
+                    </div>
+                    <div class="accordion-content px-4">
+                        <p class="py-4 text-gray-600">Começar pelo modelo de indicação (Cenário 1) é a abordagem mais ágil e de menor risco. Permite que ambas as empresas testem a sinergia comercial e gerem resultados rápidos sem a necessidade de integrações complexas de sistemas ou contratos. É uma forma de "ganha-ganha" imediato que constrói a confiança necessária para avançar para parcerias mais profundas no futuro.</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -281,7 +315,7 @@
                     { 
                         title: 'Proposta de Remuneração', 
                         content: `
-                            <p class="mb-2"><strong class="font-semibold text-gray-800">Revenue Share por Modalidade:</strong> A BMQ recebe 35% do GMV de suas próprias modalidades.</p>
+                            <p class="mb-2"><strong class="font-semibold text-gray-800">Revenue Share por Modalidade:</strong> A BMQ recebe 45% do GMV de suas próprias modalidades.</p>
                              <p class="text-sm mt-2 text-gray-500"><strong class="font-semibold">Simulação:</strong> 1 Escola (30 matrículas) gera R$ 6.034,50 de receita para a BMQ. Após custos, a margem de contribuição estimada é de R$ 2.073,81/mês.</p>
                         `
                     },
@@ -342,7 +376,7 @@
             
             let contentHTML = `
                 <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 animate-fade-in">
-                    <h3 class="font-bold text-2xl mb-2 text-[#3D405B]">${scenario.title}</h3>
+                    <h3 class="font-bold text-2xl mb-2" style="color:var(--bmq-blue);">${scenario.title}</h3>
                     <p class="text-gray-600 mb-6">${scenario.description}</p>
                     <div class="space-y-6">
             `;
@@ -350,7 +384,7 @@
             scenario.details.forEach(detail => {
                 contentHTML += `
                     <div>
-                        <h4 class="font-semibold text-lg mb-2 text-[#81B29A]">${detail.title}</h4>
+                        <h4 class="font-semibold text-lg mb-2" style="color:var(--lab-red);">${detail.title}</h4>
                         <div class="text-gray-700 leading-relaxed">${detail.content}</div>
                     </div>
                 `;
@@ -384,12 +418,12 @@
                         label: 'Margem de Contribuição Mensal (R$)',
                         data: [670.50, 2073.81],
                         backgroundColor: [
-                            'rgba(129, 178, 154, 0.6)',
-                            'rgba(244, 162, 97, 0.6)'
+                            'rgba(174, 197, 231, 0.6)',
+                            'rgba(255, 164, 0, 0.6)'
                         ],
                         borderColor: [
-                            'rgba(129, 178, 154, 1)',
-                            'rgba(244, 162, 97, 1)'
+                            '#aec5e7',
+                            '#ffa400'
                         ],
                         borderWidth: 1
                     }]
@@ -398,30 +432,14 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function(value, index, values) {
-                                    return 'R$ ' + value.toLocaleString('pt-BR');
-                                }
-                            }
-                        }
+                        y: { beginAtZero: true }
                     },
                     plugins: {
-                        legend: {
-                            display: false
-                        },
+                        legend: { display: false },
                         tooltip: {
                              callbacks: {
                                 label: function(context) {
-                                    let label = context.dataset.label || '';
-                                    if (label) {
-                                        label += ': ';
-                                    }
-                                    if (context.parsed.y !== null) {
-                                        label += 'R$ ' + context.parsed.y.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                                    }
-                                    return label;
+                                    return 'R$ ' + context.parsed.y.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                                 }
                             }
                         }
@@ -439,60 +457,36 @@
                             label: 'Cenário 1: Indicação',
                             data: [1, 1, 2, 2, 1],
                             fill: true,
-                            backgroundColor: 'rgba(129, 178, 154, 0.2)',
-                            borderColor: 'rgb(129, 178, 154)',
-                            pointBackgroundColor: 'rgb(129, 178, 154)',
-                            pointBorderColor: '#fff',
-                            pointHoverBackgroundColor: '#fff',
-                            pointHoverBorderColor: 'rgb(129, 178, 154)'
+                            backgroundColor: 'rgba(174, 197, 231, 0.2)',
+                            borderColor: '#aec5e7',
+                            pointBackgroundColor: '#aec5e7'
                         }, 
                         {
                             label: 'Cenário 2: Integração',
                             data: [4, 3, 4, 4, 3],
                              fill: true,
-                            backgroundColor: 'rgba(244, 162, 97, 0.2)',
-                            borderColor: 'rgb(244, 162, 97)',
-                            pointBackgroundColor: 'rgb(244, 162, 97)',
-                            pointBorderColor: '#fff',
-                            pointHoverBackgroundColor: '#fff',
-                            pointHoverBorderColor: 'rgb(244, 162, 97)'
+                            backgroundColor: 'rgba(255, 164, 0, 0.2)',
+                            borderColor: '#ffa400',
+                            pointBackgroundColor: '#ffa400'
                         },
                          {
                             label: 'Cenário 3: Sociedade',
                             data: [5, 5, 5, 5, 4],
                             fill: true,
-                            backgroundColor: 'rgba(61, 64, 91, 0.2)',
-                            borderColor: 'rgb(61, 64, 91)',
-                            pointBackgroundColor: 'rgb(61, 64, 91)',
-                            pointBorderColor: '#fff',
-                            pointHoverBackgroundColor: '#fff',
-                            pointHoverBorderColor: 'rgb(61, 64, 91)'
+                            backgroundColor: 'rgba(255, 89, 90, 0.2)',
+                            borderColor: '#ff595a',
+                            pointBackgroundColor: '#ff595a'
                         }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    elements: {
-                      line: {
-                        borderWidth: 3
-                      }
-                    },
                     scales: {
                         r: {
-                            angleLines: {
-                                display: false
-                            },
                             suggestedMin: 0,
                             suggestedMax: 5,
-                             pointLabels: {
-                                font: {
-                                    size: 12
-                                }
-                            },
-                            ticks: {
-                                stepSize: 1
-                            }
+                            ticks: { stepSize: 1 }
                         }
                     }
                 }
@@ -509,6 +503,20 @@
                 }
             `;
             document.head.append(style);
+
+            document.querySelectorAll('.accordion-item').forEach(item => {
+                item.querySelector('.accordion-title').addEventListener('click', () => {
+                    const content = item.querySelector('.accordion-content');
+                    const icon = item.querySelector('.accordion-title span');
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                        icon.style.transform = 'rotate(0deg)';
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                        icon.style.transform = 'rotate(180deg)';
+                    }
+                });
+            });
 
         });
     </script>
