@@ -76,6 +76,15 @@
             overflow: hidden;
             transition: max-height 0.5s ease-in-out;
         }
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .reveal-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -83,8 +92,10 @@
     <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm border-b border-gray-200">
         <div class="container mx-auto px-6 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-4">
-                 <div class="h-10 w-28 bg-gray-200 rounded flex items-center justify-center text-sm text-gray-500">Logo LABirintar</div>
-                 <div class="h-10 w-28 bg-gray-200 rounded flex items-center justify-center text-sm text-gray-500">Logo BMQ Sports</div>
+                 <!-- Substitua './logo-labirintar.svg' pelo caminho real do seu arquivo de logo -->
+                 <img src="IMG_1229.png" alt="Logo da LABirintar" class="h-10">
+                 <!-- Substitua './logo-bmq.svg' pelo caminho real do seu arquivo de logo -->
+                 <img src="IMG_3170.webp" alt="Logo da BMQ Sports" class="h-10">
             </div>
             <nav class="hidden md:flex space-x-6">
                 <a href="#overview" class="text-gray-600 hover:text-gray-900 transition">Visão Geral</a>
@@ -98,7 +109,7 @@
 
     <main class="container mx-auto px-6 py-12">
 
-        <section id="overview" class="mb-20 scroll-mt-24">
+        <section id="overview" class="mb-20 scroll-mt-24 reveal-on-scroll">
             <div class="text-center mb-12">
                 <h2 class="section-title text-3xl font-bold md:text-4xl">Proposta de Parceria Estratégica</h2>
                 <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Uma análise interativa sobre a união de forças da LABirintar e Bem Me Quer Sports para inovar no mercado de educação extracurricular.</p>
@@ -114,7 +125,7 @@
             </div>
         </section>
 
-        <section id="companies" class="mb-20 scroll-mt-24">
+        <section id="companies" class="mb-20 scroll-mt-24 reveal-on-scroll">
              <div class="text-center mb-12">
                 <h2 class="section-title text-3xl font-bold md:text-4xl">Análise das Partes</h2>
                 <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Conheça os ativos e forças que cada empresa traz para a parceria, criando uma sinergia poderosa para o mercado.</p>
@@ -139,7 +150,7 @@
             </div>
         </section>
 
-        <section id="scenarios" class="mb-20 scroll-mt-24">
+        <section id="scenarios" class="mb-20 scroll-mt-24 reveal-on-scroll">
             <div class="text-center mb-12">
                 <h2 class="section-title text-3xl font-bold md:text-4xl">Cenários de Parceria</h2>
                 <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Explore os três modelos de colaboração propostos, cada um com diferentes níveis de integração, remuneração e vantagens estratégicas. Clique em cada cenário para ver os detalhes.</p>
@@ -155,7 +166,7 @@
             </div>
         </section>
 
-        <section id="analysis" class="mb-20 scroll-mt-24">
+        <section id="analysis" class="mb-20 scroll-mt-24 reveal-on-scroll">
             <div class="text-center mb-12">
                 <h2 class="section-title text-3xl font-bold md:text-4xl">Análise Comparativa</h2>
                 <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Compare visualmente os cenários através de seus principais atributos estratégicos e projeções financeiras para uma decisão informada.</p>
@@ -230,7 +241,7 @@
                 </div>
         </section>
         
-        <section id="faq" class="scroll-mt-24">
+        <section id="faq" class="scroll-mt-24 reveal-on-scroll">
             <div class="text-center mb-12">
                 <h2 class="section-title text-3xl font-bold md:text-4xl">Perguntas e Respostas</h2>
                 <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Esclarecimentos sobre os pontos-chave da parceria para guiar a tomada de decisão.</p>
@@ -516,6 +527,20 @@
                         icon.style.transform = 'rotate(180deg)';
                     }
                 });
+            });
+
+            const revealElements = document.querySelectorAll('.reveal-on-scroll');
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            revealElements.forEach(el => {
+                revealObserver.observe(el);
             });
 
         });
