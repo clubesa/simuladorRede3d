@@ -95,6 +95,51 @@
             transform: scale(1.03);
             box-shadow: 0 8px 25px rgba(0,0,0,0.1);
         }
+        .chart-point {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+        .chart-line {
+            position: absolute;
+            height: 2px;
+            transform-origin: left center;
+            z-index: 5;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+        .tooltip {
+            position: absolute;
+            display: none;
+            background-color: black;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+        }
+        .chart-point:hover .tooltip {
+            display: block;
+        }
+        .legend-item {
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+        .legend-item.hidden {
+            opacity: 0.4;
+            text-decoration: line-through;
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -262,10 +307,11 @@
                 <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Este gráfico demonstra como a parceria LABirintar+BMQ se diferencia da concorrência, entregando mais valor por um custo competitivo e criando um novo espaço de mercado.</p>
             </div>
             <div class="kpi-card p-6">
-                 <div class="chart-container h-[400px] md:h-[500px] max-w-5xl">
-                    <canvas id="valueCurveChart"></canvas>
+                <div class="flex justify-center flex-wrap gap-x-8 gap-y-2 mb-8" id="chart-legend">
                 </div>
-                <p class="text-sm text-gray-500 mt-8 text-center">Clique na legenda para mostrar/ocultar curvas. Passe o mouse sobre os pontos para mais detalhes.</p>
+                <div class="w-full h-96 relative mt-12" id="value-curve-container">
+                </div>
+                 <p class="text-sm text-gray-500 mt-12 text-center">Clique na legenda para mostrar/ocultar curvas. Passe o mouse sobre os pontos para mais detalhes.</p>
             </div>
         </section>
         
