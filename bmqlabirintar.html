@@ -533,14 +533,14 @@
             const imposto = receitaBMQ * 0.10;
             const horasPorTurmaPar = 32;
             const custoHoraEducador = 120;
-            const custoEducador = (turmas / 2) * horasPorTurmaPar * frequencia * escolas;
+            const custoEducador = (turmas / 2) * horasPorTurmaPar * frequencia * escolas * custoHoraEducador;
             
             const margem = receitaBMQ - imposto - custoEducador;
             
             document.getElementById('s2_receita').textContent = formatCurrency(receitaBMQ);
             document.getElementById('s2_custo_educador').textContent = formatCurrency(custoEducador);
             document.getElementById('s2_imposto').textContent = formatCurrency(imposto);
-            document.getElementById('s2_margem').textContent = `${formatCurrency(margem)} (${(margem/receitaBMQ*100 || 0).toFixed(1)}%)`;
+            document.getElementById('s2_margem').textContent = `${formatCurrency(margem)} (${(receitaBMQ > 0 ? (margem/receitaBMQ*100) : 0).toFixed(1)}%)`;
             updateFinancialChart();
         }
 
@@ -628,7 +628,7 @@
             const s2_receitaBruta = s2_escolas * s2_turmas * 15 * s2_tickets[s2_frequencia];
             const s2_receitaBMQ = s2_receitaBruta * 0.45;
             const s2_imposto = s2_receitaBMQ * 0.10;
-            const s2_custoEducador = (s2_turmas / 2) * 32 * s2_frequencia * s2_escolas * 120; // Corrected calculation
+            const s2_custoEducador = (s2_turmas / 2) * 32 * s2_frequencia * s2_escolas * 120;
             const s2_margem = s2_receitaBMQ - s2_imposto - s2_custoEducador;
 
             financialChartInstance.data.datasets[0].data[0] = s1_ganho;
