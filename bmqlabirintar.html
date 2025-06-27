@@ -51,9 +51,7 @@
         .chart-container {
             position: relative;
             margin: auto;
-            height: 350px;
             width: 100%;
-            max-width: 600px;
         }
         .kpi-card {
             background-color: #FFFFFF;
@@ -440,7 +438,7 @@
                                     <p id="s2_receita" class="text-lg font-bold text-gray-800">R$ 0,00</p>
                                 </div>
                                 <div>
-                                    <p class="text-sm text-gray-600">Custo Educador</p>
+                                    <p class="text-sm text-gray-600">Custo Educador <span id="s2_memoria_calculo" class="text-xs font-normal text-gray-500"></span></p>
                                     <p id="s2_custo_educador" class="text-lg font-bold text-red-500">R$ 0,00</p>
                                 </div>
                                  <div>
@@ -452,7 +450,6 @@
                                     <p id="s2_margem" class="text-lg font-extrabold text-green-600">R$ 0,00</p>
                                 </div>
                             </div>
-                            <p id="s2_memoria_calculo" class="text-xs text-gray-500 mt-3 text-center"></p>
                         </div>
                     </div>
                 `
@@ -573,7 +570,8 @@
             
             const imposto = receitaBMQ * 0.10;
             const custoHoraEducador = 120;
-            const custoEducador = escolas * turmas * 4 * frequencia * custoHoraEducador;
+            const totalHoras = escolas * turmas * 4 * frequencia;
+            const custoEducador = totalHoras * custoHoraEducador;
             
             const margem = receitaBMQ - imposto - custoEducador;
             
@@ -584,8 +582,7 @@
             
             const memoriaCalculoEl = document.getElementById('s2_memoria_calculo');
             if (memoriaCalculoEl) {
-                const totalHoras = escolas * turmas * 4 * frequencia;
-                memoriaCalculoEl.textContent = `Custo Ed.: ${totalHoras}h × ${formatCurrency(custoHoraEducador)}`;
+                memoriaCalculoEl.textContent = `(${totalHoras}h × R$120/h)`;
             }
 
             updateFinancialChart();
