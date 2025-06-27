@@ -262,7 +262,7 @@
                 <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Este gráfico demonstra como a parceria LABirintar+BMQ se diferencia da concorrência, entregando mais valor por um custo competitivo e criando um novo espaço de mercado.</p>
             </div>
             <div class="kpi-card p-6">
-                <div class="chart-container h-[400px] md:h-[500px] max-w-5xl">
+                 <div class="chart-container h-[400px] md:h-[500px] max-w-5xl">
                     <canvas id="valueCurveChart"></canvas>
                 </div>
                 <p class="text-sm text-gray-500 mt-8 text-center">Clique na legenda para mostrar/ocultar curvas. Passe o mouse sobre os pontos para mais detalhes.</p>
@@ -681,89 +681,135 @@
                 options: { responsive: true, maintainAspectRatio: false, scales: { r: { suggestedMin: 0, suggestedMax: 5, ticks: { stepSize: 1 }}}}
             });
             
-            const valueCurveContainer = document.getElementById('value-curve-container');
-            const legendContainer = document.getElementById('chart-legend');
-
-            function drawValueCurve() {
-                if(valueCurveChartInstance) {
-                    valueCurveChartInstance.destroy();
-                }
-                const factors = ['Qualidade', 'Inovação Pedagógica', 'Amplitude da Oferta', 'Conveniência do Modelo', 'Reputação da Marca', 'Preço (Otimizado)'];
-                const competitors = {
-                    'Parceria LAB+BMQ': { color: 'rgb(41, 54, 143)', values: [3, 3, 3, 3, 3, 2] },
-                    'RAP': { color: 'rgb(10, 159, 131)', values: [2, 2, 3, 2, 3, 2] },
-                    'ARC Sports': { color: 'rgb(59, 130, 246)', values: [2, 3, 2, 3, 2, 2] },
-                    'UP Gestão': { color: 'rgb(249, 115, 22)', values: [2, 1, 3, 3, 2, 2] }
-                };
-                
-                const datasets = Object.keys(competitors).map(key => ({
-                    label: key,
-                    data: competitors[key].values,
-                    borderColor: competitors[key].color,
-                    pointBackgroundColor: competitors[key].color,
-                    pointRadius: 6,
-                    pointHoverRadius: 8,
-                    borderWidth: 3,
-                    tension: 0.1
-                }));
-
-                valueCurveChartInstance = new Chart(valueCurveContainer, {
-                    type: 'line',
-                    data: { labels: factors, datasets: datasets },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                min: 0, max: 4,
-                                ticks: {
-                                    stepSize: 1,
-                                    callback: function(value) {
-                                        if (value === 3) return 'Alto';
-                                        if (value === 2) return 'Médio';
-                                        if (value === 1) return 'Baixo';
-                                        return '';
-                                    },
-                                    font: { size: 12, weight: '500' }, color: '#6b7280'
+            const valueCurveCtx = document.getElementById('valueCurveChart').getContext('2d');
+            if (valueCurveCtx) {
+                valueCurveChartInstance = new Chart(valueCurveCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Qualidade', 'Inovação Pedagógica', 'Amplitude da Oferta', 'Conveniência do Modelo', 'Reputação da Marca', 'Preço (Otimizado)'],
+                    datasets: [
+                        {
+                            label: 'Parceria LAB+BMQ',
+                            data: [3, 3, 3, 3, 3, 2],
+                            borderColor: 'rgb(41, 54, 143)',
+                            backgroundColor: 'rgba(41, 54, 143, 0.1)',
+                            pointBackgroundColor: 'rgb(41, 54, 143)',
+                            pointRadius: 6,
+                            pointHoverRadius: 8,
+                            borderWidth: 3,
+                            tension: 0.1
+                        },
+                        {
+                            label: 'RAP',
+                            data: [2, 2, 3, 2, 3, 2],
+                            borderColor: 'rgb(10, 159, 131)',
+                             backgroundColor: 'rgba(10, 159, 131, 0.1)',
+                             pointBackgroundColor: 'rgb(10, 159, 131)',
+                            pointRadius: 6,
+                            pointHoverRadius: 8,
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'ARC Sports',
+                            data: [2, 3, 2, 3, 2, 2],
+                            borderColor: 'rgb(59, 130, 246)',
+                             backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                             pointBackgroundColor: 'rgb(59, 130, 246)',
+                            pointRadius: 6,
+                            pointHoverRadius: 8,
+                             borderWidth: 2
+                        },
+                        {
+                            label: 'UP Gestão',
+                            data: [2, 1, 3, 3, 2, 2],
+                            borderColor: 'rgb(249, 115, 22)',
+                             backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                             pointBackgroundColor: 'rgb(249, 115, 22)',
+                            pointRadius: 6,
+                            pointHoverRadius: 8,
+                             borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            min: 0, max: 4,
+                            ticks: {
+                                stepSize: 1,
+                                callback: function(value) {
+                                    if (value === 3) return 'Alto';
+                                    if (value === 2) return 'Médio';
+                                    if (value === 1) return 'Baixo';
+                                    return '';
                                 },
-                                grid: {
-                                    drawBorder: false,
-                                    color: (context) => (context.tick.value > 0 && context.tick.value < 4) ? '#e5e7eb' : 'rgba(0, 0, 0, 0)',
-                                }
+                                font: { size: 12, weight: '500' }, color: '#6b7280'
                             },
-                            x: {
-                                ticks: { font: { size: 12, weight: '500' }, color: '#4b5563' },
-                                grid: { display: false }
+                             grid: {
+                                drawBorder: false,
+                                color: (context) => (context.tick.value > 0 && context.tick.value < 4) ? '#e5e7eb' : 'rgba(0, 0, 0, 0)',
                             }
                         },
-                        plugins: {
-                            legend: {
-                                position: 'top',
-                                align: 'center',
-                                labels: {
-                                    usePointStyle: false,
-                                    boxWidth: 0,
-                                    padding: 30,
-                                    font: { size: 14, weight: '600' },
-                                    generateLabels: (chart) => {
-                                        return chart.data.datasets.map((dataset, i) => ({
-                                            text: dataset.label,
-                                            fillStyle: dataset.borderColor,
-                                            strokeStyle: dataset.borderColor,
-                                            fontColor: dataset.borderColor,
-                                            hidden: !chart.isDatasetVisible(i),
-                                            datasetIndex: i
-                                        }));
-                                    }
+                        x: {
+                             ticks: { font: { size: 12, weight: '500' }, color: '#4b5563' },
+                            grid: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: { 
+                            position: 'top',
+                            align: 'center',
+                            onClick: (e, legendItem, legend) => {
+                                const index = legendItem.datasetIndex;
+                                const ci = legend.chart;
+                                if (ci.isDatasetVisible(index)) {
+                                    ci.hide(index);
+                                    legendItem.hidden = true;
+                                } else {
+                                    ci.show(index);
+                                    legendItem.hidden = false;
+                                }
+                            },
+                            labels: {
+                                usePointStyle: false,
+                                boxWidth: 0,
+                                padding: 30,
+                                generateLabels: (chart) => {
+                                    return chart.data.datasets.map((dataset, i) => ({
+                                        text: dataset.label,
+                                        fontColor: dataset.borderColor,
+                                        hidden: !chart.isDatasetVisible(i),
+                                        datasetIndex: i,
+                                        lineWidth: 0
+                                    }));
+                                }
+                            }
+                         },
+                        tooltip: {
+                            enabled: true,
+                            backgroundColor: '#000',
+                            titleFont: { weight: 'bold'},
+                            bodyFont: { size: 12 },
+                            padding: 10,
+                            cornerRadius: 4,
+                            displayColors: true,
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) { label += ': '; }
+                                    const value = context.parsed.y;
+                                    if (value === 3) label += 'Alto';
+                                    else if (value === 2) label += 'Médio';
+                                    else if (value === 1) label += 'Baixo';
+                                    return label;
                                 }
                             }
                         }
                     }
-                });
+                }
+            });
             }
-
-            drawValueCurve();
-            window.addEventListener('resize', drawValueCurve);
 
             document.querySelectorAll('.accordion-item').forEach(item => {
                 const title = item.querySelector('.accordion-title');
