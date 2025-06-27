@@ -532,8 +532,7 @@
             
             const imposto = receitaBMQ * 0.10;
             const custoHoraEducador = 120;
-            const horasPorDuasTurmas = 32;
-            const custoEducador = (turmas / 2) * horasPorDuasTurmas * frequencia * escolas * custoHoraEducador;
+            const custoEducador = escolas * turmas * 4 * frequencia * custoHoraEducador;
             
             const margem = receitaBMQ - imposto - custoEducador;
             
@@ -628,7 +627,7 @@
             const s2_receitaBruta = s2_escolas * s2_turmas * 15 * s2_tickets[s2_frequencia];
             const s2_receitaBMQ = s2_receitaBruta * 0.45;
             const s2_imposto = s2_receitaBMQ * 0.10;
-            const s2_custoEducador = (s2_turmas / 2) * 32 * s2_frequencia * s2_escolas * 120;
+            const s2_custoEducador = s2_escolas * s2_turmas * 4 * s2_frequencia * 120;
             const s2_margem = s2_receitaBMQ - s2_imposto - s2_custoEducador;
 
             financialChartInstance.data.datasets[0].data[0] = s1_ganho;
