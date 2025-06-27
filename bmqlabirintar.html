@@ -531,9 +531,10 @@
             const receitaBMQ = receitaBrutaTotal * revenueShareBMQ;
             
             const imposto = receitaBMQ * 0.10;
-            const horasPorTurmaPar = 32;
             const custoHoraEducador = 120;
-            const custoEducador = (turmas / 2) * horasPorTurmaPar * frequencia * escolas * custoHoraEducador;
+            const horasPorDuasTurmas = 32;
+            const totalHorasEducador = (turmas / 2) * horasPorDuasTurmas * frequencia * escolas;
+            const custoEducador = totalHorasEducador * custoHoraEducador;
             
             const margem = receitaBMQ - imposto - custoEducador;
             
