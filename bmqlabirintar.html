@@ -412,6 +412,7 @@
                                     <p id="s2_margem" class="text-lg font-extrabold text-green-600">R$ 0,00</p>
                                 </div>
                             </div>
+                            <p id="s2_memoria_calculo" class="text-xs text-gray-500 mt-3 text-center"></p>
                         </div>
                     </div>
                 `
@@ -540,6 +541,12 @@
             document.getElementById('s2_custo_educador').textContent = formatCurrency(custoEducador);
             document.getElementById('s2_imposto').textContent = formatCurrency(imposto);
             document.getElementById('s2_margem').textContent = `${formatCurrency(margem)} (${(receitaBMQ > 0 ? (margem/receitaBMQ*100) : 0).toFixed(1)}%)`;
+            
+            const memoriaCalculoEl = document.getElementById('s2_memoria_calculo');
+            if (memoriaCalculoEl) {
+                memoriaCalculoEl.textContent = `Memória de Cálculo (Custo Ed.): ${escolas} esc. × ${turmas} turmas × 4h × ${frequencia}x sem. × R$120/h`;
+            }
+
             updateFinancialChart();
         }
 
