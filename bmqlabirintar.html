@@ -15,7 +15,7 @@
         - Company Profiles: Report Info -> Key assets of LABirintar & BMQ. Goal -> Compare company strengths. Viz/Presentation -> Side-by-side card layout using HTML/Tailwind. Interaction -> None. Justification -> Clear, direct visual comparison of core competencies.
         - Partnership Scenarios: Report Info -> Detailed descriptions of 3 scenarios with interactive simulators. Goal -> Allow detailed exploration and financial modeling. Viz/Presentation -> Tabbed content sections with sliders and input fields. Interaction -> Clicking tabs reveals scenarios; sliders and inputs trigger real-time calculation updates. Justification -> Empowers user to test assumptions and understand financial implications directly.
         - Financial Simulation: Report Info -> Monthly earnings projections for BMQ in Scenarios 1 & 2. Goal -> Compare financial outcomes. Viz/Presentation -> Vertical Bar Chart (Chart.js/Canvas). Interaction -> Tooltips on hover; chart data updates dynamically based on user input in the scenario simulators. Justification -> Creates a powerful, centralized dashboard for comparing the financial viability of the main scenarios.
-        - Value Curve (Blue Ocean): Report Info -> Competitive analysis from provided documents. Goal -> Strategically position the partnership against the market. Viz/Presentation -> Line Chart (Chart.js/Canvas). Interaction -> Tooltips. Justification -> Classic strategic visualization to powerfully argue the unique value proposition of the partnership, now matching user-provided design reference.
+        - Value Curve (Blue Ocean): Report Info -> Competitive analysis from provided documents. Goal -> Strategically position the partnership against the market. Viz/Presentation -> Custom HTML/CSS/JS Line Chart. Interaction -> Tooltips on hover. Justification -> Custom strategic visualization to powerfully argue the unique value proposition of the partnership, matching user-provided design reference.
     -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
@@ -30,6 +30,9 @@
             --text-dark: #333333;
             --bg-light: #fefcfb;
             --bg-neutral: #f3f4f6;
+            --rap-green: #0a9f83;
+            --arc-color: #3b82f6;
+            --up-color: #f97316;
         }
         body {
             font-family: 'Inter', sans-serif;
@@ -94,6 +97,41 @@
             transform: scale(1.03);
             box-shadow: 0 8px 25px rgba(0,0,0,0.1);
         }
+        .chart-point {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            cursor: pointer;
+        }
+        .chart-line {
+            position: absolute;
+            height: 2px;
+            transform-origin: left center;
+            z-index: 5;
+            opacity: 0.7;
+        }
+        .tooltip {
+            position: absolute;
+            display: none;
+            background-color: black;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+        }
+        .chart-point:hover .tooltip {
+            display: block;
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -117,7 +155,7 @@
 
     <main class="container mx-auto px-6 py-12">
 
-        <section id="overview" class="mb-32 scroll-mt-24 reveal-on-scroll">
+        <section id="overview" class="mb-40 scroll-mt-24 reveal-on-scroll">
             <div class="text-center mb-12">
                 <h2 class="section-title text-3xl md:text-4xl">Proposta de Parceria Estratégica</h2>
                 <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Uma análise interativa sobre a união de forças da LABirintar e Bem Me Quer Sports para inovar no mercado de educação extracurricular.</p>
@@ -145,7 +183,7 @@
             </div>
         </section>
 
-        <section id="levers" class="mb-32 scroll-mt-24 reveal-on-scroll">
+        <section id="levers" class="mb-40 scroll-mt-24 reveal-on-scroll">
              <div class="text-center mb-12">
                 <h2 class="section-title text-3xl md:text-4xl">Alavancas para o Crescimento</h2>
                 <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Conheça os ativos e forças que cada empresa traz para a parceria, criando uma sinergia poderosa para o mercado.</p>
@@ -170,7 +208,7 @@
             </div>
         </section>
 
-        <section id="scenarios" class="mb-32 scroll-mt-24 reveal-on-scroll">
+        <section id="scenarios" class="mb-40 scroll-mt-24 reveal-on-scroll">
             <div class="text-center mb-12">
                 <h2 class="section-title text-3xl md:text-4xl">Cenários e Sinergias</h2>
                 <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Explore os três modelos de colaboração propostos, cada um com diferentes níveis de integração, remuneração e vantagens estratégicas. Use os simuladores para testar as variáveis.</p>
@@ -186,7 +224,7 @@
             </div>
         </section>
 
-        <section id="analysis" class="mb-32 scroll-mt-24 reveal-on-scroll">
+        <section id="analysis" class="mb-40 scroll-mt-24 reveal-on-scroll">
             <div class="text-center mb-12">
                 <h2 class="section-title text-3xl md:text-4xl">Análise Comparativa</h2>
                 <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Compare visualmente os cenários através de seus principais atributos e projeções financeiras. O gráfico abaixo é atualizado dinamicamente pelos simuladores.</p>
@@ -255,15 +293,17 @@
                 </div>
         </section>
 
-        <section id="value-curve" class="mb-32 scroll-mt-24 reveal-on-scroll">
+        <section id="value-curve" class="mb-40 scroll-mt-24 reveal-on-scroll">
             <div class="text-center mb-12">
                 <h2 class="section-title text-3xl md:text-4xl">Criando um Oceano Azul: Curva de Valor</h2>
                 <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Este gráfico demonstra como a parceria LABirintar+BMQ se diferencia da concorrência, entregando mais valor por um custo competitivo e criando um novo espaço de mercado.</p>
             </div>
             <div class="kpi-card p-6">
-                 <div class="chart-container h-[400px] md:h-[500px] max-w-5xl">
-                    <canvas id="valueCurveChart"></canvas>
+                <div class="flex justify-center flex-wrap gap-x-8 gap-y-2 mb-8" id="chart-legend">
                 </div>
+                <div class="w-full h-96 relative mt-12" id="value-curve-container">
+                </div>
+                 <p class="text-sm text-gray-500 mt-12 text-center">Passe o mouse sobre os pontos para comparar os concorrentes em cada fator.</p>
             </div>
         </section>
         
@@ -680,7 +720,8 @@
             });
             
             const valueCurveCtx = document.getElementById('valueCurveChart').getContext('2d');
-            valueCurveChartInstance = new Chart(valueCurveCtx, {
+            if (valueCurveCtx) {
+                valueCurveChartInstance = new Chart(valueCurveCtx, {
                 type: 'line',
                 data: {
                     labels: ['Qualidade', 'Inovação Pedagógica', 'Amplitude da Oferta', 'Conveniência do Modelo', 'Reputação da Marca', 'Preço (Otimizado)'],
@@ -766,13 +807,14 @@
                             position: 'top',
                             align: 'center',
                             labels: {
-                                usePointStyle: true,
-                                boxWidth: 8,
+                                usePointStyle: false,
+                                boxWidth: 0,
                                 padding: 25,
                                 font: {
                                     size: 14,
                                     weight: '500'
-                                }
+                                },
+                                color: (context) => context.dataset.borderColor
                             }
                          },
                         tooltip: {
@@ -800,6 +842,8 @@
                     }
                 }
             });
+            }
+
 
             document.querySelectorAll('.accordion-item').forEach(item => {
                 const title = item.querySelector('.accordion-title');
