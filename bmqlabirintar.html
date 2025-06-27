@@ -142,7 +142,7 @@
         .legend-item:hover {
             background-color: rgba(0,0,0,0.05);
         }
-        .legend-item.hidden {
+        .legend-item.dimmed {
             opacity: 0.4;
         }
     </style>
@@ -807,16 +807,14 @@
                     legendItem.style.color = competitor.color;
                     legendItem.dataset.competitor = key;
                     
-                    if(competitor.hidden) {
-                        legendItem.classList.add('hidden');
+                    if(competitors[key].hidden) {
+                        legendItem.classList.add('dimmed');
                     }
 
                     legendItem.addEventListener('click', () => {
                         competitors[key].hidden = !competitors[key].hidden;
-                        legendItem.classList.toggle('hidden');
-                        document.querySelectorAll(`[data-competitor="${key}"]`).forEach(el => {
-                           el.style.opacity = competitors[key].hidden ? 0 : (el.classList.contains('chart-line') ? 0.7 : 1);
-                        });
+                        legendItem.classList.toggle('dimmed');
+                        drawValueCurve();
                     });
                     legendContainer.appendChild(legendItem);
                 });
