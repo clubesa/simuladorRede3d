@@ -9,6 +9,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Custom LABirintar & BMQ Palette -->
+    <!-- Application Structure Plan: A single-page application designed as an interactive dashboard. The structure uses a main navigation to jump to key sections: Overview, Company Profiles, Partnership Scenarios, and Comparative Analysis. The core of the application is a tab-based interface for the "Scenarios" section, allowing users to dynamically switch between different partnership models. This non-linear structure was chosen to transform the static report into an exploratory tool, enabling easy comparison and deep dives into specific details, which is more effective for strategic decision-making than a linear document. -->
+    <!-- Visualization & Content Choices: 
+        - Company Profiles: Report Info -> Key assets of LABirintar & BMQ. Goal -> Compare company strengths. Viz/Presentation -> Side-by-side card layout using HTML/Tailwind. Interaction -> None. Justification -> Clear, direct visual comparison of core competencies.
+        - Partnership Scenarios: Report Info -> Detailed descriptions of 3 scenarios with interactive simulators. Goal -> Allow detailed exploration and financial modeling. Viz/Presentation -> Tabbed content sections with sliders and input fields. Interaction -> Clicking tabs reveals scenarios; sliders and inputs trigger real-time calculation updates. Justification -> Empowers user to test assumptions and understand financial implications directly.
+        - Financial Simulation: Report Info -> Monthly earnings projections for BMQ in Scenarios 1 & 2. Goal -> Compare financial outcomes. Viz/Presentation -> Vertical Bar Chart (Chart.js/Canvas). Interaction -> Tooltips on hover; chart data updates dynamically based on user input in the scenario simulators. Justification -> Creates a powerful, centralized dashboard for comparing the financial viability of the main scenarios.
+        - Value Curve (Blue Ocean): Report Info -> Competitive analysis from provided documents. Goal -> Strategically position the partnership against the market. Viz/Presentation -> Custom HTML/CSS/JS Line Chart. Interaction -> Tooltips on hover, legend items toggle dataset visibility. Justification -> Custom strategic visualization to powerfully argue the unique value proposition of the partnership, matching user-provided design reference with added interactivity.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         :root {
             --bmq-red: #c20f0f;
@@ -298,11 +307,10 @@
                 <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Este gráfico demonstra como a parceria LABirintar+BMQ se diferencia da concorrência, entregando mais valor por um custo competitivo e criando um novo espaço de mercado.</p>
             </div>
             <div class="kpi-card p-6">
-                <div class="flex justify-center flex-wrap gap-x-8 gap-y-2 mb-8" id="chart-legend">
-                </div>
+                <div id="legend-container" class="flex justify-center flex-wrap gap-x-6 gap-y-2 mb-8"></div>
                 <div class="w-full h-96 relative mt-12" id="value-curve-container">
                 </div>
-                 <p class="text-sm text-gray-500 mt-12 text-center">Clique na legenda para mostrar/ocultar curvas. Passe o mouse sobre os pontos para mais detalhes.</p>
+                <p class="text-sm text-gray-500 mt-12 text-center">Clique na legenda para mostrar/ocultar curvas. Passe o mouse sobre os pontos para mais detalhes.</p>
             </div>
         </section>
         
@@ -719,7 +727,8 @@
             });
             
             const valueCurveContainer = document.getElementById('value-curve-container');
-            const legendContainer = document.getElementById('chart-legend');
+            const legendContainer = document.getElementById('legend-container');
+            let valueCurveChartInstance;
 
             const factors = ['Qualidade', 'Inovação Pedagógica', 'Amplitude da Oferta', 'Conveniência do Modelo', 'Reputação da Marca', 'Preço (Otimizado)'];
             const competitors = {
@@ -728,61 +737,88 @@
                 'ARC Sports': { color: 'var(--arc-color)', values: [2, 3, 2, 3, 2, 2], tooltips: ['Profissionais capacitados', '"Iniciação Desportiva Responsável"', 'Foco em esportes escolares', 'Modelo de "Gestão Total"', 'Fundador com boa reputação', 'Valor atrelado à conveniência'], hidden: false },
                 'UP Gestão': { color: 'var(--up-color)', values: [2, 1, 3, 3, 2, 2], tooltips: ['Foco em profissionais', 'Menor ênfase em pedagogia de marca', 'Serviços muito diversificados', 'Foco em terceirização e flexibilidade', '16+ anos, forte em condomínios', 'Flexível'], hidden: false }
             };
-
+            
             function drawValueCurve() {
                 if (!valueCurveContainer) return;
                 
                 valueCurveContainer.innerHTML = '';
+                valueCurveContainer.innerHTML = '<canvas id="valueCurveCanvas"></canvas>';
+                const ctx = document.getElementById('valueCurveCanvas').getContext('2d');
                 
-                const chartWidth = valueCurveContainer.clientWidth;
-                const chartHeight = valueCurveContainer.clientHeight;
-                
-                let chartHTML = `<div class="absolute w-full h-full">`;
-                const levels = ['Alto', 'Médio', 'Baixo'];
-                levels.forEach((level, i) => {
-                    const yPosPercentage = (i * (100 / 3)) + (100 / 6);
-                    chartHTML += `<div class="absolute left-[-45px] top-0 -translate-y-1/2 text-xs text-gray-500" style="top: ${yPosPercentage}%;">${level}</div>`;
-                    if (i < levels.length -1) {
-                        chartHTML += `<div class="absolute w-full border-t border-dashed border-gray-300" style="top: ${(i + 1) * 33.33}%"></div>`;
+                const datasets = Object.keys(competitors).map(key => ({
+                    label: key,
+                    data: competitors[key].values,
+                    borderColor: competitors[key].color,
+                    pointBackgroundColor: competitors[key].color,
+                    pointRadius: 6,
+                    pointHoverRadius: 8,
+                    borderWidth: 3,
+                    tension: 0.1,
+                    hidden: competitors[key].hidden
+                }));
+
+                if (valueCurveChartInstance) {
+                    valueCurveChartInstance.destroy();
+                }
+
+                valueCurveChartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: factors,
+                        datasets: datasets
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                min: 0, max: 4,
+                                ticks: {
+                                    stepSize: 1,
+                                    callback: function(value) {
+                                        if (value === 3) return 'Alto';
+                                        if (value === 2) return 'Médio';
+                                        if (value === 1) return 'Baixo';
+                                        return '';
+                                    },
+                                    font: { size: 12, weight: '500' }, color: '#6b7280'
+                                },
+                                grid: {
+                                    drawBorder: false,
+                                    color: (context) => (context.tick.value > 0 && context.tick.value < 4) ? '#e5e7eb' : 'rgba(0, 0, 0, 0)',
+                                }
+                            },
+                            x: {
+                                ticks: { font: { size: 12, weight: '500' }, color: '#4b5563' },
+                                grid: { display: false }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                enabled: true,
+                                backgroundColor: '#000',
+                                titleFont: { weight: 'bold' },
+                                bodyFont: { size: 12 },
+                                padding: 10,
+                                cornerRadius: 4,
+                                displayColors: true,
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) { label += ': '; }
+                                        const value = context.parsed.y;
+                                        if (value === 3) label += 'Alto';
+                                        else if (value === 2) label += 'Médio';
+                                        else if (value === 1) label += 'Baixo';
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
                     }
                 });
-                chartHTML += '</div>';
-
-                const competitorKeys = Object.keys(competitors);
-                const jitterWidth = 12;
-
-                competitorKeys.forEach((key, competitorIndex) => {
-                    const competitor = competitors[key];
-                    if (competitor.hidden) return;
-
-                    let prevPoint = null;
-                    
-                    competitor.values.forEach((value, i) => {
-                        const base_x = (i + 0.5) * (chartWidth / factors.length);
-                        const x = base_x + (competitorIndex * jitterWidth) - ((competitorKeys.length - 1) * jitterWidth / 2);
-                        const y = chartHeight - ((value - 0.5) * (chartHeight / 3)); 
-
-                        chartHTML += `<div class="chart-point" style="left: ${x}px; top: ${y}px; background-color: ${competitor.color};">
-                                        <span class="tooltip"><strong style="color:${competitor.color};">${key}:</strong> ${competitor.tooltips[i]}</span>
-                                    </div>`;
-
-                        if (prevPoint) {
-                            const prevX = prevPoint.x;
-                            const prevY = prevPoint.y;
-                            const angle = Math.atan2(y - prevY, x - prevX) * 180 / Math.PI;
-                            const distance = Math.sqrt(Math.pow(x - prevX, 2) + Math.pow(y - prevY, 2));
-                            chartHTML += `<div class="chart-line" style="background-color: ${competitor.color}; left: ${prevX}px; top: ${prevY}px; width: ${distance}px; transform: rotate(${angle}deg);"></div>`;
-                        }
-                        prevPoint = { x, y };
-                    });
-                });
-                
-                chartHTML += '<div class="absolute -bottom-8 w-full flex">';
-                factors.forEach(factor => {
-                    chartHTML += `<div class="w-1/6 text-center text-xs text-gray-600 font-medium">${factor}</div>`;
-                });
-                chartHTML += '</div>';
-                valueCurveContainer.innerHTML = chartHTML;
             }
 
             function setupLegend() {
@@ -792,21 +828,31 @@
                     const competitor = competitors[key];
                     const legendItem = document.createElement('div');
                     legendItem.textContent = key;
-                    legendItem.className = 'legend-item font-semibold';
+                    legendItem.className = 'legend-item font-semibold text-sm md:text-base';
                     legendItem.style.color = competitor.color;
                     legendItem.dataset.competitor = key;
+                    
                     if(competitor.hidden) {
                         legendItem.classList.add('hidden');
                     }
+
                     legendItem.addEventListener('click', () => {
                         competitors[key].hidden = !competitors[key].hidden;
                         legendItem.classList.toggle('hidden');
-                        drawValueCurve();
+                        
+                        const chart = Chart.getChart(document.getElementById('valueCurveCanvas'));
+                        if (chart) {
+                            const datasetIndex = chart.data.datasets.findIndex(d => d.label === key);
+                            if (datasetIndex !== -1) {
+                                chart.getDatasetMeta(datasetIndex).hidden = competitors[key].hidden;
+                                chart.update();
+                            }
+                        }
                     });
                     legendContainer.appendChild(legendItem);
                 });
             }
-            
+
             setupLegend();
             drawValueCurve();
             window.addEventListener('resize', drawValueCurve);
