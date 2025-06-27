@@ -584,7 +584,8 @@
             
             const memoriaCalculoEl = document.getElementById('s2_memoria_calculo');
             if (memoriaCalculoEl) {
-                memoriaCalculoEl.textContent = `Memória de Cálculo (Custo Ed.): ${escolas} esc. × ${turmas} turmas × 4h × ${frequencia}x sem. × R$120/h`;
+                const totalHoras = escolas * turmas * 4 * frequencia;
+                memoriaCalculoEl.textContent = `Custo Ed.: ${totalHoras}h × ${formatCurrency(custoHoraEducador)}`;
             }
 
             updateFinancialChart();
@@ -719,131 +720,77 @@
                 options: { responsive: true, maintainAspectRatio: false, scales: { r: { suggestedMin: 0, suggestedMax: 5, ticks: { stepSize: 1 }}}}
             });
             
-            const valueCurveCtx = document.getElementById('valueCurveChart').getContext('2d');
-            if (valueCurveCtx) {
-                valueCurveChartInstance = new Chart(valueCurveCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Qualidade', 'Inovação Pedagógica', 'Amplitude da Oferta', 'Conveniência do Modelo', 'Reputação da Marca', 'Preço (Otimizado)'],
-                    datasets: [
-                        {
-                            label: 'Parceria LAB+BMQ',
-                            data: [3, 3, 3, 3, 3, 2],
-                            borderColor: 'rgb(41, 54, 143)',
-                            backgroundColor: 'rgba(41, 54, 143, 0.5)',
-                            pointRadius: 6,
-                            pointHoverRadius: 8,
-                            borderWidth: 3,
-                            tension: 0.1
-                        },
-                        {
-                            label: 'RAP',
-                            data: [2, 2, 3, 2, 3, 2],
-                            borderColor: 'rgb(10, 159, 131)',
-                             backgroundColor: 'rgba(10, 159, 131, 0.5)',
-                            pointRadius: 6,
-                            pointHoverRadius: 8,
-                            borderWidth: 2
-                        },
-                        {
-                            label: 'ARC Sports',
-                            data: [2, 3, 2, 3, 2, 2],
-                            borderColor: 'rgb(59, 130, 246)',
-                             backgroundColor: 'rgba(59, 130, 246, 0.5)',
-                            pointRadius: 6,
-                            pointHoverRadius: 8,
-                             borderWidth: 2
-                        },
-                        {
-                            label: 'UP Gestão',
-                            data: [2, 1, 3, 3, 2, 2],
-                            borderColor: 'rgb(249, 115, 22)',
-                             backgroundColor: 'rgba(249, 115, 22, 0.5)',
-                            pointRadius: 6,
-                            pointHoverRadius: 8,
-                             borderWidth: 2
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            min: 0, max: 4,
-                            ticks: {
-                                stepSize: 1,
-                                callback: function(value) {
-                                    if (value === 3) return 'Alto';
-                                    if (value === 2) return 'Médio';
-                                    if (value === 1) return 'Baixo';
-                                    return '';
-                                },
-                                font: { size: 12, weight: '500' },
-                                color: '#6b7280'
-                            },
-                             grid: {
-                                drawBorder: false,
-                                color: function(context) {
-                                    if (context.tick.value === 1 || context.tick.value === 2 || context.tick.value === 3) {
-                                        return '#e5e7eb';
-                                    }
-                                    return 'rgba(0, 0, 0, 0)';
-                                },
-                            }
-                        },
-                        x: {
-                             ticks: {
-                                font: { size: 12, weight: '500' },
-                                color: '#4b5563'
-                            },
-                            grid: {
-                                display: false,
-                                drawBorder: false
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: { 
-                            position: 'top',
-                            align: 'center',
-                            labels: {
-                                usePointStyle: false,
-                                boxWidth: 0,
-                                padding: 25,
-                                font: {
-                                    size: 14,
-                                    weight: '500'
-                                },
-                                color: (context) => context.dataset.borderColor
-                            }
-                         },
-                        tooltip: {
-                            enabled: true,
-                            backgroundColor: '#000',
-                            titleFont: { weight: 'bold'},
-                            bodyFont: { size: 12 },
-                            padding: 10,
-                            cornerRadius: 4,
-                            displayColors: true,
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.dataset.label || '';
-                                    if (label) {
-                                        label += ': ';
-                                    }
-                                    const value = context.parsed.y;
-                                    if (value === 3) label += 'Alto';
-                                    else if (value === 2) label += 'Médio';
-                                    else if (value === 1) label += 'Baixo';
-                                    return label;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-            }
+            const valueCurveContainer = document.getElementById('value-curve-container');
+            const legendContainer = document.getElementById('chart-legend');
 
+            const factors = ['Qualidade', 'Inovação Pedagógica', 'Amplitude da Oferta', 'Conveniência do Modelo', 'Reputação da Marca', 'Preço (Otimizado)'];
+            const competitors = {
+                'Parceria LAB+BMQ': { color: 'var(--bmq-blue)', values: [3, 3, 3, 3, 3, 2], tooltips: ['Qualidade Certificada MEC + Inovação', 'Metodologia Dupla', 'Portfólio Integrado (Esporte + Artes/Tech)', 'Plataforma Única de Gestão', 'Soma das Reputações', 'Competitivo com maior valor agregado'] },
+                'RAP': { color: 'var(--rap-green)', values: [2, 2, 3, 2, 3, 2], tooltips: ['Metodologia consolidada', 'Foco na execução', '>45 modalidades', 'Modelo de parceria tradicional', 'Marca com 20+ anos e presença na mídia', 'Competitivo'] },
+                'ARC Sports': { color: 'var(--arc-color)', values: [2, 3, 2, 3, 2, 2], tooltips: ['Profissionais capacitados', '"Iniciação Desportiva Responsável"', 'Foco em esportes escolares', 'Modelo de "Gestão Total"', 'Fundador com boa reputação', 'Valor atrelado à conveniência'] },
+                'UP Gestão': { color: 'var(--up-color)', values: [2, 1, 3, 3, 2, 2], tooltips: ['Foco em profissionais', 'Menor ênfase em pedagogia de marca', 'Serviços muito diversificados', 'Foco em terceirização e flexibilidade', '16+ anos, forte em condomínios', 'Flexível'] }
+            };
+
+            function drawValueCurve() {
+                if (!valueCurveContainer) return;
+                
+                valueCurveContainer.innerHTML = '';
+                legendContainer.innerHTML = '';
+                
+                const chartWidth = valueCurveContainer.clientWidth;
+                const chartHeight = valueCurveContainer.clientHeight;
+                
+                let chartHTML = `<div class="absolute w-full h-full">`;
+                const levels = ['Alto', 'Médio', 'Baixo'];
+                levels.forEach((level, i) => {
+                    const yPosPercentage = (i * (100 / 3)) + (100 / 6);
+                    chartHTML += `<div class="absolute left-[-45px] top-0 -translate-y-1/2 text-xs text-gray-500" style="top: ${yPosPercentage}%;">${level}</div>`;
+                    if (i < levels.length -1) {
+                        chartHTML += `<div class="absolute w-full border-t border-dashed border-gray-300" style="top: ${(i + 1) * 33.33}%"></div>`;
+                    }
+                });
+                chartHTML += '</div>';
+
+                const competitorKeys = Object.keys(competitors);
+                const jitterWidth = 12;
+
+                competitorKeys.forEach((key, competitorIndex) => {
+                    const competitor = competitors[key];
+                    let prevPoint = null;
+                    
+                    competitor.values.forEach((value, i) => {
+                        const base_x = (i + 0.5) * (chartWidth / factors.length);
+                        const x = base_x + (competitorIndex * jitterWidth) - ((competitorKeys.length - 1) * jitterWidth / 2);
+                        const y = chartHeight - ((value - 0.5) * (chartHeight / 3)); 
+
+                        chartHTML += `<div class="chart-point" style="left: ${x}px; top: ${y}px; background-color: ${competitor.color};">
+                                        <span class="tooltip"><strong style="color:${competitor.color};">${key}:</strong> ${competitor.tooltips[i]}</span>
+                                    </div>`;
+
+                        if (prevPoint) {
+                            const prevX = prevPoint.x;
+                            const prevY = prevPoint.y;
+                            const angle = Math.atan2(y - prevY, x - prevX) * 180 / Math.PI;
+                            const distance = Math.sqrt(Math.pow(x - prevX, 2) + Math.pow(y - prevY, 2));
+                            chartHTML += `<div class="chart-line" style="background-color: ${competitor.color}; left: ${prevX}px; top: ${prevY}px; width: ${distance}px; transform: rotate(${angle}deg);"></div>`;
+                        }
+                        prevPoint = { x, y };
+                    });
+                     if (legendContainer) {
+                        legendContainer.innerHTML += `<div class="font-semibold" style="color: ${competitor.color};">${key}</div>`;
+                      }
+                });
+                
+                chartHTML += '<div class="absolute -bottom-8 w-full flex">';
+                factors.forEach(factor => {
+                    chartHTML += `<div class="w-1/6 text-center text-xs text-gray-600 font-medium">${factor}</div>`;
+                });
+                chartHTML += '</div>';
+                valueCurveContainer.innerHTML = chartHTML;
+            }
+            
+            drawValueCurve();
+            window.addEventListener('resize', drawValueCurve);
 
             document.querySelectorAll('.accordion-item').forEach(item => {
                 const title = item.querySelector('.accordion-title');
