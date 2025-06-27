@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposta de Parceria Estratégica: LABirintar & BMQ Sports</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Custom LABirintar & BMQ Palette -->
+    <!-- Application Structure Plan: A single-page application designed as an interactive dashboard. The structure uses a main navigation to jump to key sections: Overview, Company Profiles, Partnership Scenarios, and Comparative Analysis. The core of the application is a tab-based interface for the "Scenarios" section, allowing users to dynamically switch between different partnership models. This non-linear structure was chosen to transform the static report into an exploratory tool, enabling easy comparison and deep dives into specific details, which is more effective for strategic decision-making than a linear document. -->
+    <!-- Visualization & Content Choices: 
+        - Company Profiles: Report Info -> Key assets of LABirintar & BMQ. Goal -> Compare company strengths. Viz/Presentation -> Side-by-side card layout using HTML/Tailwind. Interaction -> None. Justification -> Clear, direct visual comparison of core competencies.
+        - Partnership Scenarios: Report Info -> Detailed descriptions of 3 scenarios with interactive simulators. Goal -> Allow detailed exploration and financial modeling. Viz/Presentation -> Tabbed content sections with sliders and input fields. Interaction -> Clicking tabs reveals scenarios; sliders and inputs trigger real-time calculation updates. Justification -> Empowers user to test assumptions and understand financial implications directly.
+        - Financial Simulation: Report Info -> Monthly earnings projections for BMQ in Scenarios 1 & 2. Goal -> Compare financial outcomes. Viz/Presentation -> Vertical Bar Chart (Chart.js/Canvas). Interaction -> Tooltips on hover; chart data updates dynamically based on user input in the scenario simulators. Justification -> Creates a powerful, centralized dashboard for comparing the financial viability of the main scenarios.
+        - Value Curve (Blue Ocean): Report Info -> Competitive analysis from provided documents. Goal -> Strategically position the partnership against the market. Viz/Presentation -> Custom HTML/CSS/JS Line Chart. Interaction -> Tooltips on hover, legend items toggle dataset visibility. Justification -> Custom strategic visualization to powerfully argue the unique value proposition of the partnership, matching user-provided design reference with added interactivity.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        :root {
+            --bmq-red: #c20f0f;
+            --bmq-blue: #29368f;
+            --lab-red: #ff595a;
+            --lab-yellow: #ffa400;
+            --lab-peach: #ffe9c9;
+            --lab-lavender: #e6cbe4;
+            --lab-lightblue: #aec5e7;
+            --text-dark: #333333;
+            --bg-light: #fefcfb;
+            --bg-neutral: #f3f4f6;
+            --rap-green: #0a9f83;
+            --arc-color: #3b82f6;
+            --up-color: #f97316;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            scroll-behavior: smooth;
+        }
+        .tab-button.active {
+            background-color: var(--bmq-blue);
+            color: #FFFFFF;
+            font-weight: 600;
+        }
+        .tab-button {
+            transition: all 0.3s ease-in-out;
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            width: 100%;
+        }
+        .kpi-card {
+            background-color: #FFFFFF;
+            border: 1px solid #E0E0E0;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(61, 64, 91, 0.1);
+        }
+        .section-title {
+            color: var(--lab-red);
+            font-weight: 800;
+        }
+        .accordion-title {
+            cursor: pointer;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .reveal-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .summary-block {
+            background-color: var(--bg-neutral);
+            border-left: 5px solid;
+            transition: all 0.3s ease;
+        }
+        .summary-block:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        .chart-point {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+        .chart-line {
+            position: absolute;
+            height: 2px;
+            transform-origin: left center;
+            z-index: 5;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+        .tooltip {
+            position: absolute;
+            display: none;
+            background-color: black;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+        }
+        .chart-point:hover .tooltip {
+            display: block;
+        }
+        .legend-item {
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 9999px;
+            border: 2px solid transparent;
+        }
+        .legend-item:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+        .legend-item.hidden {
+            opacity: 0.4;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm border-b border-gray-200">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                 <img src="./IMG_1229.png" alt="Logo da LABirintar" class="h-14">
+                 <img src="./IMG_3170.webp" alt="Logo da BMQ Sports" class="h-14">
+            </div>
+            <nav class="hidden md:flex space-x-6 font-medium">
+                <a href="#overview" class="text-gray-600 hover:text-[var(--lab-red)] transition">Visão Geral</a>
+                <a href="#levers" class="text-gray-600 hover:text-[var(--lab-red)] transition">Alavancas</a>
+                <a href="#scenarios" class="text-gray-600 hover:text-[var(--lab-red)] transition">Cenários</a>
+                <a href="#analysis" class="text-gray-600 hover:text-[var(--lab-red)] transition">Análise</a>
+                <a href="#value-curve" class="text-gray-600 hover:text-[var(--lab-red)] transition">Curva de Valor</a>
+                <a href="#faq" class="text-gray-600 hover:text-[var(--lab-red)] transition">FAQ</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+
+        <section id="overview" class="mb-40 scroll-mt-24 reveal-on-scroll">
+            <div class="text-center mb-12">
+                <h2 class="section-title text-3xl md:text-4xl">Proposta de Parceria Estratégica</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Uma análise interativa sobre a união de forças da LABirintar e Bem Me Quer Sports para inovar no mercado de educação extracurricular.</p>
+            </div>
+            <div class="max-w-5xl mx-auto bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                <h3 class="font-bold text-xl mb-6 text-center" style="color: var(--lab-yellow);">Sumário Executivo</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="summary-block p-4 rounded-lg" style="border-color: var(--lab-yellow);">
+                        <h4 class="font-bold">Oportunidade Estratégica</h4>
+                        <p class="text-sm text-gray-600 mt-1">Unir a credibilidade e acesso a mercado da BMQ com a plataforma tecnológica e portfólio inovador da LABirintar.</p>
+                    </div>
+                    <div class="summary-block p-4 rounded-lg" style="border-color: var(--lab-red);">
+                        <h4 class="font-bold">Sinergias Chave</h4>
+                        <p class="text-sm text-gray-600 mt-1">BMQ acelera a captação de escolas; LABirintar oferece um modelo escalável e diversificado de atividades.</p>
+                    </div>
+                    <div class="summary-block p-4 rounded-lg" style="border-color: var(--lab-lightblue);">
+                        <h4 class="font-bold">Benefícios Mútuos</h4>
+                        <p class="text-sm text-gray-600 mt-1">BMQ inova com baixo risco; LABirintar reduz CAC e valida seu modelo comercial de forma acelerada.</p>
+                    </div>
+                    <div class="summary-block p-4 rounded-lg" style="border-color: var(--lab-lavender);">
+                        <h4 class="font-bold">Cenários de Colaboração</h4>
+                        <p class="text-sm text-gray-600 mt-1">Três modelos de parceria com níveis crescentes de integração, da indicação à sociedade estratégica.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="levers" class="mb-40 scroll-mt-24 reveal-on-scroll">
+             <div class="text-center mb-12">
+                <h2 class="section-title text-3xl md:text-4xl">Alavancas para o Crescimento</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Conheça os ativos e forças que cada empresa traz para a parceria, criando uma sinergia poderosa para o mercado.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                <div class="kpi-card p-6">
+                    <h3 class="font-bold text-2xl mb-4" style="color: var(--lab-yellow);">LABirintar: A Plataforma de Inovação</h3>
+                    <ul class="space-y-4 text-gray-700">
+                        <li class="flex items-start"><div><strong class="font-semibold text-gray-800">Tecnologia de Gestão:</strong> Software próprio para automação de matrículas, pagamentos e comunicação.</div></li>
+                        <li class="flex items-start"><div><strong class="font-semibold text-gray-800">Portfólio Diversificado:</strong> Atividades de inovação como programação, marcenaria e artes.</div></li>
+                        <li class="flex items-start"><div><strong class="font-semibold text-gray-800">Modelo de Talentos Escalável:</strong> Rede de "Educadores Empreendedores" com remuneração atrativa.</div></li>
+                    </ul>
+                </div>
+                <div class="kpi-card p-6">
+                    <h3 class="font-bold text-2xl mb-4" style="color: var(--bmq-blue);">Bem Me Quer Sports: A Força de Mercado</h3>
+                    <ul class="space-y-4 text-gray-700">
+                        <li class="flex items-start"><div><strong class="font-semibold text-gray-800">Reputação e Liderança:</strong> Mais de duas décadas de atuação e equipe de 200 profissionais.</div></li>
+                        <li class="flex items-start"><div><strong class="font-semibold text-gray-800">Credibilidade Pedagógica:</strong> Metodologia com chancela do MEC para ballet, judô e natação.</div></li>
+                        <li class="flex items-start"><div><strong class="font-semibold text-gray-800">Acesso Estratégico:</strong> Rede de contatos e credibilidade do fundador para acesso a decisores-chave.</div></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="scenarios" class="mb-40 scroll-mt-24 reveal-on-scroll">
+            <div class="text-center mb-12">
+                <h2 class="section-title text-3xl md:text-4xl">Cenários e Sinergias</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Explore os três modelos de colaboração propostos, cada um com diferentes níveis de integração, remuneração e vantagens estratégicas. Use os simuladores para testar as variáveis.</p>
+            </div>
+            
+            <div class="flex justify-center mb-8 bg-gray-100 p-2 rounded-full max-w-lg mx-auto sticky top-24 z-40">
+                <button class="tab-button active w-1/3 py-2 px-4 rounded-full text-center text-sm md:text-base" onclick="changeScenario(0)">Cenário 1</button>
+                <button class="tab-button w-1/3 py-2 px-4 rounded-full text-center text-sm md:text-base" onclick="changeScenario(1)">Cenário 2</button>
+                <button class="tab-button w-1/3 py-2 px-4 rounded-full text-center text-sm md:text-base" onclick="changeScenario(2)">Cenário 3</button>
+            </div>
+
+            <div id="scenario-content" class="max-w-6xl mx-auto">
+            </div>
+        </section>
+
+        <section id="analysis" class="mb-40 scroll-mt-24 reveal-on-scroll">
+            <div class="text-center mb-12">
+                <h2 class="section-title text-3xl md:text-4xl">Análise Comparativa</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Compare visualmente os cenários através de seus principais atributos e projeções financeiras. O gráfico abaixo é atualizado dinamicamente pelos simuladores.</p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-8 items-start">
+                <div class="kpi-card">
+                    <h3 class="font-bold text-xl mb-4" style="color: var(--lab-yellow);">Simulação de Ganhos Mensais para BMQ</h3>
+                     <p class="text-sm text-gray-500 mb-4">Estimativa de receita (Cen. 1) vs. Margem de Contribuição (Cen. 2). Os valores são atualizados pelos simuladores acima.</p>
+                    <div class="chart-container h-[400px]">
+                        <canvas id="financialChart"></canvas>
+                    </div>
+                </div>
+                 <div class="kpi-card">
+                    <h3 class="font-bold text-xl mb-4" style="color: var(--lab-yellow);">Perfil Estratégico</h3>
+                    <p class="text-sm text-gray-500 mb-4">Comparação dos cenários em eixos chave (0=Baixo, 5=Alto).</p>
+                    <div class="chart-container h-[400px]">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+             <div class="mt-12 overflow-x-auto kpi-card p-4">
+                    <h3 class="font-bold text-xl mb-4 text-center" style="color: var(--lab-yellow);">Tabela Comparativa Detalhada</h3>
+                    <table class="min-w-full bg-white rounded-lg">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="py-3 px-4 text-left font-semibold text-gray-600 text-sm">Atributo</th>
+                                <th class="py-3 px-4 text-left font-semibold text-gray-600 text-sm">Cenário 1: Indicação</th>
+                                <th class="py-3 px-4 text-left font-semibold text-gray-600 text-sm">Cenário 2: Integração</th>
+                                <th class="py-3 px-4 text-left font-semibold text-gray-600 text-sm">Cenário 3: Sociedade</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 text-sm">
+                            <tr>
+                                <td class="py-3 px-4 font-semibold">Papel da BMQ</td>
+                                <td class="py-3 px-4">Abertura de Portas</td>
+                                <td class="py-3 px-4">Parceiro Operacional</td>
+                                <td class="py-3 px-4">Sócio Estratégico</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 font-semibold">Modelo de Remuneração</td>
+                                <td class="py-3 px-4">Comissão (5% / 12m)</td>
+                                <td class="py-3 px-4">Revenue Share (45%)</td>
+                                <td class="py-3 px-4">Equity + Potencial Comissão</td>
+                            </tr>
+                             <tr>
+                                <td class="py-3 px-4 font-semibold">Gestão de Talentos</td>
+                                <td class="py-3 px-4">Não aplicável</td>
+                                <td class="py-3 px-4">Transição como carreira</td>
+                                <td class="py-3 px-4">Plano de Stock Options</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 font-semibold">Vantagens Principais</td>
+                                <td class="py-3 px-4">Simplicidade, baixo risco</td>
+                                <td class="py-3 px-4">Oferta superior, sinergia</td>
+                                <td class="py-3 px-4">Alinhamento total, retenção</td>
+                            </tr>
+                             <tr>
+                                <td class="py-3 px-4 font-semibold">Complexidade / Riscos</td>
+                                <td class="py-3 px-4">Baixa (Dependência)</td>
+                                <td class="py-3 px-4">Alta (Cultura, Operação)</td>
+                                <td class="py-3 px-4">Muito Alta (Due diligence)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+        </section>
+
+        <section id="value-curve" class="mb-40 scroll-mt-24 reveal-on-scroll">
+            <div class="text-center mb-12">
+                <h2 class="section-title text-3xl md:text-4xl">Criando um Oceano Azul: Curva de Valor</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Este gráfico demonstra como a parceria LABirintar+BMQ se diferencia da concorrência, entregando mais valor por um custo competitivo e criando um novo espaço de mercado.</p>
+            </div>
+            <div class="kpi-card p-6">
+                <div id="legend-container" class="flex justify-center flex-wrap gap-x-6 gap-y-2 mb-8"></div>
+                <div class="w-full h-96 relative mt-12" id="value-curve-container">
+                </div>
+                 <p class="text-sm text-gray-500 mt-12 text-center">Clique na legenda para mostrar/ocultar curvas. Passe o mouse sobre os pontos para mais detalhes.</p>
+            </div>
+        </section>
+        
+        <section id="faq" class="scroll-mt-24 reveal-on-scroll">
+            <div class="text-center mb-12">
+                <h2 class="section-title text-3xl md:text-4xl">Perguntas e Respostas</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Esclarecimentos sobre os pontos-chave da parceria para guiar a tomada de decisão.</p>
+            </div>
+            <div class="max-w-3xl mx-auto space-y-4">
+                <div class="accordion-item bg-white rounded-lg shadow-sm border border-gray-200">
+                    <div class="accordion-title p-4 flex justify-between items-center">
+                        <h4 class="font-semibold text-gray-800">Qual o papel esperado de Marcello Cafaro no dia a dia?</h4>
+                        <span class="text-xl transform transition-transform duration-300">▼</span>
+                    </div>
+                    <div class="accordion-content px-4">
+                        <p class="py-4 text-gray-600">No Cenário 1, o papel é estritamente de "abridor de portas": usar sua rede para agendar a reunião inicial. A LABirintar conduz o resto. Nos cenários mais avançados, ele poderia atuar como conselheiro estratégico, mas não se envolveria na operação diária da LABirintar.</p>
+                    </div>
+                </div>
+                 <div class="accordion-item bg-white rounded-lg shadow-sm border border-gray-200">
+                    <div class="accordion-title p-4 flex justify-between items-center">
+                        <h4 class="font-semibold text-gray-800">Como a parceria lida com a diferença entre os modelos de contratação (CLT vs. Empreendedor)?</h4>
+                        <span class="text-xl transform transition-transform duration-300">▼</span>
+                    </div>
+                    <div class="accordion-content px-4">
+                        <p class="py-4 text-gray-600">Os modelos coexistem. No Cenário 3, propõe-se um plano de Stock Options para os talentos da BMQ. Isso permite que participem do sucesso da parceria, alinhando interesses e criando uma nova forma de retenção, transformando o "risco de migração" em "oportunidade de engajamento".</p>
+                    </div>
+                </div>
+                 <div class="accordion-item bg-white rounded-lg shadow-sm border border-gray-200">
+                    <div class="accordion-title p-4 flex justify-between items-center">
+                        <h4 class="font-semibold text-gray-800">Qual a vantagem de integrar os portfólios no Cenário 2?</h4>
+                        <span class="text-xl transform transition-transform duration-300">▼</span>
+                    </div>
+                    <div class="accordion-content px-4">
+                        <p class="py-4 text-gray-600">A principal vantagem é criar uma oferta "one-stop-shop" para as escolas. Ao combinar as atividades de inovação da LABirintar com os esportes consolidados da BMQ, a parceria se torna uma solução completa, mais atraente e difícil de ser igualada pelos concorrentes, que geralmente focam em um ou outro nicho.</p>
+                    </div>
+                </div>
+                <div class="accordion-item bg-white rounded-lg shadow-sm border border-gray-200">
+                    <div class="accordion-title p-4 flex justify-between items-center">
+                        <h4 class="font-semibold text-gray-800">O que significa "Valor do Exit" no Cenário 3?</h4>
+                        <span class="text-xl transform transition-transform duration-300">▼</span>
+                    </div>
+                    <div class="accordion-content px-4">
+                        <p class="py-4 text-gray-600">"Valor do Exit" é uma estimativa do retorno financeiro que a BMQ poderia ter sobre sua participação (equity) na LABirintar em um evento de liquidez futuro, como uma venda da empresa ou uma nova rodada de investimento. Ele é calculado multiplicando o valor da empresa no futuro (valuation atual x múltiplo de mercado) pela porcentagem de equity que a BMQ detém.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const formatCurrency = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+
+        const scenariosData = [
+            {
+                title: 'Cenário 1: Parceria de Indicação Estratégica',
+                description: 'Este modelo foca em capitalizar a rede e credibilidade de Marcello Cafaro para gerar oportunidades comerciais qualificadas, com remuneração baseada em performance.',
+                details: `
+                    <div>
+                        <h4 class="font-semibold text-lg mb-2 text-gray-800">Modelo de Atuação</h4>
+                        <p class="text-gray-600 text-sm mb-4">BMQ/Marcello atua como um parceiro estratégico de indicação. Sua função é identificar oportunidades e agendar a reunião inicial. A partir desse ponto, a equipe da LABirintar assume todo o processo comercial.</p>
+                        <h4 class="font-semibold text-lg mb-2 text-gray-800">Vantagens</h4>
+                        <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
+                            <li>Simplicidade e Foco: Papéis e responsabilidades claramente definidos.</li>
+                            <li>Alinhamento de Interesses: A remuneração está diretamente atrelada ao sucesso.</li>
+                            <li>Capitaliza o Ponto Forte: Utiliza a maior força de Marcello – sua rede e credibilidade.</li>
+                        </ul>
+                    </div>
+                `,
+                simulator: `
+                    <h4 class="font-bold text-xl mb-4 text-center" style="color: var(--lab-yellow);">Simulador Financeiro</h4>
+                    <div class="grid md:grid-cols-2 gap-x-8 gap-y-6">
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <label for="s1_escolas" class="block font-semibold text-gray-700">Nº de Escolas</label>
+                            <input type="range" id="s1_escolas" min="1" max="20" value="1" class="w-full mt-2">
+                            <span id="s1_escolas_val" class="text-sm text-blue-600 font-bold">1 escola</span>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <label for="s1_turmas" class="block font-semibold text-gray-700">Turmas por Escola</label>
+                            <input type="range" id="s1_turmas" min="2" max="10" value="2" step="2" class="w-full mt-2">
+                            <span id="s1_turmas_val" class="text-sm text-blue-600 font-bold">2 turmas (30 matrículas)</span>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <label for="s1_frequencia" class="block font-semibold text-gray-700">Frequência Semanal</label>
+                            <input type="range" id="s1_frequencia" min="1" max="5" value="2" class="w-full mt-2">
+                            <span id="s1_frequencia_val" class="text-sm text-blue-600 font-bold">2x (Ticket: R$ 447,00)</span>
+                        </div>
+                        <div class="bg-white border-l-4 border-green-500 p-4 rounded-lg shadow-md">
+                            <p class="font-semibold text-gray-800">Ganho Mensal Estimado (BMQ)</p>
+                            <p id="s1_resultado" class="text-2xl font-extrabold text-green-600 mt-2">R$ 0,00</p>
+                            <p class="text-xs text-gray-500 mt-1">Comissão de 5% sobre faturamento (por 12 meses).</p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: 'Cenário 2: Integração de Portfólios',
+                description: 'Além da indicação, as modalidades da BMQ são integradas na plataforma LABirintar, gerando uma nova linha de receita com base em um modelo de revenue share.',
+                details: `
+                     <div>
+                        <h4 class="font-semibold text-lg mb-2 text-gray-800">Modelo de Atuação</h4>
+                        <p class="text-gray-600 text-sm mb-4">Cria-se uma oferta conjunta "by BMQ Sports", gerenciada pela plataforma da LABirintar. A BMQ continua operando suas modalidades com sua equipe CLT, e a LABirintar com seus Educadores Empreendedores.</p>
+                        <h4 class="font-semibold text-lg mb-2 text-gray-800">Vantagens</h4>
+                        <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
+                            <li>Oferta de Valor Superior: Um "one-stop-shop" extracurricular para escolas.</li>
+                            <li>Sinergia de Vendas: Reduz o Custo de Aquisição de Clientes (CAC).</li>
+                            <li>Economia de escala: Redução a zero do custo fixo com ampliação da carteira de clientes.</li>
+                            <li>Retenção Estratégica de Talentos: Oferece progressão de carreira para os profissionais da BMQ.</li>
+                        </ul>
+                    </div>
+                `,
+                simulator: `
+                    <h4 class="font-bold text-xl mb-4 text-center" style="color: var(--lab-yellow);">Simulador Financeiro</h4>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <label for="s2_escolas" class="block font-semibold text-gray-700">Nº de Escolas</label>
+                            <input type="range" id="s2_escolas" min="1" max="20" value="1" class="w-full mt-2">
+                            <span id="s2_escolas_val" class="text-sm text-blue-600 font-bold">1 escola</span>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <label for="s2_turmas" class="block font-semibold text-gray-700">Turmas por Escola</label>
+                            <input type="range" id="s2_turmas" min="2" max="10" value="2" step="2" class="w-full mt-2">
+                            <span id="s2_turmas_val" class="text-sm text-blue-600 font-bold">2 turmas (30 matrículas)</span>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <label for="s2_frequencia" class="block font-semibold text-gray-700">Frequência Semanal</label>
+                            <input type="range" id="s2_frequencia" min="1" max="5" value="2" class="w-full mt-2">
+                            <span id="s2_frequencia_val" class="text-sm text-blue-600 font-bold">2x (Ticket: R$ 447,00)</span>
+                        </div>
+                         <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg col-span-1 md:col-span-2 lg:col-span-3">
+                            <p class="font-semibold text-gray-800">Resultado Financeiro (BMQ)</p>
+                            <div class="grid md:grid-cols-4 gap-4 mt-2 text-center">
+                                <div>
+                                    <p class="text-sm text-gray-600">Receita (45% Share)</p>
+                                    <p id="s2_receita" class="text-lg font-bold text-gray-800">R$ 0,00</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600">Custo Educador <span id="s2_memoria_calculo" class="text-xs font-normal text-gray-500"></span></p>
+                                    <p id="s2_custo_educador" class="text-lg font-bold text-red-500">R$ 0,00</p>
+                                </div>
+                                 <div>
+                                    <p class="text-sm text-gray-600">Imposto (10%)</p>
+                                    <p id="s2_imposto" class="text-lg font-bold text-red-500">R$ 0,00</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-green-700">Margem Contrib.</p>
+                                    <p id="s2_margem" class="text-lg font-extrabold text-green-600">R$ 0,00</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: 'Cenário 3: Aliança Estratégica com Sociedade',
+                description: 'O modelo mais profundo. A BMQ se torna sócia minoritária da LABirintar, alinhando completamente os interesses de longo prazo e criando mecanismos de retenção de talentos.',
+                details: `
+                    <div>
+                        <h4 class="font-semibold text-lg mb-2 text-gray-800">Modelo de Atuação</h4>
+                        <p class="text-gray-600 text-sm mb-4">Em troca de equity na LABirintar, a BMQ compromete-se a uma colaboração profunda, incluindo abertura de sua rede e participação de Marcello em um conselho consultivo. Implementa-se um plano de Stock Options para os educadores da BMQ.</p>
+                        <h4 class="font-semibold text-lg mb-2 text-gray-800">Vantagens</h4>
+                        <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
+                            <li>Alinhamento Total de Interesses: Ambas as empresas e seus talentos passam a ter objetivos convergentes.</li>
+                            <li>Solução Estratégica de RH: A parceria se torna uma ferramenta para a BMQ reter e premiar seus melhores profissionais.</li>
+                        </ul>
+                    </div>
+                `,
+                simulator: `
+                     <h4 class="font-bold text-xl mb-4 text-center" style="color: var(--lab-yellow);">Simulador de Retorno sobre Equity</h4>
+                     <div class="grid md:grid-cols-2 gap-x-8 gap-y-6">
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <label for="s3_equity" class="block font-semibold text-gray-700">% Equity para BMQ</label>
+                            <input type="range" id="s3_equity" min="1" max="10" value="5" step="0.5" class="w-full mt-2">
+                            <span id="s3_equity_val" class="text-sm text-blue-600 font-bold">5.0%</span>
+                            <p class="text-xs text-gray-500 mt-1">Percentual de participação societária na LABirintar.</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <label for="s3_ano" class="block font-semibold text-gray-700">Ano da Projeção de Lucro</label>
+                             <select id="s3_ano" class="w-full mt-2 p-2 border rounded-md bg-white">
+                             </select>
+                             <p class="text-xs text-gray-500 mt-1">Projeção de resultado líquido para cálculo de dividendos.</p>
+                        </div>
+                        <div class="bg-white border-l-4 border-purple-500 p-4 rounded-lg shadow-md">
+                            <p class="font-semibold text-gray-800">Potencial de Exit (5x)</p>
+                            <p id="s3_exit" class="text-2xl font-extrabold text-purple-600 mt-2">R$ 0,00</p>
+                            <p class="text-xs text-gray-500 mt-1">Baseado em Valuation de R$4.3M.</p>
+                        </div>
+                         <div class="bg-white border-l-4 border-teal-500 p-4 rounded-lg shadow-md">
+                            <p class="font-semibold text-gray-800">Dividendos no Ano</p>
+                            <p id="s3_dividendos" class="text-2xl font-extrabold text-teal-600 mt-2">R$ 0,00</p>
+                            <p id="s3_lucro_ano" class="text-xs text-gray-500 mt-1">Baseado no lucro de R$0.</p>
+                        </div>
+                    </div>
+                `
+            }
+        ];
+
+        let financialChartInstance, radarChartInstance;
+        const scenarioContentEl = document.getElementById('scenario-content');
+        const tabButtons = document.querySelectorAll('.tab-button');
+
+        function setupScenario1() {
+            const escolas = document.getElementById('s1_escolas');
+            const turmas = document.getElementById('s1_turmas');
+            const frequencia = document.getElementById('s1_frequencia');
+            
+            [escolas, turmas, frequencia].forEach(el => {
+                if(el) el.addEventListener('input', calculateScenario1);
+            });
+            calculateScenario1();
+        }
+
+        function calculateScenario1() {
+            const escolasEl = document.getElementById('s1_escolas');
+            if (!escolasEl) return;
+            
+            const escolas = parseInt(escolasEl.value);
+            const turmas = parseInt(document.getElementById('s1_turmas').value);
+            const frequencia = parseInt(document.getElementById('s1_frequencia').value);
+            const alunosPorTurma = 15;
+
+            document.getElementById('s1_escolas_val').textContent = `${escolas} escola(s)`;
+            document.getElementById('s1_turmas_val').textContent = `${turmas} turmas (${turmas * alunosPorTurma} matrículas)`;
+            
+            const tickets = { 1: 297, 2: 447, 3: 597, 4: 747, 5: 897 };
+            const ticketMedio = tickets[frequencia];
+            document.getElementById('s1_frequencia_val').textContent = `${frequencia}x (Ticket: ${formatCurrency(ticketMedio)})`;
+
+            const comissao = 0.05;
+            const faturamentoTotal = escolas * turmas * alunosPorTurma * ticketMedio;
+            const ganhoMensal = faturamentoTotal * comissao;
+
+            document.getElementById('s1_resultado').textContent = formatCurrency(ganhoMensal);
+            updateFinancialChart();
+        }
+
+        function setupScenario2() {
+            const escolas = document.getElementById('s2_escolas');
+            const turmas = document.getElementById('s2_turmas');
+            const frequencia = document.getElementById('s2_frequencia');
+            
+            [escolas, turmas, frequencia].forEach(el => {
+                if(el) el.addEventListener('input', calculateScenario2);
+            });
+            calculateScenario2();
+        }
+
+        function calculateScenario2() {
+            const escolasEl = document.getElementById('s2_escolas');
+            if (!escolasEl) return;
+
+            const escolas = parseInt(escolasEl.value);
+            const turmas = parseInt(document.getElementById('s2_turmas').value);
+            const frequencia = parseInt(document.getElementById('s2_frequencia').value);
+            const alunosPorTurma = 15;
+
+            document.getElementById('s2_escolas_val').textContent = `${escolas} escola(s)`;
+            document.getElementById('s2_turmas_val').textContent = `${turmas} turmas (${turmas * alunosPorTurma} matrículas)`;
+
+            const tickets = { 1: 297, 2: 447, 3: 597, 4: 747, 5: 897 };
+            const ticketMedio = tickets[frequencia];
+            document.getElementById('s2_frequencia_val').textContent = `${frequencia}x (Ticket: ${formatCurrency(ticketMedio)})`;
+            
+            const revenueShareBMQ = 0.45;
+            const receitaBrutaTotal = escolas * turmas * alunosPorTurma * ticketMedio;
+            const receitaBMQ = receitaBrutaTotal * revenueShareBMQ;
+            
+            const imposto = receitaBMQ * 0.10;
+            const custoHoraEducador = 120;
+            const totalHoras = escolas * turmas * 4 * frequencia;
+            const custoEducador = totalHoras * custoHoraEducador;
+            
+            const margem = receitaBMQ - imposto - custoEducador;
+            
+            document.getElementById('s2_receita').textContent = formatCurrency(receitaBMQ);
+            document.getElementById('s2_custo_educador').textContent = formatCurrency(custoEducador);
+            document.getElementById('s2_imposto').textContent = formatCurrency(imposto);
+            document.getElementById('s2_margem').textContent = `${formatCurrency(margem)} (${(receitaBMQ > 0 ? (margem/receitaBMQ*100) : 0).toFixed(1)}%)`;
+            
+            const memoriaCalculoEl = document.getElementById('s2_memoria_calculo');
+            if (memoriaCalculoEl) {
+                memoriaCalculoEl.textContent = `(${totalHoras}h × R$120/h)`;
+            }
+
+            updateFinancialChart();
+        }
+
+        function setupScenario3() {
+            const equitySlider = document.getElementById('s3_equity');
+            const anoSelect = document.getElementById('s3_ano');
+            
+            const lucrosProjetados = {
+                2: 561998, 3: 1603789, 4: 2909789, 5: 3354457, 
+                6: 3359355, 7: 3354457, 8: 3354457, 9: 3354457, 10: 3354457
+            };
+
+            for (const ano in lucrosProjetados) {
+                const option = document.createElement('option');
+                option.value = ano;
+                option.textContent = `Ano ${ano}`;
+                anoSelect.appendChild(option);
+            }
+            anoSelect.value = 5;
+
+            if(equitySlider) equitySlider.addEventListener('input', () => calculateScenario3(lucrosProjetados));
+            if(anoSelect) anoSelect.addEventListener('change', () => calculateScenario3(lucrosProjetados));
+            calculateScenario3(lucrosProjetados);
+        }
+        
+        function calculateScenario3(lucrosProjetados) {
+            const equitySlider = document.getElementById('s3_equity');
+             if (!equitySlider) return;
+
+            const equity = parseFloat(equitySlider.value);
+            const ano = document.getElementById('s3_ano').value;
+            
+            document.getElementById('s3_equity_val').textContent = `${equity.toFixed(1)}%`;
+            
+            const valuation = 4300000;
+            const multiplo = 5;
+            
+            const valorExit = valuation * multiplo * (equity / 100);
+            document.getElementById('s3_exit').textContent = formatCurrency(valorExit);
+
+            const lucroDoAno = lucrosProjetados[ano];
+            const dividendos = lucroDoAno * (equity / 100);
+            document.getElementById('s3_dividendos').textContent = formatCurrency(dividendos);
+            document.getElementById('s3_lucro_ano').textContent = `Baseado no lucro de ${formatCurrency(lucroDoAno)}.`;
+        }
+
+        function changeScenario(index) {
+            const scenario = scenariosData[index];
+            scenarioContentEl.innerHTML = `
+                <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-200 animate-fade-in">
+                    <h3 class="font-bold text-2xl mb-2" style="color:var(--lab-yellow);">${scenario.title}</h3>
+                    <p class="text-gray-600 mb-6">${scenario.description}</p>
+                    <div class="border-t pt-6 mb-6">
+                        ${scenario.details}
+                    </div>
+                    <div class="border-t pt-6">
+                        ${scenario.simulator}
+                    </div>
+                </div>
+            `;
+
+            tabButtons.forEach((button, i) => {
+                button.classList.toggle('active', i === index);
+            });
+            
+            if (index === 0) setupScenario1();
+            if (index === 1) setupScenario2();
+            if (index === 2) setupScenario3();
+        }
+        
+        function updateFinancialChart() {
+            if (!financialChartInstance) return;
+
+            const s1_escolas = document.getElementById('s1_escolas') ? parseInt(document.getElementById('s1_escolas').value) : 1;
+            const s1_turmas = document.getElementById('s1_turmas') ? parseInt(document.getElementById('s1_turmas').value) : 2;
+            const s1_frequencia = document.getElementById('s1_frequencia') ? parseInt(document.getElementById('s1_frequencia').value) : 2;
+            const s1_tickets = { 1: 297, 2: 447, 3: 597, 4: 747, 5: 897 };
+            const s1_faturamento = s1_escolas * s1_turmas * 15 * s1_tickets[s1_frequencia];
+            const s1_ganho = s1_faturamento * 0.05;
+
+            const s2_escolas = document.getElementById('s2_escolas') ? parseInt(document.getElementById('s2_escolas').value) : 1;
+            const s2_turmas = document.getElementById('s2_turmas') ? parseInt(document.getElementById('s2_turmas').value) : 2;
+            const s2_frequencia = document.getElementById('s2_frequencia') ? parseInt(document.getElementById('s2_frequencia').value) : 2;
+            const s2_tickets = { 1: 297, 2: 447, 3: 597, 4: 747, 5: 897 };
+            const s2_receitaBruta = s2_escolas * s2_turmas * 15 * s2_tickets[s2_frequencia];
+            const s2_receitaBMQ = s2_receitaBruta * 0.45;
+            const s2_imposto = s2_receitaBMQ * 0.10;
+            const s2_custoEducador = s2_escolas * s2_turmas * 4 * s2_frequencia * 120;
+            const s2_margem = s2_receitaBMQ - s2_imposto - s2_custoEducador;
+
+            financialChartInstance.data.datasets[0].data[0] = s1_ganho;
+            financialChartInstance.data.datasets[0].data[1] = s2_margem > 0 ? s2_margem : 0;
+            financialChartInstance.update();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            changeScenario(0);
+
+            const financialCtx = document.getElementById('financialChart').getContext('2d');
+            financialChartInstance = new Chart(financialCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Cenário 1: Indicação', 'Cenário 2: Integração'],
+                    datasets: [{
+                        label: 'Ganhos Mensais (R$)',
+                        data: [0, 0],
+                        backgroundColor: ['rgba(174, 197, 231, 0.7)', 'rgba(255, 164, 0, 0.7)'],
+                        borderColor: ['#aec5e7', '#ffa400'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, ticks: { callback: value => formatCurrency(value) }}},
+                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => formatCurrency(ctx.raw) }}}
+                }
+            });
+
+            const radarCtx = document.getElementById('radarChart').getContext('2d');
+            radarChartInstance = new Chart(radarCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Integração', 'Complexidade', 'Potencial de Receita', 'Alinhamento Estratégico', 'Risco'],
+                    datasets: [
+                        { label: 'Cen. 1', data: [1, 1, 2, 2, 1], fill: true, backgroundColor: 'rgba(174, 197, 231, 0.2)', borderColor: '#aec5e7', pointBackgroundColor: '#aec5e7' }, 
+                        { label: 'Cen. 2', data: [4, 3, 4, 4, 3], fill: true, backgroundColor: 'rgba(255, 164, 0, 0.2)', borderColor: '#ffa400', pointBackgroundColor: '#ffa400' },
+                        { label: 'Cen. 3', data: [5, 5, 5, 5, 4], fill: true, backgroundColor: 'rgba(255, 89, 90, 0.2)', borderColor: '#ff595a', pointBackgroundColor: '#ff595a' }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { r: { suggestedMin: 0, suggestedMax: 5, ticks: { stepSize: 1 }}}}
+            });
+            
+            const valueCurveContainer = document.getElementById('value-curve-container');
+            const legendContainer = document.getElementById('legend-container');
+            const factors = ['Qualidade', 'Inovação Pedagógica', 'Amplitude da Oferta', 'Conveniência do Modelo', 'Reputação da Marca', 'Preço (Otimizado)'];
+            const competitors = {
+                'Parceria LAB+BMQ': { color: 'var(--bmq-blue)', values: [3, 3, 3, 3, 3, 2], tooltips: ['Qualidade Certificada MEC + Inovação', 'Metodologia Dupla', 'Portfólio Integrado (Esporte + Artes/Tech)', 'Plataforma Única de Gestão', 'Soma das Reputações', 'Competitivo com maior valor agregado'], hidden: false },
+                'BMQ Sports': { color: 'var(--bmq-red)', values: [3, 2, 3, 2, 3, 2], tooltips: ['Certificação MEC', '"Disciplina Positiva"', 'Ampla gama de modalidades', 'Assume encargos trabalhistas', 'Reputação de 27 anos', 'Posicionamento por qualidade'], hidden: false },
+                'RAP': { color: 'var(--rap-green)', values: [2, 2, 3, 2, 3, 2], tooltips: ['Metodologia consolidada', 'Foco na execução', '>45 modalidades', 'Modelo de parceria tradicional', 'Marca com 20+ anos e presença na mídia', 'Competitivo'], hidden: false },
+                'ARC Sports': { color: 'var(--arc-color)', values: [2, 3, 2, 3, 2, 2], tooltips: ['Profissionais capacitados', '"Iniciação Desportiva Responsável"', 'Foco em esportes escolares', 'Modelo de "Gestão Total"', 'Fundador com boa reputação', 'Valor atrelado à conveniência'], hidden: false },
+                'UP Gestão': { color: 'var(--up-color)', values: [2, 1, 3, 3, 2, 2], tooltips: ['Foco em profissionais', 'Menor ênfase em pedagogia de marca', 'Serviços muito diversificados', 'Foco em terceirização e flexibilidade', '16+ anos, forte em condomínios', 'Flexível'], hidden: false }
+            };
+
+            function drawValueCurve() {
+                if (!valueCurveContainer) return;
+                
+                valueCurveContainer.innerHTML = '';
+                
+                const chartWidth = valueCurveContainer.clientWidth;
+                const chartHeight = valueCurveContainer.clientHeight;
+                
+                let chartHTML = `<div class="absolute w-full h-full">`;
+                const levels = ['Alto', 'Médio', 'Baixo'];
+                levels.forEach((level, i) => {
+                    const yPosPercentage = (i * (100 / 3)) + (100 / 6);
+                    chartHTML += `<div class="absolute left-[-45px] top-0 -translate-y-1/2 text-xs text-gray-500" style="top: ${yPosPercentage}%;">${level}</div>`;
+                    if (i < levels.length -1) {
+                        chartHTML += `<div class="absolute w-full border-t border-dashed border-gray-300" style="top: ${(i + 1) * 33.33}%"></div>`;
+                    }
+                });
+                chartHTML += '</div>';
+
+                const competitorKeys = Object.keys(competitors);
+                const jitterWidth = 12;
+
+                competitorKeys.forEach((key, competitorIndex) => {
+                    const competitor = competitors[key];
+                    let prevPoint = null;
+                    
+                    competitor.values.forEach((value, i) => {
+                        const base_x = (i + 0.5) * (chartWidth / factors.length);
+                        const x = base_x + (competitorIndex * jitterWidth) - ((competitorKeys.length - 1) * jitterWidth / 2);
+                        const y = chartHeight - ((value - 0.5) * (chartHeight / 3)); 
+
+                        chartHTML += `<div class="chart-point" data-competitor="${key}" style="left: ${x}px; top: ${y}px; background-color: ${competitor.color}; opacity: ${competitor.hidden ? 0 : 1};">
+                                        <span class="tooltip"><strong style="color:${competitor.color};">${key}:</strong> ${competitor.tooltips[i]}</span>
+                                    </div>`;
+
+                        if (prevPoint) {
+                            const prevX = prevPoint.x;
+                            const prevY = prevPoint.y;
+                            const angle = Math.atan2(y - prevY, x - prevX) * 180 / Math.PI;
+                            const distance = Math.sqrt(Math.pow(x - prevX, 2) + Math.pow(y - prevY, 2));
+                            chartHTML += `<div class="chart-line" data-competitor="${key}" style="background-color: ${competitor.color}; left: ${prevX}px; top: ${prevY}px; width: ${distance}px; transform: rotate(${angle}deg); opacity: ${competitor.hidden ? 0 : 0.7};"></div>`;
+                        }
+                        prevPoint = { x, y };
+                    });
+                });
+                
+                chartHTML += '<div class="absolute -bottom-8 w-full flex">';
+                factors.forEach(factor => {
+                    chartHTML += `<div class="w-1/6 text-center text-xs text-gray-600 font-medium">${factor}</div>`;
+                });
+                chartHTML += '</div>';
+                valueCurveContainer.innerHTML = chartHTML;
+            }
+
+            function setupLegend() {
+                if (!legendContainer) return;
+                legendContainer.innerHTML = '';
+                Object.keys(competitors).forEach(key => {
+                    const competitor = competitors[key];
+                    const legendItem = document.createElement('div');
+                    legendItem.textContent = key;
+                    legendItem.className = 'legend-item font-semibold text-sm md:text-base';
+                    legendItem.style.color = competitor.color;
+                    legendItem.dataset.competitor = key;
+                    
+                    if(competitor.hidden) {
+                        legendItem.classList.add('hidden');
+                    }
+
+                    legendItem.addEventListener('click', () => {
+                        competitors[key].hidden = !competitors[key].hidden;
+                        legendItem.classList.toggle('hidden');
+                        document.querySelectorAll(`[data-competitor="${key}"]`).forEach(el => {
+                           el.style.opacity = competitors[key].hidden ? 0 : (el.classList.contains('chart-line') ? 0.7 : 1);
+                        });
+                    });
+                    legendContainer.appendChild(legendItem);
+                });
+            }
+            
+            setupLegend();
+            drawValueCurve();
+            window.addEventListener('resize', drawValueCurve);
+
+            document.querySelectorAll('.accordion-item').forEach(item => {
+                const title = item.querySelector('.accordion-title');
+                if (!title) return;
+                title.addEventListener('click', () => {
+                    const content = item.querySelector('.accordion-content');
+                    const icon = item.querySelector('.accordion-title span');
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                        icon.style.transform = 'rotate(0deg)';
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                        icon.style.transform = 'rotate(180deg)';
+                    }
+                });
+            });
+
+            const revealElements = document.querySelectorAll('.reveal-on-scroll');
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            revealElements.forEach(el => revealObserver.observe(el));
+        });
+    </script>
+</body>
+</html>
