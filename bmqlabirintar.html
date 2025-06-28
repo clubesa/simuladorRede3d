@@ -9,15 +9,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Custom LABirintar & BMQ Palette -->
-    <!-- Application Structure Plan: A single-page application designed as an interactive dashboard. The structure uses a main navigation to jump to key sections: Overview, Company Profiles, Partnership Scenarios, and Comparative Analysis. The core of the application is a tab-based interface for the "Scenarios" section, allowing users to dynamically switch between different partnership models. This non-linear structure was chosen to transform the static report into an exploratory tool, enabling easy comparison and deep dives into specific details, which is more effective for strategic decision-making than a linear document. -->
-    <!-- Visualization & Content Choices: 
-        - Company Profiles: Report Info -> Key assets of LABirintar & BMQ. Goal -> Compare company strengths. Viz/Presentation -> Side-by-side card layout using HTML/Tailwind. Interaction -> None. Justification -> Clear, direct visual comparison of core competencies.
-        - Partnership Scenarios: Report Info -> Detailed descriptions of 3 scenarios with interactive simulators. Goal -> Allow detailed exploration and financial modeling. Viz/Presentation -> Tabbed content sections with sliders and input fields. Interaction -> Clicking tabs reveals scenarios; sliders and inputs trigger real-time calculation updates. Justification -> Empowers user to test assumptions and understand financial implications directly.
-        - Financial Simulation: Report Info -> Monthly earnings projections for BMQ in Scenarios 1 & 2. Goal -> Compare financial outcomes. Viz/Presentation -> Vertical Bar Chart (Chart.js/Canvas). Interaction -> Tooltips on hover; chart data updates dynamically based on user input in the scenario simulators. Justification -> Creates a powerful, centralized dashboard for comparing the financial viability of the main scenarios.
-        - Value Curve (Blue Ocean): Report Info -> Competitive analysis from provided documents. Goal -> Strategically position the partnership against the market. Viz/Presentation -> Custom HTML/CSS/JS Line Chart. Interaction -> Tooltips on hover, legend items toggle dataset visibility. Justification -> Custom strategic visualization to powerfully argue the unique value proposition of the partnership, matching user-provided design reference with added interactivity.
-    -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         :root {
             --bmq-red: #c20f0f;
@@ -516,11 +507,21 @@
         const scenarioContentEl = document.getElementById('scenario-content');
         const tabButtons = document.querySelectorAll('.tab-button');
 
+        const scenarioState = {
+            s1: { escolas: 1, turmas: 2, frequencia: 2 },
+            s2: { escolas: 1, turmas: 2, frequencia: 2 },
+            s3: { equity: 5, ano: 5 }
+        };
+
         function setupScenario1() {
             const escolas = document.getElementById('s1_escolas');
             const turmas = document.getElementById('s1_turmas');
             const frequencia = document.getElementById('s1_frequencia');
             
+            escolas.value = scenarioState.s1.escolas;
+            turmas.value = scenarioState.s1.turmas;
+            frequencia.value = scenarioState.s1.frequencia;
+
             [escolas, turmas, frequencia].forEach(el => {
                 if(el) el.addEventListener('input', calculateScenario1);
             });
@@ -535,6 +536,8 @@
             const turmas = parseInt(document.getElementById('s1_turmas').value);
             const frequencia = parseInt(document.getElementById('s1_frequencia').value);
             const alunosPorTurma = 15;
+
+            scenarioState.s1 = { escolas, turmas, frequencia };
 
             document.getElementById('s1_escolas_val').textContent = `${escolas} escola(s)`;
             document.getElementById('s1_turmas_val').textContent = `${turmas} turmas (${turmas * alunosPorTurma} matrículas)`;
@@ -556,6 +559,10 @@
             const turmas = document.getElementById('s2_turmas');
             const frequencia = document.getElementById('s2_frequencia');
             
+            escolas.value = scenarioState.s2.escolas;
+            turmas.value = scenarioState.s2.turmas;
+            frequencia.value = scenarioState.s2.frequencia;
+
             [escolas, turmas, frequencia].forEach(el => {
                 if(el) el.addEventListener('input', calculateScenario2);
             });
@@ -570,6 +577,8 @@
             const turmas = parseInt(document.getElementById('s2_turmas').value);
             const frequencia = parseInt(document.getElementById('s2_frequencia').value);
             const alunosPorTurma = 15;
+
+            scenarioState.s2 = { escolas, turmas, frequencia };
 
             document.getElementById('s2_escolas_val').textContent = `${escolas} escola(s)`;
             document.getElementById('s2_turmas_val').textContent = `${turmas} turmas (${turmas * alunosPorTurma} matrículas)`;
@@ -606,6 +615,8 @@
             const equitySlider = document.getElementById('s3_equity');
             const anoSelect = document.getElementById('s3_ano');
             
+            equitySlider.value = scenarioState.s3.equity;
+
             const lucrosProjetados = {
                 2: 561998, 3: 1603789, 4: 2909789, 5: 3354457, 
                 6: 3359355, 7: 3354457, 8: 3354457, 9: 3354457, 10: 3354457
@@ -617,7 +628,7 @@
                 option.textContent = `Ano ${ano}`;
                 anoSelect.appendChild(option);
             }
-            anoSelect.value = 5;
+            anoSelect.value = scenarioState.s3.ano;
 
             if(equitySlider) equitySlider.addEventListener('input', () => calculateScenario3(lucrosProjetados));
             if(anoSelect) anoSelect.addEventListener('change', () => calculateScenario3(lucrosProjetados));
@@ -630,6 +641,8 @@
 
             const equity = parseFloat(equitySlider.value);
             const ano = document.getElementById('s3_ano').value;
+            
+            scenarioState.s3 = { equity, ano };
             
             document.getElementById('s3_equity_val').textContent = `${equity.toFixed(1)}%`;
             
@@ -672,16 +685,16 @@
         function updateFinancialChart() {
             if (!financialChartInstance) return;
 
-            const s1_escolas = document.getElementById('s1_escolas') ? parseInt(document.getElementById('s1_escolas').value) : 1;
-            const s1_turmas = document.getElementById('s1_turmas') ? parseInt(document.getElementById('s1_turmas').value) : 2;
-            const s1_frequencia = document.getElementById('s1_frequencia') ? parseInt(document.getElementById('s1_frequencia').value) : 2;
+            const s1_escolas = scenarioState.s1.escolas;
+            const s1_turmas = scenarioState.s1.turmas;
+            const s1_frequencia = scenarioState.s1.frequencia;
             const s1_tickets = { 1: 297, 2: 447, 3: 597, 4: 747, 5: 897 };
             const s1_faturamento = s1_escolas * s1_turmas * 15 * s1_tickets[s1_frequencia];
             const s1_ganho = s1_faturamento * 0.05;
 
-            const s2_escolas = document.getElementById('s2_escolas') ? parseInt(document.getElementById('s2_escolas').value) : 1;
-            const s2_turmas = document.getElementById('s2_turmas') ? parseInt(document.getElementById('s2_turmas').value) : 2;
-            const s2_frequencia = document.getElementById('s2_frequencia') ? parseInt(document.getElementById('s2_frequencia').value) : 2;
+            const s2_escolas = scenarioState.s2.escolas;
+            const s2_turmas = scenarioState.s2.turmas;
+            const s2_frequencia = scenarioState.s2.frequencia;
             const s2_tickets = { 1: 297, 2: 447, 3: 597, 4: 747, 5: 897 };
             const s2_receitaBruta = s2_escolas * s2_turmas * 15 * s2_tickets[s2_frequencia];
             const s2_receitaBMQ = s2_receitaBruta * 0.45;
