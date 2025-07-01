@@ -133,7 +133,7 @@
 
         /* Section Styles */
         .section-vision {
-            background-color: var(--color-light-bg);
+            background-color: var(--color-white);
             text-align: center;
         }
 
@@ -144,6 +144,12 @@
             color: var(--color-primary);
             max-width: 800px;
             margin: 0 auto 2rem auto;
+        }
+        
+        /* MODIFIED: This rule centers the paragraph blocks inside the vision section */
+        .section-vision p {
+            margin-left: auto;
+            margin-right: auto;
         }
         
         .section-problem {
@@ -194,6 +200,7 @@
         /* Solution Section with Flip Cards */
         .section-solution {
             background: linear-gradient(145deg, var(--color-accent-lavender), var(--color-white));
+            padding: 6rem 0;
         }
         
         .solution-grid {
@@ -459,59 +466,61 @@
             </div>
         </section>
 
-        <section class="section-solution container fade-in">
-            <h2>Nossa Solução: Um Ecossistema Integrado</h2>
-            <p class="section-subtitle">Conectamos quatro pilares para criar uma experiência de contraturno única, viva e pulsante.</p>
-            <div class="solution-grid">
-                <!-- Card 1 -->
-                <div class="flip-card">
-                    <div class="flip-card-inner">
-                        <div class="flip-card-front">
-                            <i data-feather="cpu" style="width: 48px; height: 48px;"></i>
-                            <h4>Tecnologia</h4>
-                        </div>
-                        <div class="flip-card-back">
-                            <h4>Gestão Inteligente</h4>
-                            <p>Sistema automatizado que simplifica a gestão, comunicação e pagamentos, liberando tempo para o que realmente importa: educar.</p>
-                        </div>
-                    </div>
-                </div>
-                <!-- Card 2 -->
-                <div class="flip-card">
-                    <div class="flip-card-inner">
-                        <div class="flip-card-front">
-                            <i data-feather="award" style="width: 48px; height: 48px;"></i>
-                            <h4>Rede de Educadores</h4>
-                        </div>
-                        <div class="flip-card-back">
-                            <h4>Excelência Curada</h4>
-                            <p>Acesso a uma rede de educadores empreendedores com formação contínua, garantindo oficinas de alta qualidade e engajamento.</p>
+        <section class="section-solution fade-in">
+            <div class="container" style="padding: 0;">
+                <h2>Nossa Solução: Um Ecossistema Integrado</h2>
+                <p class="section-subtitle">Conectamos quatro pilares para criar uma experiência de contraturno única, viva e pulsante.</p>
+                <div class="solution-grid">
+                    <!-- Card 1 -->
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <i data-feather="cpu" style="width: 48px; height: 48px;"></i>
+                                <h4>Tecnologia</h4>
+                            </div>
+                            <div class="flip-card-back">
+                                <h4>Gestão Inteligente</h4>
+                                <p>Sistema automatizado que simplifica a gestão, comunicação e pagamentos, liberando tempo para o que realmente importa: educar.</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <!-- Card 3 -->
-                <div class="flip-card">
-                    <div class="flip-card-inner">
-                        <div class="flip-card-front">
-                            <i data-feather="heart" style="width: 48px; height: 48px;"></i>
-                            <h4>Curadoria Pedagógica</h4>
-                        </div>
-                        <div class="flip-card-back">
-                            <h4>Experiências Vivas</h4>
-                            <p>Desenvolvemos jornadas de aprendizagem integrais, afetivas e que despertam a curiosidade e a paixão dos alunos.</p>
+                    <!-- Card 2 -->
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <i data-feather="award" style="width: 48px; height: 48px;"></i>
+                                <h4>Rede de Educadores</h4>
+                            </div>
+                            <div class="flip-card-back">
+                                <h4>Excelência Curada</h4>
+                                <p>Acesso a uma rede de educadores empreendedores com formação contínua, garantindo oficinas de alta qualidade e engajamento.</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <!-- Card 4 -->
-                <div class="flip-card">
-                    <div class="flip-card-inner">
-                        <div class="flip-card-front">
-                            <i data-feather="share-2" style="width: 48px; height: 48px;"></i>
-                            <h4>Comunidade em Rede</h4>
+                    <!-- Card 3 -->
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <i data-feather="heart" style="width: 48px; height: 48px;"></i>
+                                <h4>Curadoria Pedagógica</h4>
+                            </div>
+                            <div class="flip-card-back">
+                                <h4>Experiências Vivas</h4>
+                                <p>Desenvolvemos jornadas de aprendizagem integrais, afetivas e que despertam a curiosidade e a paixão dos alunos.</p>
+                            </div>
                         </div>
-                        <div class="flip-card-back">
-                            <h4>Aprendizagem Conectada</h4>
-                            <p>Unimos escolas, famílias e educadores, fortalecendo laços e criando uma poderosa comunidade de apoio e crescimento mútuo.</p>
+                    </div>
+                    <!-- Card 4 -->
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <i data-feather="share-2" style="width: 48px; height: 48px;"></i>
+                                <h4>Comunidade em Rede</h4>
+                            </div>
+                            <div class="flip-card-back">
+                                <h4>Aprendizagem Conectada</h4>
+                                <p>Unimos escolas, famílias e educadores, fortalecendo laços e criando uma poderosa comunidade de apoio e crescimento mútuo.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
