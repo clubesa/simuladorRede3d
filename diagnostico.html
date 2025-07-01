@@ -40,7 +40,8 @@
             overflow: hidden;
         }
         .header { text-align: center; margin-bottom: 20px; }
-        .header img { max-width: 225px; margin-bottom: 15px; }
+        /* --- LOGO AUMENTADA --- */
+        .header img { max-width: 282px; margin-bottom: 15px; }
         .header h1 { color: var(--vermelho); font-size: 1.5em; font-weight: 700; margin: 0; }
         .intro-text { background-color: #fafafa; padding: 20px; border-radius: 12px; margin-bottom: 25px; font-style: italic; line-height: 1.6; }
         .intro-text .adulto-nota { font-size: 0.9em; color: #555; display: block; margin-top: 10px; }
@@ -82,7 +83,6 @@
         /* --- ESTILOS DO CARROSSEL (ATUALIZADO) --- */
         .carousel { position: relative; width: 100%; max-width: 550px; margin: 0 auto; border-radius: 15px; overflow: hidden; }
         .carousel-container { display: flex; transition: transform 0.5s ease-in-out; }
-        /* --- MARGEM AUMENTADA --- */
         .carousel-slide { flex: 0 0 100%; display: flex; justify-content: center; align-items: center; padding: 40px; box-sizing: border-box; }
         .polaroid { background: var(--branco); border: 1px solid #ddd; padding: 15px 15px 45px 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; position: relative; }
         .polaroid img { width: 100%; max-width: 450px; display: block; }
@@ -343,9 +343,10 @@
             const totalImages = 22;
             let currentImageIndex = 0;
             
-            let imageNames = [];
-            for (let i = 1; i <= totalImages; i++) {
-                imageNames.push(`IMG_18${String(i).padStart(2, '0')}.jpeg`);
+            // Cria um array com as imagens de 1802 a 1822 para embaralhar
+            let remainingImages = [];
+            for (let i = 2; i <= totalImages; i++) {
+                remainingImages.push(`IMG_18${String(i).padStart(2, '0')}.jpeg`);
             }
 
             function shuffleArray(array) {
@@ -354,7 +355,10 @@
                     [array[i], array[j]] = [array[j], array[i]];
                 }
             }
-            shuffleArray(imageNames);
+            shuffleArray(remainingImages);
+
+            // Adiciona a imagem 1801 no início e as outras embaralhadas depois
+            const imageNames = [`IMG_1801.jpeg`, ...remainingImages];
 
             imageNames.forEach(imageName => {
                 const slide = document.createElement('div');
@@ -404,7 +408,6 @@
                 nextBtn.style.display = currentQuestionIndex === questions.length - 1 ? 'none' : 'inline-block';
                 submitBtn.style.display = currentQuestionIndex === questions.length - 1 ? 'inline-block' : 'none';
                 
-                // Esconde o texto de instrução após a primeira página
                 const introText = document.querySelector('.intro-text');
                 if (introText) {
                     introText.style.display = currentQuestionIndex === 0 ? 'block' : 'none';
