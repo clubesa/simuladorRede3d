@@ -40,7 +40,6 @@
             overflow: hidden;
         }
         .header { text-align: center; margin-bottom: 20px; }
-        /* --- LOGO AUMENTADA --- */
         .header img { max-width: 282px; margin-bottom: 15px; }
         .header h1 { color: var(--vermelho); font-size: 1.5em; font-weight: 700; margin: 0; }
         .intro-text { background-color: #fafafa; padding: 20px; border-radius: 12px; margin-bottom: 25px; font-style: italic; line-height: 1.6; }
@@ -343,7 +342,6 @@
             const totalImages = 22;
             let currentImageIndex = 0;
             
-            // Cria um array com as imagens de 1802 a 1822 para embaralhar
             let remainingImages = [];
             for (let i = 2; i <= totalImages; i++) {
                 remainingImages.push(`IMG_18${String(i).padStart(2, '0')}.jpeg`);
@@ -357,7 +355,6 @@
             }
             shuffleArray(remainingImages);
 
-            // Adiciona a imagem 1801 no início e as outras embaralhadas depois
             const imageNames = [`IMG_1801.jpeg`, ...remainingImages];
 
             imageNames.forEach(imageName => {
@@ -419,12 +416,23 @@
 
             function validateCurrentQuestion() {
                 const currentQuestion = questions[currentQuestionIndex];
+
+                // Validação específica para o carrossel (índice 1)
+                if (currentQuestionIndex === 1) {
+                    const selectedImages = form.querySelectorAll('input[name="ImagensSelecionadas"]:checked');
+                    if (selectedImages.length === 0) {
+                        return false; // Falha na validação se nenhuma imagem for selecionada
+                    }
+                }
+
                 const inputs = currentQuestion.querySelectorAll('input[required], textarea[required]');
                 let isValid = true;
                 inputs.forEach(input => {
                     if (input.type === 'radio' || input.type === 'checkbox') {
                         const group = currentQuestion.querySelectorAll(`input[name="${input.name}"]`);
-                        if (!Array.from(group).some(radio => radio.checked)) isValid = false;
+                        if (!Array.from(group).some(radio => radio.checked)) {
+                            isValid = false;
+                        }
                     } else if (!input.value.trim()) {
                         isValid = false;
                     }
@@ -439,7 +447,12 @@
                         updateFormView();
                     }
                 } else {
-                    alert('Ops! Responda a esta pergunta para continuar.');
+                    // Mensagem de alerta personalizada
+                    if (currentQuestionIndex === 1) {
+                        alert('Ops! Escolha pelo menos uma foto para continuar.');
+                    } else {
+                        alert('Ops! Responda a esta pergunta para continuar.');
+                    }
                 }
             });
 
@@ -453,7 +466,11 @@
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 if (!validateCurrentQuestion()) {
-                    alert('Ops! Responda a esta pergunta para continuar.');
+                     if (currentQuestionIndex === 1) {
+                        alert('Ops! Escolha pelo menos uma foto para continuar.');
+                    } else {
+                        alert('Ops! Responda a esta pergunta para continuar.');
+                    }
                     return;
                 }
                 statusOverlay.style.display = 'flex';
