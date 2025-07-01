@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico de Interesses | LABirintar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --vermelho: #ff595a;
+            --laranja: #ffa400;
+            --creme: #ffe9c9;
+            --lilas: #e6cbe4;
+            --azul: #aec5e7;
+            --texto-escuro: #3d3d3d;
+            --branco: #ffffff;
+            --sombra-suave: rgba(0, 0, 0, 0.08);
+            --verde-sucesso: #28a745;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--creme);
+            color: var(--texto-escuro);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: var(--branco);
+            padding: 30px 40px;
+            border-radius: 24px;
+            box-shadow: 0 12px 30px var(--sombra-suave);
+            max-width: 700px;
+            width: 100%;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header img { max-width: 150px; margin-bottom: 15px; }
+        .header h1 { color: var(--vermelho); font-size: 1.5em; font-weight: 700; margin: 0; }
+        .header p { font-size: 1.1em; color: var(--texto-escuro); max-width: 500px; margin: 10px auto 0; }
+        .intro-text { background-color: #fafafa; padding: 15px; border-radius: 12px; margin-bottom: 20px; font-style: italic; }
+        .progress-bar-container { width: 100%; background-color: #f0f0f0; border-radius: 10px; margin: 30px 0; }
+        .progress-bar { width: 0%; height: 15px; background: linear-gradient(90deg, var(--azul), var(--lilas)); border-radius: 10px; transition: width 0.4s ease-in-out; }
+        .question-block { display: none; padding: 10px; animation: slideIn 0.5s forwards; }
+        .question-block.active { display: block; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        .question-title { margin-top: 0; margin-bottom: 20px; font-size: 1.4em; font-weight: 600; line-height: 1.4; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 10px; font-weight: 600; font-size: 1.1em; }
+        .form-group input[type="text"], .form-group input[type="number"], .form-group textarea {
+            width: 100%; padding: 14px; border: 2px solid var(--lilas); border-radius: 10px;
+            box-sizing: border-box; font-size: 1em; font-family: 'Poppins', sans-serif;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--laranja); box-shadow: 0 0 0 3px rgba(255, 164, 0, 0.3); }
+        .options-list label {
+            display: flex; align-items: center; background-color: #fafafa; padding: 15px;
+            border-radius: 12px; margin-bottom: 12px; border: 2px solid var(--lilas);
+            cursor: pointer; transition: all 0.2s ease-out;
+        }
+        .options-list label:hover { border-color: var(--laranja); transform: translateY(-3px); box-shadow: 0 4px 10px var(--sombra-suave); }
+        .options-list input[type="radio"], .options-list input[type="checkbox"] {
+            transform: scale(1.5); margin-right: 15px; accent-color: var(--vermelho);
+        }
+        .image-placeholder { width: 80px; height: 80px; background-color: var(--creme); border-radius: 8px; margin-right: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.2em; text-align: center; color: var(--texto-escuro); }
+        .navigation-buttons { display: flex; justify-content: space-between; margin-top: 30px; }
+        .nav-btn { padding: 12px 30px; background-color: var(--lilas); color: var(--texto-escuro); font-size: 1.1em; font-weight: 600; border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s; }
+        .nav-btn:hover { transform: scale(1.05); }
+        .nav-btn#nextBtn { background-color: var(--laranja); color: var(--branco); }
+        #submitBtn { width: 100%; padding: 18px; background: linear-gradient(45deg, var(--verde-sucesso), #218838); color: var(--branco); font-size: 1.4em; font-weight: 700; border: none; border-radius: 12px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4); display: none; }
+        .status-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 1000; text-align: center; }
+        .status-box h2 { font-size: 1.8em; }
+        .loader { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid var(--laranja); border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .checkmark { font-size: 5em; color: var(--verde-sucesso); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header class="header">
+            <img src="IMG_1229.png" alt="Logo LABirintar" onerror="this.style.display='none'">
+            <h1>“Uma tarde que mora em mim”</h1>
+        </header>
+
+        <div class="intro-text">
+            <p>Essa é uma escuta da LABirintar. Queremos saber o que você gostaria de viver nas tardes na sua escola.</p>
+            <small>Um adulto pode te ajudar a ler e a registrar o que você expressar, em palavras, gestos ou histórias.</small>
+        </div>
+
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <form id="diagnosticoForm">
+            <!-- Bloco Inicial -->
+            <div class="question-block">
+                <h3 class="question-title">Para começar, conte pra gente:</h3>
+                <div class="form-group">
+                    <label for="idade">Qual a sua idade?</label>
+                    <input type="number" id="idade" name="Idade" min="3" max="18" required>
+                </div>
+                <div class="form-group">
+                    <label for="serie">Em que série você está?</label>
+                    <input type="text" id="serie" name="Serie" required>
+                </div>
+            </div>
+
+            <!-- Pergunta 1 -->
+            <div class="question-block">
+                <h3 class="question-title">1. O que você gostaria de fazer à tarde, depois das aulas?</h3>
+                <div class="options-list">
+                    <label><div class="image-placeholder">Imagem 1 aqui</div><input type="radio" name="AtividadeTarde" value="Opcao1" required><span>Opção 1 (substituir texto)</span></label>
+                    <label><div class="image-placeholder">Imagem 2 aqui</div><input type="radio" name="AtividadeTarde" value="Opcao2" required><span>Opção 2 (substituir texto)</span></label>
+                    <label><div class="image-placeholder">Imagem 3 aqui</div><input type="radio" name="AtividadeTarde" value="Opcao3" required><span>Opção 3 (substituir texto)</span></label>
+                </div>
+            </div>
+
+            <!-- Pergunta 2 -->
+            <div class="question-block">
+                <h3 class="question-title">2. Se a escola fosse um lugar mágico…</h3>
+                <div class="form-group">
+                    <label for="escola-magica">Que som você ouviria? O que sentiria ao entrar? Que surpresa viveria ali?</label>
+                    <textarea id="escola-magica" name="EscolaMagica" rows="5" required></textarea>
+                </div>
+            </div>
+            
+            <!-- Pergunta 3 -->
+            <div class="question-block">
+                <h3 class="question-title">3. Coisas que brilham na minha cabeça</h3>
+                <p>Tem algo que você tem muita vontade de aprender ou explorar de um jeito mais livre? Pode marcar quantas quiser:</p>
+                <div class="options-list">
+                    <label><input type="checkbox" name="CoisasQueBrilham" value="Música"><span>Música</span></label>
+                    <label><input type="checkbox" name="CoisasQueBrilham" value="Jogos"><span>Jogos</span></label>
+                    <label><input type="checkbox" name="CoisasQueBrilham" value="Corpo"><span>Corpo</span></label>
+                    <label><input type="checkbox" name="CoisasQueBrilham" value="Plantas e natureza"><span>Plantas e natureza</span></label>
+                    <label><input type="checkbox" name="CoisasQueBrilham" value="Robôs e invenções"><span>Robôs e invenções</span></label>
+                    <label><input type="checkbox" name="CoisasQueBrilham" value="Histórias e livros"><span>Histórias e livros</span></label>
+                    <label><input type="checkbox" name="CoisasQueBrilham" value="Ferramentas"><span>Ferramentas</span></label>
+                    <label><input type="checkbox" name="CoisasQueBrilham" value="Comida"><span>Comida</span></label>
+                    <label><input type="checkbox" name="CoisasQueBrilham" value="Bichos"><span>Bichos</span></label>
+                    <label><input type="checkbox" name="CoisasQueBrilham" value="Brincadeiras"><span>Brincadeiras</span></label>
+                    <label><input type="checkbox" name="CoisasQueBrilham" value="Computador"><span>Computador</span></label>
+                </div>
+                 <div class="form-group" style="margin-top: 20px;">
+                    <label for="outra-coisa">Outra coisa:</label>
+                    <input type="text" id="outra-coisa" name="OutraCoisaBrilha">
+                </div>
+            </div>
+
+            <!-- Pergunta 4 -->
+            <div class="question-block">
+                <h3 class="question-title">4. Se pudesse criar uma aula nova…</h3>
+                <div class="form-group">
+                    <label for="nome-aula">Como ela se chamaria?</label>
+                    <input type="text" id="nome-aula" name="NomeAulaNova" required>
+                </div>
+                <div class="form-group">
+                    <label for="o-que-fariam">O que fariam nela?</label>
+                    <textarea id="o-que-fariam" name="OQueFariamAula" rows="4" required></textarea>
+                </div>
+            </div>
+            
+            <!-- Pergunta 5 -->
+            <div class="question-block">
+                <h3 class="question-title">5. Se você pudesse guardar o momento mais gostoso da sua tarde em uma caixinha, qual seria?</h3>
+                <div class="options-list">
+                    <label><input type="radio" name="MomentoNaCaixinha" value="Estar com amigos" required><span>Estar com amigos</span></label>
+                    <label><input type="radio" name="MomentoNaCaixinha" value="Inventar coisas" required><span>Inventar coisas</span></label>
+                    <label><input type="radio" name="MomentoNaCaixinha" value="Ficar em silêncio" required><span>Ficar em silêncio</span></label>
+                    <label><input type="radio" name="MomentoNaCaixinha" value="Mexer no computador" required><span>Mexer no computador</span></label>
+                    <label><input type="radio" name="MomentoNaCaixinha" value="Jogar um jogo" required><span>Jogar um jogo</span></label>
+                    <label><input type="radio" name="MomentoNaCaixinha" value="Movimentar o corpo" required><span>Movimentar o corpo</span></label>
+                    <label><input type="radio" name="MomentoNaCaixinha" value="Descobrir algo novo" required><span>Descobrir algo novo</span></label>
+                    <label><input type="radio" name="MomentoNaCaixinha" value="Brincar sem hora" required><span>Brincar sem hora</span></label>
+                    <label><input type="radio" name="MomentoNaCaixinha" value="Construir algo" required><span>Construir algo</span></label>
+                </div>
+            </div>
+
+            <!-- Pergunta 6 -->
+            <div class="question-block">
+                <h3 class="question-title">6. Qual lugar da escola poderia virar um novo mundo?</h3>
+                <div class="form-group">
+                    <label for="lugar-patio">O pátio poderia virar…?</label>
+                    <input type="text" id="lugar-patio" name="LugarPatio" required>
+                </div>
+                <div class="form-group">
+                    <label for="lugar-quadra">A quadra poderia se transformar em…?</label>
+                    <input type="text" id="lugar-quadra" name="LugarQuadra" required>
+                </div>
+                <div class="form-group">
+                    <label for="lugar-biblioteca">A biblioteca poderia se abrir para…?</label>
+                    <input type="text" id="lugar-biblioteca" name="LugarBiblioteca" required>
+                </div>
+                <div class="form-group">
+                    <label for="lugar-salas">As salas de aulas seriam reorganizadas e funcionariam como…?</label>
+                    <input type="text" id="lugar-salas" name="LugarSalas" required>
+                </div>
+            </div>
+
+            <!-- Pergunta 7 -->
+            <div class="question-block">
+                <h3 class="question-title">7. Invenções que só existem na minha cabeça (por enquanto!)</h3>
+                <div class="form-group">
+                    <label for="invencao-maluca">💡 Tem alguma ideia maluca ou legal que você inventaria para a escola?</label>
+                    <textarea id="invencao-maluca" name="InvencaoMaluca" rows="4" required></textarea>
+                </div>
+            </div>
+            
+            <!-- Pergunta 8 -->
+            <div class="question-block">
+                <h3 class="question-title">8. Se pudesse escolher uma peça de um quebra-cabeça que representa a escola…</h3>
+                <div class="form-group">
+                    <label for="peca-quebra-cabeca">O que estaria desenhado nesta peça?</label>
+                    <input type="text" id="peca-quebra-cabeca" name="PecaQuebraCabeca" required>
+                </div>
+            </div>
+
+            <!-- Pergunta 9 -->
+            <div class="question-block">
+                <h3 class="question-title">9. Quer deixar um recado para a LABirintar?</h3>
+                <div class="form-group">
+                    <label for="recado-final">Pode escrever uma frase, uma palavra inventada, uma coisa que você queira dizer só pra gente.</label>
+                    <textarea id="recado-final" name="RecadoFinal" rows="4"></textarea>
+                </div>
+            </div>
+
+        </form>
+
+        <div class="navigation-buttons">
+            <button id="prevBtn" class="nav-btn">Anterior</button>
+            <button id="nextBtn" class="nav-btn">Próximo</button>
+            <button id="submitBtn" type="submit" form="diagnosticoForm">Enviar</button>
+        </div>
+    </div>
+
+    <div class="status-overlay" id="statusOverlay">
+        <div class="status-box" id="loadingBox">
+            <h2>Enviando...</h2>
+            <div class="loader"></div>
+        </div>
+        <div class="status-box" id="successBox" style="display: none;">
+            <div class="checkmark">✓</div>
+            <h2>Obrigada por dividir com a gente o que mora no seu desejo.</h2>
+            <p>Agora vamos transformar isso em experiências vivas e cheias de sentido.<br>Você deixou uma marca no mundo. A LABirintar ouviu.</p>
+        </div>
+    </div>
+
+    <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzmx4t83GJOxXgc4__4vpEp3qdnKQ_cifoF8RTkTUVtZjbrni5TYMgPjLCzvAbh8lzy/exec$0";
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('diagnosticoForm');
+            const questions = Array.from(form.querySelectorAll('.question-block'));
+            const nextBtn = document.getElementById('nextBtn');
+            const prevBtn = document.getElementById('prevBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            const progressBar = document.getElementById('progressBar');
+            const statusOverlay = document.getElementById('statusOverlay');
+            const loadingBox = document.getElementById('loadingBox');
+            const successBox = document.getElementById('successBox');
+            let currentQuestionIndex = 0;
+
+            function updateFormView() {
+                questions.forEach((q, i) => q.classList.toggle('active', i === currentQuestionIndex));
+                const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+                progressBar.style.width = `${progress}%`;
+                prevBtn.style.display = currentQuestionIndex === 0 ? 'none' : 'inline-block';
+                nextBtn.style.display = currentQuestionIndex === questions.length - 1 ? 'none' : 'inline-block';
+                submitBtn.style.display = currentQuestionIndex === questions.length - 1 ? 'inline-block' : 'none';
+                const firstInput = questions[currentQuestionIndex].querySelector('input, textarea');
+                if (firstInput) firstInput.focus();
+            }
+
+            function validateCurrentQuestion() {
+                const currentQuestion = questions[currentQuestionIndex];
+                const inputs = currentQuestion.querySelectorAll('input[required], textarea[required]');
+                let isValid = true;
+                inputs.forEach(input => {
+                    if (input.type === 'radio' || input.type === 'checkbox') {
+                        const group = currentQuestion.querySelectorAll(`input[name="${input.name}"]`);
+                        if (!Array.from(group).some(radio => radio.checked)) isValid = false;
+                    } else if (!input.value.trim()) {
+                        isValid = false;
+                    }
+                });
+                return isValid;
+            }
+
+            nextBtn.addEventListener('click', () => {
+                if (validateCurrentQuestion()) {
+                    if (currentQuestionIndex < questions.length - 1) {
+                        currentQuestionIndex++;
+                        updateFormView();
+                    }
+                } else {
+                    alert('Ops! Responda a esta pergunta para continuar.');
+                }
+            });
+
+            prevBtn.addEventListener('click', () => {
+                if (currentQuestionIndex > 0) {
+                    currentQuestionIndex--;
+                    updateFormView();
+                }
+            });
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (!validateCurrentQuestion()) {
+                    alert('Ops! Responda a esta pergunta para continuar.');
+                    return;
+                }
+                if (SCRIPT_URL.includes("COLE_A_URL")) {
+                    alert("ERRO: A URL do Google Apps Script não foi configurada.");
+                    return;
+                }
+                statusOverlay.style.display = 'flex';
+                loadingBox.style.display = 'block';
+                successBox.style.display = 'none';
+
+                fetch(SCRIPT_URL, { method: 'POST', body: new FormData(form) })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.result === 'success') {
+                            loadingBox.style.display = 'none';
+                            successBox.style.display = 'block';
+                        } else {
+                            throw new Error(data.message || 'Erro desconhecido do script.');
+                        }
+                    })
+                    .catch(error => {
+                        statusOverlay.style.display = 'none';
+                        alert('Ocorreu um erro: ' + error.message);
+                    });
+            });
+            updateFormView();
+        });
+    </script>
+</body>
+</html>
