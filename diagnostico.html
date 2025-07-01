@@ -17,7 +17,7 @@
             --texto-escuro: #3d3d3d;
             --branco: #ffffff;
             --sombra-suave: rgba(0, 0, 0, 0.08);
-            --verde-sucesso: #28a745;
+            --verde-sucesso: #28a745; /* Mantido para a tela de sucesso */
         }
         body {
             font-family: 'Poppins', sans-serif;
@@ -69,11 +69,23 @@
             transform: scale(1.5); margin-right: 15px; accent-color: var(--vermelho);
         }
         .image-placeholder { width: 80px; height: 80px; background-color: var(--creme); border-radius: 8px; margin-right: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.2em; text-align: center; color: var(--texto-escuro); }
-        .navigation-buttons { display: flex; justify-content: space-between; margin-top: 30px; }
+        .navigation-buttons { display: flex; justify-content: space-between; align-items: center; margin-top: 30px; gap: 15px; } /* Adicionado GAP para espaçamento */
         .nav-btn { padding: 12px 30px; background-color: var(--lilas); color: var(--texto-escuro); font-size: 1.1em; font-weight: 600; border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s; }
         .nav-btn:hover { transform: scale(1.05); }
         .nav-btn#nextBtn { background-color: var(--laranja); color: var(--branco); }
-        #submitBtn { width: 100%; padding: 18px; background: linear-gradient(45deg, var(--verde-sucesso), #218838); color: var(--branco); font-size: 1.4em; font-weight: 700; border: none; border-radius: 12px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4); display: none; }
+        #submitBtn {
+            padding: 12px 30px;
+            background: var(--vermelho); /* COR ALTERADA */
+            color: var(--branco);
+            font-size: 1.1em;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: none; /* Começa escondido */
+        }
+        #submitBtn:hover { transform: scale(1.05); }
         .status-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 1000; text-align: center; }
         .status-box h2 { font-size: 1.8em; }
         .loader { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid var(--laranja); border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; }
@@ -235,6 +247,7 @@
 
         <div class="navigation-buttons">
             <button id="prevBtn" class="nav-btn">Anterior</button>
+            <!-- O JS vai alternar entre o botão Próximo e Enviar aqui -->
             <button id="nextBtn" class="nav-btn">Próximo</button>
             <button id="submitBtn" type="submit" form="diagnosticoForm">Enviar</button>
         </div>
@@ -253,7 +266,8 @@
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzmx4t83GJOxXgc4__4vpEp3qdnKQ_cifoF8RTkTUVtZjbrni5TYMgPjLCzvAbh8lzy/exec$0";
+        // URL DO SCRIPT ATUALIZADA
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzmx4t83GJOxXgc4__4vpEp3qdnKQ_cifoF8RTkTUVtZjbrni5TYMgPjLCzvAbh8lzy/exec";
 
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('diagnosticoForm');
@@ -271,15 +285,19 @@
                 questions.forEach((q, i) => q.classList.toggle('active', i === currentQuestionIndex));
                 const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
                 progressBar.style.width = `${progress}%`;
+                
+                // Lógica de exibição dos botões
                 prevBtn.style.display = currentQuestionIndex === 0 ? 'none' : 'inline-block';
                 nextBtn.style.display = currentQuestionIndex === questions.length - 1 ? 'none' : 'inline-block';
                 submitBtn.style.display = currentQuestionIndex === questions.length - 1 ? 'inline-block' : 'none';
+
                 const firstInput = questions[currentQuestionIndex].querySelector('input, textarea');
                 if (firstInput) firstInput.focus();
             }
 
             function validateCurrentQuestion() {
                 const currentQuestion = questions[currentQuestionIndex];
+                // A validação de 'required' é feita pelo navegador, mas podemos adicionar uma checagem extra se necessário
                 const inputs = currentQuestion.querySelectorAll('input[required], textarea[required]');
                 let isValid = true;
                 inputs.forEach(input => {
@@ -317,10 +335,7 @@
                     alert('Ops! Responda a esta pergunta para continuar.');
                     return;
                 }
-                if (SCRIPT_URL.includes("COLE_A_URL")) {
-                    alert("ERRO: A URL do Google Apps Script não foi configurada.");
-                    return;
-                }
+                
                 statusOverlay.style.display = 'flex';
                 loadingBox.style.display = 'block';
                 successBox.style.display = 'none';
