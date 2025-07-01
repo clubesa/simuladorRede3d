@@ -78,16 +78,44 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .checkmark { font-size: 5em; color: var(--laranja); }
 
-        /* --- ESTILOS DO CARROSSEL --- */
-        .carousel { position: relative; width: 100%; max-width: 400px; margin: 0 auto; }
-        .carousel-container { display: flex; overflow: hidden; border-radius: 15px; scroll-snap-type: x mandatory; }
+        /* --- ESTILOS DO CARROSSEL (ATUALIZADO) --- */
+        .carousel { position: relative; width: 100%; max-width: 550px; margin: 0 auto; border-radius: 15px; overflow: hidden; }
+        .carousel-container { display: flex; transition: transform 0.5s ease-in-out; }
         .carousel-slide { flex: 0 0 100%; display: flex; justify-content: center; align-items: center; padding: 10px; box-sizing: border-box; }
         .polaroid { background: var(--branco); border: 1px solid #ddd; padding: 15px 15px 45px 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; position: relative; }
-        .polaroid img { width: 100%; max-width: 300px; display: block; }
+        .polaroid img { width: 100%; max-width: 450px; display: block; }
         .polaroid input[type="checkbox"] { display: none; }
         .polaroid.selected { border: 4px solid var(--laranja); transform: scale(1.05) rotate(2deg); box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
-        .carousel-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 100%; display: flex; justify-content: space-between; padding: 0 10px; box-sizing: border-box; pointer-events: none; }
-        .carousel-btn { pointer-events: all; background-color: rgba(255, 255, 255, 0.7); border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 24px; cursor: pointer; }
+        .polaroid.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 50px;
+            font-weight: bold;
+            color: var(--laranja);
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            line-height: 60px;
+            text-align: center;
+            text-shadow: 0 0 5px white;
+        }
+        .carousel-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 100%; display: flex; justify-content: space-between; padding: 0; box-sizing: border-box; pointer-events: none; }
+        .carousel-btn {
+            pointer-events: all;
+            background-color: rgba(255, 255, 255, 0.7);
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 36px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
         .carousel-counter { text-align: center; margin-top: 15px; font-weight: 600; color: var(--texto-escuro); }
 
         /* --- ESTILOS DO SLIDER --- */
@@ -309,13 +337,12 @@
             idadeSlider.oninput = function() { idadeOutput.textContent = this.value; }
             serieSlider.oninput = function() { serieOutput.textContent = `${this.value}ª série`; }
 
-            // --- LÓGICA DO CARROSSEL ---
+            // --- LÓGICA DO CARROSSEL (ATUALIZADA) ---
             const carouselContainer = document.getElementById('carousel-container');
             const totalImages = 22;
             let currentImageIndex = 0;
 
             for (let i = 1; i <= totalImages; i++) {
-                // CORREÇÃO: Alterado de .png para .jpeg
                 const imageName = `IMG_18${String(i).padStart(2, '0')}.jpeg`;
                 const slide = document.createElement('div');
                 slide.className = 'carousel-slide';
@@ -326,8 +353,13 @@
                     </label>
                 `;
                 carouselContainer.appendChild(slide);
-                slide.querySelector('.polaroid').addEventListener('click', function() {
-                    this.classList.toggle('selected');
+                
+                const polaroidLabel = slide.querySelector('.polaroid');
+                const checkbox = polaroidLabel.querySelector('input[type="checkbox"]');
+
+                // Sincroniza a classe 'selected' com o estado do checkbox
+                checkbox.addEventListener('change', function() {
+                    polaroidLabel.classList.toggle('selected', this.checked);
                 });
             }
             
@@ -375,12 +407,6 @@
                         isValid = false;
                     }
                 });
-                if (currentQuestionIndex === 1) {
-                    const selectedImages = form.querySelectorAll('input[name="ImagensSelecionadas"]:checked');
-                    if (selectedImages.length === 0) {
-                        // Não é obrigatório marcar
-                    }
-                }
                 return isValid;
             }
 
