@@ -76,7 +76,7 @@
         .status-box h2 { font-size: 1.8em; }
         .loader { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid var(--laranja); border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .checkmark { font-size: 5em; color: var(--laranja); } /* COR DO TICK ALTERADA */
+        .checkmark { font-size: 5em; color: var(--laranja); }
 
         /* --- ESTILOS DO CARROSSEL --- */
         .carousel { position: relative; width: 100%; max-width: 400px; margin: 0 auto; }
@@ -315,7 +315,8 @@
             let currentImageIndex = 0;
 
             for (let i = 1; i <= totalImages; i++) {
-                const imageName = `IMG_18${String(i).padStart(2, '0')}.png`;
+                // CORREÇÃO: Alterado de .png para .jpeg
+                const imageName = `IMG_18${String(i).padStart(2, '0')}.jpeg`;
                 const slide = document.createElement('div');
                 slide.className = 'carousel-slide';
                 slide.innerHTML = `
@@ -374,12 +375,10 @@
                         isValid = false;
                     }
                 });
-                // Validação específica para o carrossel (pergunta 1)
                 if (currentQuestionIndex === 1) {
                     const selectedImages = form.querySelectorAll('input[name="ImagensSelecionadas"]:checked');
                     if (selectedImages.length === 0) {
-                        // Não é obrigatório marcar, então sempre retorna true para esta pergunta.
-                        // Se fosse obrigatório, aqui seria `isValid = false;`
+                        // Não é obrigatório marcar
                     }
                 }
                 return isValid;
@@ -429,7 +428,7 @@
                     });
             });
             updateFormView();
-            updateCarousel(); // Inicia o carrossel
+            updateCarousel();
         });
     </script>
 </body>
