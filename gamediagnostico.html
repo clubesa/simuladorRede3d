@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expedição dos Sonhos | LABirintar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --vermelho: #ff595a;
+            --laranja: #ffa400;
+            --creme: #ffe9c9;
+            --lilas: #e6cbe4;
+            --azul: #aec5e7;
+            --texto-escuro: #3d3d3d;
+            --branco: #ffffff;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--creme);
+            color: var(--texto-escuro);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: var(--branco);
+            padding: 30px 40px;
+            border-radius: 24px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+            max-width: 700px;
+            width: 100%;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header img { max-width: 282px; margin-bottom: 15px; }
+        .header h1 { color: var(--vermelho); font-size: 1.8em; font-weight: 700; margin: 0; }
+        .question-block { display: none; padding: 10px; animation: slideIn 0.5s forwards; }
+        .question-block.active { display: block; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateX(0); } }
+        .question-title { margin-top: 0; margin-bottom: 10px; font-size: 1.5em; font-weight: 600; line-height: 1.4; }
+        .question-subtitle { font-size: 1.1em; color: #555; margin-bottom: 20px; }
+        .form-group { margin-bottom: 25px; }
+        .form-group label { display: block; margin-bottom: 10px; font-weight: 600; font-size: 1.1em; }
+        .form-group input[type="text"], .form-group textarea {
+            width: 100%; padding: 14px; border: 2px solid var(--lilas); border-radius: 10px;
+            box-sizing: border-box; font-size: 1em; font-family: 'Poppins', sans-serif;
+        }
+        .options-list label {
+            display: flex; align-items: center; background-color: #fafafa; padding: 15px;
+            border-radius: 12px; margin-bottom: 12px; border: 2px solid var(--lilas);
+            cursor: pointer; transition: all 0.2s ease-out;
+        }
+        .options-list label.disabled { cursor: not-allowed; background-color: #f5f5f5; opacity: 0.6; }
+        .options-list input[type="radio"], .options-list input[type="checkbox"] {
+            transform: scale(1.5); margin-right: 15px; accent-color: var(--vermelho);
+        }
+        .navigation-buttons { display: flex; justify-content: space-between; align-items: center; margin-top: 30px; gap: 15px; }
+        .nav-btn { padding: 12px 30px; background-color: var(--laranja); color: var(--branco); font-size: 1.1em; font-weight: 600; border: none; border-radius: 10px; cursor: pointer; }
+        #prevBtn { background-color: var(--lilas); color: var(--texto-escuro); }
+        .status-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 1000; text-align: center; padding: 20px; box-sizing: border-box; }
+        .status-box { background: var(--branco); padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .status-box h2 { font-size: 2em; color: var(--vermelho); }
+        .status-box p { font-size: 1.2em; }
+        .treasure-chest { font-size: 6em; margin-bottom: 20px; animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both; transform: translate3d(0, 0, 0); backface-visibility: hidden; perspective: 1000px; }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+        .download-btn { display: inline-block; margin-top: 20px; padding: 15px 30px; background-color: var(--laranja); color: var(--branco); text-decoration: none; font-weight: bold; border-radius: 10px; }
+        
+        /* --- MAPA DE PROGRESSO --- */
+        .progress-map { display: flex; justify-content: space-around; align-items: center; margin: 30px 0; padding-bottom: 10px; border-bottom: 2px dashed var(--lilas); }
+        .map-step { width: 30px; height: 30px; border-radius: 50%; background-color: #e0e0e0; display: flex; justify-content: center; align-items: center; font-weight: bold; color: var(--branco); transition: background-color 0.5s; }
+        .map-step.completed { background-color: var(--laranja); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header class="header">
+            <img src="Labirintar_RGB.png" alt="Logo LABirintar">
+            <h1>Expedição dos Sonhos</h1>
+        </header>
+
+        <div class="progress-map" id="progress-map">
+            <!-- Passos do mapa serão gerados aqui -->
+        </div>
+
+        <form id="diagnosticoForm">
+            <!-- Bloco Inicial -->
+            <div class="question-block">
+                <h3 class="question-title">Preparem-se, exploradores!</h3>
+                <p class="question-subtitle">Antes de começar a jornada, a equipe de vocês precisa de um nome.</p>
+                <div class="form-group">
+                    <label for="team-name">Nome da Equipe:</label>
+                    <input type="text" id="team-name" name="NomeDaEquipe" required placeholder="Ex: Detetives de Estrelas">
+                </div>
+            </div>
+
+            <!-- Pergunta 1 -->
+            <div class="question-block">
+                <h3 class="question-title">O Arquipélago das Atividades</h3>
+                <p class="question-subtitle">A missão é escolherem juntos as 5 ilhas (fotos) que a equipe mais gostaria de explorar. Conversem e votem!</p>
+                <div class="options-list" id="image-selection-list">
+                    <!-- Imagens serão inseridas aqui -->
+                </div>
+            </div>
+
+            <!-- Pergunta 2 -->
+            <div class="question-block">
+                <h3 class="question-title">A Mochila da Expedição</h3>
+                <p class="question-subtitle">A mochila de vocês tem 7 espaços. Escolham em equipe os itens essenciais para levar na jornada.</p>
+                <div class="options-list" id="backpack-list">
+                    <label><input type="checkbox" name="ItensNaMochila" value="Música"><span>Música</span></label>
+                    <label><input type="checkbox" name="ItensNaMochila" value="Jogos"><span>Jogos</span></label>
+                    <label><input type="checkbox" name="ItensNaMochila" value="Corpo"><span>Corpo</span></label>
+                    <label><input type="checkbox" name="ItensNaMochila" value="Plantas e natureza"><span>Plantas e natureza</span></label>
+                    <label><input type="checkbox" name="ItensNaMochila" value="Robôs e invenções"><span>Robôs e invenções</span></label>
+                    <label><input type="checkbox" name="ItensNaMochila" value="Histórias e livros"><span>Histórias e livros</span></label>
+                    <label><input type="checkbox" name="ItensNaMochila" value="Ferramentas"><span>Ferramentas</span></label>
+                    <label><input type="checkbox" name="ItensNaMochila" value="Comida"><span>Comida</span></label>
+                    <label><input type="checkbox" name="ItensNaMochila" value="Bichos"><span>Bichos</span></label>
+                    <label><input type="checkbox" name="ItensNaMochila" value="Brincadeiras"><span>Brincadeiras</span></label>
+                    <label><input type="checkbox" name="ItensNaMochila" value="Computador"><span>Computador</span></label>
+                </div>
+                <div class="form-group" style="margin-top: 20px;">
+                    <label for="outra-coisa">Um item secreto que não está na lista:</label>
+                    <input type="text" id="outra-coisa" name="OutroItemMochila">
+                </div>
+            </div>
+
+            <!-- Demais perguntas como "Diário de Bordo" -->
+            <div class="question-block">
+                <h3 class="question-title">Diário de Bordo: O Lugar Mágico</h3>
+                <p class="question-subtitle">Se a escola fosse um lugar mágico, como a equipe de vocês o descreveria?</p>
+                <div class="form-group">
+                    <label for="som-magico">Que som vocês ouviriam?</label>
+                    <input type="text" id="som-magico" name="SomMagico" required>
+                </div>
+                <div class="form-group">
+                    <label for="sentimento-magico">O que sentiriam ao entrar?</label>
+                    <input type="text" id="sentimento-magico" name="SentimentoMagico" required>
+                </div>
+                <div class="form-group">
+                    <label for="surpresa-magica">Que surpresa viveriam ali?</label>
+                    <input type="text" id="surpresa-magica" name="SurpresaMagica" required>
+                </div>
+            </div>
+
+        </form>
+
+        <div class="navigation-buttons">
+            <button id="prevBtn" class="nav-btn">Voltar</button>
+            <button id="nextBtn" class="nav-btn">Avançar</button>
+        </div>
+    </div>
+
+    <div class="status-overlay" id="statusOverlay">
+        <div class="status-box" id="successBox">
+            <div class="treasure-chest">💎</div>
+            <h2>Tesouro Desbloqueado!</h2>
+            <p>Parabéns, Equipe <strong id="team-name-final"></strong>! Vocês completaram a expedição e encontraram o tesouro: um Kit Criativo Digital!</p>
+            <a href="#" class="download-btn" id="download-brinde">Baixar o Kit</a>
+            <p style="margin-top: 20px; font-size: 1em;">E o mais importante: as respostas de vocês ajudarão a construir a primeira oficina da LABirintar!</p>
+        </div>
+    </div>
+
+    <script>
+        // COLE A NOVA URL DO SCRIPT DA VERSÃO GAMIFICADA AQUI
+        const SCRIPT_URL = "COLE_A_URL_DO_SEU_NOVO_APP_SCRIPT_AQUI";
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('diagnosticoForm');
+            const questions = Array.from(form.querySelectorAll('.question-block'));
+            const nextBtn = document.getElementById('nextBtn');
+            const prevBtn = document.getElementById('prevBtn');
+            const progressMap = document.getElementById('progress-map');
+            let currentQuestionIndex = 0;
+
+            // Gerar o mapa de progresso
+            for(let i = 0; i < questions.length; i++) {
+                const step = document.createElement('div');
+                step.className = 'map-step';
+                step.textContent = i + 1;
+                progressMap.appendChild(step);
+            }
+            const mapSteps = Array.from(progressMap.querySelectorAll('.map-step'));
+
+            function updateFormView() {
+                questions.forEach((q, i) => q.classList.toggle('active', i === currentQuestionIndex));
+                mapSteps.forEach((step, i) => {
+                    step.classList.toggle('completed', i < currentQuestionIndex);
+                });
+                prevBtn.style.display = currentQuestionIndex === 0 ? 'none' : 'inline-block';
+                if (currentQuestionIndex === questions.length - 1) {
+                    nextBtn.textContent = 'Encontrar o Tesouro!';
+                } else {
+                    nextBtn.textContent = 'Avançar';
+                }
+            }
+
+            // Lógica da Pergunta 1: Arquipélago
+            const imageList = document.getElementById('image-selection-list');
+            const imageNames = [];
+            for (let i = 1; i <= 22; i++) { imageNames.push(`IMG_18${String(i).padStart(2, '0')}.jpeg`); }
+            
+            imageNames.forEach(name => {
+                const label = document.createElement('label');
+                label.innerHTML = `<input type="checkbox" name="IlhasExploradas" value="${name}"><span>${name.replace('.jpeg','')}</span>`;
+                imageList.appendChild(label);
+            });
+
+            // Lógica da Pergunta 2: Mochila
+            const backpackList = document.getElementById('backpack-list');
+            const backpackCheckboxes = backpackList.querySelectorAll('input[type="checkbox"]');
+            const maxBackpackItems = 7;
+
+            backpackCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    const checkedCount = backpackList.querySelectorAll('input:checked').length;
+                    if (checkedCount >= maxBackpackItems) {
+                        backpackCheckboxes.forEach(cb => {
+                            if (!cb.checked) {
+                                cb.disabled = true;
+                                cb.parentElement.classList.add('disabled');
+                            }
+                        });
+                    } else {
+                        backpackCheckboxes.forEach(cb => {
+                            cb.disabled = false;
+                            cb.parentElement.classList.remove('disabled');
+                        });
+                    }
+                });
+            });
+
+
+            function validateCurrentQuestion() {
+                const currentQuestion = questions[currentQuestionIndex];
+                let isValid = true;
+                
+                // Validação do nome da equipe
+                if (currentQuestionIndex === 0) {
+                    const teamName = document.getElementById('team-name').value;
+                    if (teamName.trim() === '') isValid = false;
+                }
+                // Validação do arquipélago
+                if (currentQuestionIndex === 1) {
+                    const selectedIslands = imageList.querySelectorAll('input:checked').length;
+                    if (selectedIslands !== 5) {
+                        alert(`Atenção, exploradores! A missão é escolher exatamente 5 ilhas.`);
+                        return false;
+                    }
+                }
+                // Validação da mochila
+                if (currentQuestionIndex === 2) {
+                    const selectedItems = backpackList.querySelectorAll('input:checked').length;
+                    if (selectedItems === 0) isValid = false;
+                }
+
+                const inputs = currentQuestion.querySelectorAll('input[required], textarea[required]');
+                inputs.forEach(input => {
+                    if (!input.value.trim()) isValid = false;
+                });
+                
+                if (!isValid) alert('Ops! A equipe precisa preencher este campo para continuar a expedição.');
+                return isValid;
+            }
+
+            nextBtn.addEventListener('click', () => {
+                if (!validateCurrentQuestion()) return;
+
+                if (currentQuestionIndex < questions.length - 1) {
+                    currentQuestionIndex++;
+                    updateFormView();
+                } else {
+                    // Finalizar e enviar
+                    const teamName = document.getElementById('team-name').value;
+                    document.getElementById('team-name-final').textContent = teamName;
+                    document.getElementById('statusOverlay').style.display = 'flex';
+                    // Simulação de envio para o brinde
+                    // fetch(SCRIPT_URL, { method: 'POST', body: new FormData(form) })...
+                }
+            });
+
+            prevBtn.addEventListener('click', () => {
+                if (currentQuestionIndex > 0) {
+                    currentQuestionIndex--;
+                    updateFormView();
+                }
+            });
+
+            updateFormView();
+        });
+    </script>
+</body>
+</html>
