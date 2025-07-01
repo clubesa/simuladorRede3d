@@ -17,7 +17,6 @@
             --texto-escuro: #3d3d3d;
             --branco: #ffffff;
             --sombra-suave: rgba(0, 0, 0, 0.08);
-            --verde-sucesso: #28a745; /* Mantido para a tela de sucesso */
         }
         body {
             font-family: 'Poppins', sans-serif;
@@ -43,7 +42,6 @@
         .header { text-align: center; margin-bottom: 20px; }
         .header img { max-width: 150px; margin-bottom: 15px; }
         .header h1 { color: var(--vermelho); font-size: 1.5em; font-weight: 700; margin: 0; }
-        .header p { font-size: 1.1em; color: var(--texto-escuro); max-width: 500px; margin: 10px auto 0; }
         .intro-text { background-color: #fafafa; padding: 15px; border-radius: 12px; margin-bottom: 20px; font-style: italic; }
         .progress-bar-container { width: 100%; background-color: #f0f0f0; border-radius: 10px; margin: 30px 0; }
         .progress-bar { width: 0%; height: 15px; background: linear-gradient(90deg, var(--azul), var(--lilas)); border-radius: 10px; transition: width 0.4s ease-in-out; }
@@ -51,7 +49,7 @@
         .question-block.active { display: block; }
         @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
         .question-title { margin-top: 0; margin-bottom: 20px; font-size: 1.4em; font-weight: 600; line-height: 1.4; }
-        .form-group { margin-bottom: 20px; }
+        .form-group { margin-bottom: 25px; }
         .form-group label { display: block; margin-bottom: 10px; font-weight: 600; font-size: 1.1em; }
         .form-group input[type="text"], .form-group input[type="number"], .form-group textarea {
             width: 100%; padding: 14px; border: 2px solid var(--lilas); border-radius: 10px;
@@ -68,29 +66,36 @@
         .options-list input[type="radio"], .options-list input[type="checkbox"] {
             transform: scale(1.5); margin-right: 15px; accent-color: var(--vermelho);
         }
-        .image-placeholder { width: 80px; height: 80px; background-color: var(--creme); border-radius: 8px; margin-right: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.2em; text-align: center; color: var(--texto-escuro); }
-        .navigation-buttons { display: flex; justify-content: space-between; align-items: center; margin-top: 30px; gap: 15px; } /* Adicionado GAP para espaçamento */
+        .navigation-buttons { display: flex; justify-content: space-between; align-items: center; margin-top: 30px; gap: 15px; }
         .nav-btn { padding: 12px 30px; background-color: var(--lilas); color: var(--texto-escuro); font-size: 1.1em; font-weight: 600; border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s; }
         .nav-btn:hover { transform: scale(1.05); }
         .nav-btn#nextBtn { background-color: var(--laranja); color: var(--branco); }
-        #submitBtn {
-            padding: 12px 30px;
-            background: var(--vermelho); /* COR ALTERADA */
-            color: var(--branco);
-            font-size: 1.1em;
-            font-weight: 600;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: none; /* Começa escondido */
-        }
+        #submitBtn { padding: 12px 30px; background: var(--vermelho); color: var(--branco); font-size: 1.1em; font-weight: 600; border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s; display: none; }
         #submitBtn:hover { transform: scale(1.05); }
         .status-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 1000; text-align: center; }
         .status-box h2 { font-size: 1.8em; }
         .loader { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid var(--laranja); border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .checkmark { font-size: 5em; color: var(--verde-sucesso); }
+        .checkmark { font-size: 5em; color: var(--laranja); } /* COR DO TICK ALTERADA */
+
+        /* --- ESTILOS DO CARROSSEL --- */
+        .carousel { position: relative; width: 100%; max-width: 400px; margin: 0 auto; }
+        .carousel-container { display: flex; overflow: hidden; border-radius: 15px; scroll-snap-type: x mandatory; }
+        .carousel-slide { flex: 0 0 100%; display: flex; justify-content: center; align-items: center; padding: 10px; box-sizing: border-box; }
+        .polaroid { background: var(--branco); border: 1px solid #ddd; padding: 15px 15px 45px 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; position: relative; }
+        .polaroid img { width: 100%; max-width: 300px; display: block; }
+        .polaroid input[type="checkbox"] { display: none; }
+        .polaroid.selected { border: 4px solid var(--laranja); transform: scale(1.05) rotate(2deg); box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
+        .carousel-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 100%; display: flex; justify-content: space-between; padding: 0 10px; box-sizing: border-box; pointer-events: none; }
+        .carousel-btn { pointer-events: all; background-color: rgba(255, 255, 255, 0.7); border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 24px; cursor: pointer; }
+        .carousel-counter { text-align: center; margin-top: 15px; font-weight: 600; color: var(--texto-escuro); }
+
+        /* --- ESTILOS DO SLIDER --- */
+        .slider-group { display: flex; flex-direction: column; align-items: center; }
+        .slider-output { font-size: 1.5em; font-weight: 700; color: var(--vermelho); background-color: var(--creme); padding: 5px 15px; border-radius: 10px; margin-bottom: 15px; }
+        input[type="range"] { -webkit-appearance: none; width: 80%; height: 10px; background: var(--lilas); border-radius: 5px; outline: none; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 25px; height: 25px; background: var(--laranja); cursor: pointer; border-radius: 50%; }
+        input[type="range"]::-moz-range-thumb { width: 25px; height: 25px; background: var(--laranja); cursor: pointer; border-radius: 50%; }
     </style>
 </head>
 <body>
@@ -114,32 +119,48 @@
             <!-- Bloco Inicial -->
             <div class="question-block">
                 <h3 class="question-title">Para começar, conte pra gente:</h3>
-                <div class="form-group">
+                <div class="form-group slider-group">
                     <label for="idade">Qual a sua idade?</label>
-                    <input type="number" id="idade" name="Idade" min="3" max="18" required>
+                    <output for="idade" id="idade-output">9</output>
+                    <input type="range" id="idade" name="Idade" min="6" max="12" value="9" required>
                 </div>
-                <div class="form-group">
+                <div class="form-group slider-group">
                     <label for="serie">Em que série você está?</label>
-                    <input type="text" id="serie" name="Serie" required>
+                    <output for="serie" id="serie-output">3ª série</output>
+                    <input type="range" id="serie" name="Serie" min="1" max="6" value="3" required>
                 </div>
             </div>
 
             <!-- Pergunta 1 -->
             <div class="question-block">
                 <h3 class="question-title">1. O que você gostaria de fazer à tarde, depois das aulas?</h3>
-                <div class="options-list">
-                    <label><div class="image-placeholder">Imagem 1 aqui</div><input type="radio" name="AtividadeTarde" value="Opcao1" required><span>Opção 1 (substituir texto)</span></label>
-                    <label><div class="image-placeholder">Imagem 2 aqui</div><input type="radio" name="AtividadeTarde" value="Opcao2" required><span>Opção 2 (substituir texto)</span></label>
-                    <label><div class="image-placeholder">Imagem 3 aqui</div><input type="radio" name="AtividadeTarde" value="Opcao3" required><span>Opção 3 (substituir texto)</span></label>
+                <p style="text-align: center;">Passe as fotos e marque as que você mais gostar!</p>
+                <div class="carousel">
+                    <div class="carousel-container" id="carousel-container">
+                        <!-- Imagens serão inseridas aqui pelo JS -->
+                    </div>
+                    <div class="carousel-nav">
+                        <button type="button" class="carousel-btn" id="prev-btn">‹</button>
+                        <button type="button" class="carousel-btn" id="next-btn">›</button>
+                    </div>
                 </div>
+                <div class="carousel-counter" id="carousel-counter">1 / 22</div>
             </div>
 
             <!-- Pergunta 2 -->
             <div class="question-block">
                 <h3 class="question-title">2. Se a escola fosse um lugar mágico…</h3>
                 <div class="form-group">
-                    <label for="escola-magica">Que som você ouviria? O que sentiria ao entrar? Que surpresa viveria ali?</label>
-                    <textarea id="escola-magica" name="EscolaMagica" rows="5" required></textarea>
+                    <label for="som-magico">Que som você ouviria?</label>
+                    <input type="text" id="som-magico" name="SomMagico" required>
+                </div>
+                <div class="form-group">
+                    <label for="sentimento-magico">O que sentiria ao entrar?</label>
+                    <input type="text" id="sentimento-magico" name="SentimentoMagico" required>
+                </div>
+                <div class="form-group">
+                    <label for="surpresa-magica">Que surpresa viveria ali?</label>
+                    <input type="text" id="surpresa-magica" name="SurpresaMagica" required>
                 </div>
             </div>
             
@@ -247,7 +268,6 @@
 
         <div class="navigation-buttons">
             <button id="prevBtn" class="nav-btn">Anterior</button>
-            <!-- O JS vai alternar entre o botão Próximo e Enviar aqui -->
             <button id="nextBtn" class="nav-btn">Próximo</button>
             <button id="submitBtn" type="submit" form="diagnosticoForm">Enviar</button>
         </div>
@@ -266,7 +286,6 @@
     </div>
 
     <script>
-        // URL DO SCRIPT ATUALIZADA
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzmx4t83GJOxXgc4__4vpEp3qdnKQ_cifoF8RTkTUVtZjbrni5TYMgPjLCzvAbh8lzy/exec";
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -281,23 +300,70 @@
             const successBox = document.getElementById('successBox');
             let currentQuestionIndex = 0;
 
+            // --- LÓGICA DOS SLIDERS ---
+            const idadeSlider = document.getElementById('idade');
+            const idadeOutput = document.getElementById('idade-output');
+            const serieSlider = document.getElementById('serie');
+            const serieOutput = document.getElementById('serie-output');
+
+            idadeSlider.oninput = function() { idadeOutput.textContent = this.value; }
+            serieSlider.oninput = function() { serieOutput.textContent = `${this.value}ª série`; }
+
+            // --- LÓGICA DO CARROSSEL ---
+            const carouselContainer = document.getElementById('carousel-container');
+            const totalImages = 22;
+            let currentImageIndex = 0;
+
+            for (let i = 1; i <= totalImages; i++) {
+                const imageName = `IMG_18${String(i).padStart(2, '0')}.png`;
+                const slide = document.createElement('div');
+                slide.className = 'carousel-slide';
+                slide.innerHTML = `
+                    <label class="polaroid">
+                        <input type="checkbox" name="ImagensSelecionadas" value="${imageName}">
+                        <img src="${imageName}" alt="Atividade da LABirintar ${i}" onerror="this.style.border='1px solid #ccc'; this.alt='Imagem ${i} não encontrada';">
+                    </label>
+                `;
+                carouselContainer.appendChild(slide);
+                slide.querySelector('.polaroid').addEventListener('click', function() {
+                    this.classList.toggle('selected');
+                });
+            }
+            
+            const slides = document.querySelectorAll('.carousel-slide');
+            const carouselPrevBtn = document.getElementById('prev-btn');
+            const carouselNextBtn = document.getElementById('next-btn');
+            const counterElement = document.getElementById('carousel-counter');
+
+            function updateCarousel() {
+                carouselContainer.style.transform = `translateX(-${currentImageIndex * 100}%)`;
+                counterElement.textContent = `${currentImageIndex + 1} / ${totalImages}`;
+            }
+
+            carouselPrevBtn.addEventListener('click', () => {
+                currentImageIndex = (currentImageIndex > 0) ? currentImageIndex - 1 : totalImages - 1;
+                updateCarousel();
+            });
+
+            carouselNextBtn.addEventListener('click', () => {
+                currentImageIndex = (currentImageIndex < totalImages - 1) ? currentImageIndex + 1 : 0;
+                updateCarousel();
+            });
+
+            // --- LÓGICA DO FORMULÁRIO PRINCIPAL ---
             function updateFormView() {
                 questions.forEach((q, i) => q.classList.toggle('active', i === currentQuestionIndex));
                 const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
                 progressBar.style.width = `${progress}%`;
-                
-                // Lógica de exibição dos botões
                 prevBtn.style.display = currentQuestionIndex === 0 ? 'none' : 'inline-block';
                 nextBtn.style.display = currentQuestionIndex === questions.length - 1 ? 'none' : 'inline-block';
                 submitBtn.style.display = currentQuestionIndex === questions.length - 1 ? 'inline-block' : 'none';
-
-                const firstInput = questions[currentQuestionIndex].querySelector('input, textarea');
+                const firstInput = questions[currentQuestionIndex].querySelector('input, textarea, .carousel-btn');
                 if (firstInput) firstInput.focus();
             }
 
             function validateCurrentQuestion() {
                 const currentQuestion = questions[currentQuestionIndex];
-                // A validação de 'required' é feita pelo navegador, mas podemos adicionar uma checagem extra se necessário
                 const inputs = currentQuestion.querySelectorAll('input[required], textarea[required]');
                 let isValid = true;
                 inputs.forEach(input => {
@@ -308,6 +374,14 @@
                         isValid = false;
                     }
                 });
+                // Validação específica para o carrossel (pergunta 1)
+                if (currentQuestionIndex === 1) {
+                    const selectedImages = form.querySelectorAll('input[name="ImagensSelecionadas"]:checked');
+                    if (selectedImages.length === 0) {
+                        // Não é obrigatório marcar, então sempre retorna true para esta pergunta.
+                        // Se fosse obrigatório, aqui seria `isValid = false;`
+                    }
+                }
                 return isValid;
             }
 
@@ -335,7 +409,6 @@
                     alert('Ops! Responda a esta pergunta para continuar.');
                     return;
                 }
-                
                 statusOverlay.style.display = 'flex';
                 loadingBox.style.display = 'block';
                 successBox.style.display = 'none';
@@ -356,6 +429,7 @@
                     });
             });
             updateFormView();
+            updateCarousel(); // Inicia o carrossel
         });
     </script>
 </body>
