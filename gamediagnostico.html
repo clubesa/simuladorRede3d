@@ -76,6 +76,46 @@
         .progress-map { display: flex; justify-content: space-around; align-items: center; margin: 30px 0; padding-bottom: 10px; border-bottom: 2px dashed var(--lilas); }
         .map-step { width: 30px; height: 30px; border-radius: 50%; background-color: #e0e0e0; display: flex; justify-content: center; align-items: center; font-weight: bold; color: var(--branco); transition: background-color 0.5s; }
         .map-step.completed { background-color: var(--laranja); }
+
+        /* --- ESTILOS DO CARROSSEL --- */
+        .carousel { position: relative; width: 100%; max-width: 550px; margin: 0 auto; border-radius: 15px; overflow: hidden; }
+        .carousel-container { display: flex; transition: transform 0.5s ease-in-out; }
+        .carousel-slide { flex: 0 0 100%; display: flex; justify-content: center; align-items: center; padding: 40px; box-sizing: border-box; }
+        .polaroid { background: var(--branco); border: 1px solid #ddd; padding: 15px 15px 45px 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; position: relative; }
+        .polaroid img { width: 100%; max-width: 450px; display: block; }
+        .polaroid input[type="checkbox"] { display: none; }
+        .polaroid.selected { border: 4px solid var(--laranja); transform: scale(1.05) rotate(2deg); box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
+        .polaroid.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 50px;
+            font-weight: bold;
+            color: var(--laranja);
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            line-height: 60px;
+            text-align: center;
+            text-shadow: 0 0 5px white;
+        }
+        .carousel-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 100%; display: flex; justify-content: space-between; padding: 0; box-sizing: border-box; pointer-events: none; }
+        .carousel-btn {
+            pointer-events: all;
+            background-color: rgba(255, 255, 255, 0.7);
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 36px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .carousel-counter { text-align: center; margin-top: 15px; font-weight: 600; color: var(--texto-escuro); }
     </style>
 </head>
 <body>
@@ -101,13 +141,20 @@
                 </div>
             </div>
 
-            <!-- Pergunta 1 -->
+            <!-- Pergunta 1 (Carrossel) -->
             <div class="question-block">
                 <h3 class="question-title">O Arquipélago das Atividades</h3>
                 <p class="question-subtitle">A missão é escolherem juntos as 5 ilhas (fotos) que a equipe mais gostaria de explorar. Conversem e votem!</p>
-                <div class="options-list" id="image-selection-list">
-                    <!-- Imagens serão inseridas aqui -->
+                <div class="carousel">
+                    <div class="carousel-container" id="carousel-container">
+                        <!-- Imagens serão inseridas aqui pelo JS -->
+                    </div>
+                    <div class="carousel-nav">
+                        <button type="button" class="carousel-btn" id="carousel-prev-btn">‹</button>
+                        <button type="button" class="carousel-btn" id="carousel-next-btn">›</button>
+                    </div>
                 </div>
+                <div class="carousel-counter" id="carousel-counter">1 / 22</div>
             </div>
 
             <!-- Pergunta 2 -->
@@ -203,18 +250,49 @@
                 }
             }
 
-            // Lógica da Pergunta 1: Arquipélago
-            const imageList = document.getElementById('image-selection-list');
+            // Lógica do Carrossel
+            const carouselContainer = document.getElementById('carousel-container');
+            const totalImages = 22;
+            let currentImageIndex = 0;
             const imageNames = [];
-            for (let i = 1; i <= 22; i++) { imageNames.push(`IMG_18${String(i).padStart(2, '0')}.jpeg`); }
+            for (let i = 1; i <= totalImages; i++) { imageNames.push(`IMG_18${String(i).padStart(2, '0')}.jpeg`); }
             
             imageNames.forEach(name => {
-                const label = document.createElement('label');
-                label.innerHTML = `<input type="checkbox" name="IlhasExploradas" value="${name}"><span>${name.replace('.jpeg','')}</span>`;
-                imageList.appendChild(label);
+                const slide = document.createElement('div');
+                slide.className = 'carousel-slide';
+                slide.innerHTML = `
+                    <label class="polaroid">
+                        <input type="checkbox" name="IlhasExploradas" value="${name}">
+                        <img src="${name}" alt="Atividade da LABirintar" onerror="this.style.border='1px solid #ccc'; this.alt='Imagem ${name} não encontrada';">
+                    </label>`;
+                carouselContainer.appendChild(slide);
+                const polaroidLabel = slide.querySelector('.polaroid');
+                const checkbox = polaroidLabel.querySelector('input[type="checkbox"]');
+                checkbox.addEventListener('change', function() {
+                    polaroidLabel.classList.toggle('selected', this.checked);
+                });
             });
 
-            // Lógica da Pergunta 2: Mochila
+            const carouselPrevBtn = document.getElementById('carousel-prev-btn');
+            const carouselNextBtn = document.getElementById('carousel-next-btn');
+            const counterElement = document.getElementById('carousel-counter');
+
+            function updateCarousel() {
+                carouselContainer.style.transform = `translateX(-${currentImageIndex * 100}%)`;
+                counterElement.textContent = `${currentImageIndex + 1} / ${totalImages}`;
+            }
+            carouselPrevBtn.addEventListener('click', () => {
+                currentImageIndex = (currentImageIndex > 0) ? currentImageIndex - 1 : totalImages - 1;
+                updateCarousel();
+            });
+            carouselNextBtn.addEventListener('click', () => {
+                currentImageIndex = (currentImageIndex < totalImages - 1) ? currentImageIndex + 1 : 0;
+                updateCarousel();
+            });
+            updateCarousel();
+
+
+            // Lógica da Mochila
             const backpackList = document.getElementById('backpack-list');
             const backpackCheckboxes = backpackList.querySelectorAll('input[type="checkbox"]');
             const maxBackpackItems = 7;
@@ -243,20 +321,19 @@
                 const currentQuestion = questions[currentQuestionIndex];
                 let isValid = true;
                 
-                // Validação do nome da equipe
                 if (currentQuestionIndex === 0) {
                     const teamName = document.getElementById('team-name').value;
                     if (teamName.trim() === '') isValid = false;
                 }
-                // Validação do arquipélago
+                
                 if (currentQuestionIndex === 1) {
-                    const selectedIslands = imageList.querySelectorAll('input:checked').length;
+                    const selectedIslands = form.querySelectorAll('input[name="IlhasExploradas"]:checked').length;
                     if (selectedIslands !== 5) {
                         alert(`Atenção, exploradores! A missão é escolher exatamente 5 ilhas.`);
                         return false;
                     }
                 }
-                // Validação da mochila
+                
                 if (currentQuestionIndex === 2) {
                     const selectedItems = backpackList.querySelectorAll('input:checked').length;
                     if (selectedItems === 0) isValid = false;
@@ -278,11 +355,9 @@
                     currentQuestionIndex++;
                     updateFormView();
                 } else {
-                    // Finalizar e enviar
                     const teamName = document.getElementById('team-name').value;
                     document.getElementById('team-name-final').textContent = teamName;
                     document.getElementById('statusOverlay').style.display = 'flex';
-                    // Simulação de envio para o brinde
                     // fetch(SCRIPT_URL, { method: 'POST', body: new FormData(form) })...
                 }
             });
