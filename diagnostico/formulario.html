@@ -37,18 +37,34 @@
             max-width: 700px;
             width: 100%;
             box-sizing: border-box;
-            overflow: hidden;
+            /* overflow: hidden; Removido para permitir o sticky header */
+        }
+        
+        /* --- CABEÇALHO FIXO --- */
+        .sticky-header {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 0;
+            background-color: var(--branco);
+            z-index: 10;
+            padding-top: 20px;
+            margin: -30px -40px 0 -40px;
+            padding-left: 40px;
+            padding-right: 40px;
+            border-bottom: 1px solid #f0f0f0; /* Linha tênue */
+            padding-bottom: 10px;
         }
         .header { text-align: center; margin-bottom: 20px; }
         .header img { max-width: 282px; margin-bottom: 15px; }
         .header h1 { color: var(--vermelho); font-size: 1.5em; font-weight: 700; margin: 0; }
         .intro-text { background-color: #fafafa; padding: 20px; border-radius: 12px; margin-bottom: 25px; font-style: italic; line-height: 1.6; }
         .intro-text .adulto-nota { font-size: 0.9em; color: #555; display: block; margin-top: 10px; }
-        .progress-bar-container { width: 100%; background-color: #f0f0f0; border-radius: 10px; margin: 30px 0; }
+        .progress-bar-container { width: 100%; background-color: #f0f0f0; border-radius: 10px; margin: 20px 0; }
         .progress-bar { width: 0%; height: 15px; background: linear-gradient(90deg, var(--azul), var(--lilas)); border-radius: 10px; transition: width 0.4s ease-in-out; }
-        .question-block { display: none; padding: 10px; animation: slideIn 0.5s forwards; }
+        
+        .question-block { display: none; padding: 10px; margin-top: 20px; animation: slideIn 0.5s forwards; }
         .question-block.active { display: block; }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateX(0); } }
         .question-title { margin-top: 0; margin-bottom: 20px; font-size: 1.4em; font-weight: 600; line-height: 1.4; }
         .form-group { margin-bottom: 25px; }
         .form-group label { display: block; margin-bottom: 10px; font-weight: 600; font-size: 1.1em; }
@@ -79,7 +95,7 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .checkmark { font-size: 5em; color: var(--laranja); }
 
-        /* --- ESTILOS DO CARROSSEL (ATUALIZADO) --- */
+        /* --- ESTILOS DO CARROSSEL --- */
         .carousel { position: relative; width: 100%; max-width: 550px; margin: 0 auto; border-radius: 15px; overflow: hidden; }
         .carousel-container { display: flex; transition: transform 0.5s ease-in-out; }
         .carousel-slide { flex: 0 0 100%; display: flex; justify-content: center; align-items: center; padding: 40px; box-sizing: border-box; }
@@ -130,14 +146,14 @@
 <body>
 
     <div class="container">
-        <header class="header">
-            <!-- CAMINHO DA LOGO ATUALIZADO -->
-            <img src="../logoslabirintar/Labirintar_RGB.png" alt="Logo LABirintar" onerror="this.style.display='none'">
-            <h1>“Uma tarde que mora em mim”</h1>
-        </header>
-
-        <div class="progress-bar-container">
-            <div class="progress-bar" id="progressBar"></div>
+        <div class="sticky-header">
+            <header class="header">
+                <img src="../logoslabirintar/Labirintar_RGB.png" alt="Logo LABirintar" onerror="this.style.display='none'">
+                <h1>“Uma tarde que mora em mim”</h1>
+            </header>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
         </div>
 
         <form id="diagnosticoForm">
@@ -364,7 +380,6 @@
                 slide.innerHTML = `
                     <label class="polaroid">
                         <input type="checkbox" name="ImagensSelecionadas" value="${imageName}">
-                        <!-- CAMINHO DAS IMAGENS ATUALIZADO -->
                         <img src="${imageName}" alt="Atividade da LABirintar" onerror="this.style.border='1px solid #ccc'; this.alt='Imagem ${imageName} não encontrada';">
                     </label>
                 `;
