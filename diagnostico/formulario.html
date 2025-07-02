@@ -27,8 +27,8 @@
             background-color: var(--creme);
             color: var(--texto-escuro);
             margin: 0;
-            padding: 20px;
-            height: calc(100% - 40px);
+            padding: 16px; /* Reduzido */
+            height: calc(100% - 32px); /* Reduzido */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -46,16 +46,13 @@
         .app-header {
             flex-shrink: 0;
             background-color: var(--branco);
-            padding: 20px 40px;
+            padding: 16px 32px; /* Reduzido */
             border-radius: 24px;
             box-shadow: 0 6px 12px var(--sombra-suave);
             z-index: 10;
         }
-        .header { text-align: center; margin-bottom: 20px; }
-        .header img { max-width: 282px; margin-bottom: 15px; }
-        .header h1 { color: var(--vermelho); font-size: 1.5em; font-weight: 700; margin: 0; }
-        .progress-bar-container { width: 100%; background-color: #f0f0f0; border-radius: 10px; margin-top: 20px; }
-        .progress-bar { width: 0%; height: 15px; background: linear-gradient(90deg, var(--azul), var(--lilas)); border-radius: 10px; transition: width 0.4s ease-in-out; }
+        .header { text-align: center; }
+        .header img { max-width: 226px; /* Reduzido */ }
         
         /* --- ÁREA DE CONTEÚDO COM SCROLL --- */
         .content-area {
@@ -63,87 +60,91 @@
             background-color: var(--branco);
             border-radius: 24px;
             box-shadow: 0 6px 12px var(--sombra-suave);
-            margin-top: 20px;
-            overflow: hidden; /* Esconde o scroll do container principal */
+            margin-top: 16px; /* Reduzido */
+            overflow: hidden;
             display: flex;
             flex-direction: column;
         }
 
         /* --- NOVA ESTRUTURA DE 3 PARTES --- */
         .question-header-fixed {
-            padding: 20px 40px 15px 40px;
+            padding: 16px 32px 12px 32px; /* Reduzido */
             border-bottom: 1px solid #f0f0f0;
             flex-shrink: 0;
         }
         .answer-area-scrollable {
             flex-grow: 1;
             overflow-y: auto;
-            padding: 20px 40px;
-            /* min-height foi removido para permitir que o flexbox controle a altura */
+            padding: 16px 32px; /* Reduzido */
         }
         .footer-fixed {
-            padding: 20px 40px;
+            padding: 16px 32px; /* Reduzido */
             border-top: 1px solid #f0f0f0;
             flex-shrink: 0;
         }
 
-        .intro-text { background-color: #fafafa; padding: 20px; border-radius: 12px; margin-bottom: 25px; font-style: italic; line-height: 1.6; }
-        .intro-text .adulto-nota { font-size: 0.9em; color: #555; display: block; margin-top: 10px; }
+        .intro-text { background-color: #fafafa; padding: 16px; border-radius: 12px; margin-bottom: 20px; font-style: italic; line-height: 1.5; font-size: 0.9em; }
+        .intro-text h1 { color: var(--vermelho); font-size: 1.4em; margin-bottom: 12px; }
+        .intro-text .adulto-nota { font-size: 0.8em; color: #555; display: block; margin-top: 8px; }
+        
         .question-block { display: none; animation: slideIn 0.5s forwards; }
         .question-block.active { display: block; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateX(0); } }
-        .question-title { margin: 0; font-size: 1.4em; font-weight: 600; line-height: 1.4; }
-        .question-subtitle { margin: 5px 0 0 0; font-size: 1.1em; color: #555; font-style: italic; }
-        .form-group { margin-bottom: 25px; }
-        .form-group label { display: block; margin-bottom: 10px; font-weight: 600; font-size: 1.1em; }
+        .question-title { margin: 0; font-size: 1.12em; font-weight: 600; line-height: 1.4; }
+        .question-subtitle { margin: 4px 0 0 0; font-size: 0.9em; color: #555; font-style: italic; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9em; }
         .form-group input[type="text"], .form-group input[type="number"], .form-group textarea {
-            width: 100%; padding: 14px; border: 2px solid var(--lilas); border-radius: 10px;
-            box-sizing: border-box; font-size: 1em; font-family: 'Poppins', sans-serif;
-            transition: border-color 0.3s, box-shadow 0.3s;
+            width: 100%; padding: 11px; border: 2px solid var(--lilas); border-radius: 10px;
+            box-sizing: border-box; font-size: 0.9em; font-family: 'Poppins', sans-serif;
         }
-        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--laranja); box-shadow: 0 0 0 3px rgba(255, 164, 0, 0.3); }
         .options-list label {
-            display: flex; align-items: center; background-color: #fafafa; padding: 15px;
-            border-radius: 12px; margin-bottom: 12px; border: 2px solid var(--lilas);
-            cursor: pointer; transition: all 0.2s ease-out;
+            display: flex; align-items: center; background-color: #fafafa; padding: 12px;
+            border-radius: 12px; margin-bottom: 10px; border: 2px solid var(--lilas);
+            cursor: pointer; transition: all 0.2s ease-out; font-size: 0.9em;
         }
         .options-list label:hover { border-color: var(--laranja); transform: translateY(-3px); box-shadow: 0 4px 10px var(--sombra-suave); }
         .options-list input[type="radio"], .options-list input[type="checkbox"] {
-            transform: scale(1.5); margin-right: 15px; accent-color: var(--vermelho);
+            transform: scale(1.2); margin-right: 12px; accent-color: var(--vermelho);
         }
-        .navigation-buttons { display: flex; justify-content: space-between; align-items: center; gap: 15px; }
-        .nav-btn { padding: 12px 30px; background-color: var(--lilas); color: var(--texto-escuro); font-size: 1.1em; font-weight: 600; border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s; }
+        .navigation-buttons { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+        .nav-btn { padding: 10px 24px; font-size: 0.9em; font-weight: 600; border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s; flex-shrink: 0; }
         .nav-btn:hover { transform: scale(1.05); }
         .nav-btn#nextBtn { background-color: var(--laranja); color: var(--branco); }
-        #submitBtn { padding: 12px 30px; background: var(--vermelho); color: var(--branco); font-size: 1.1em; font-weight: 600; border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s; display: none; }
-        #submitBtn:hover { transform: scale(1.05); }
+        #submitBtn { padding: 10px 24px; background: var(--vermelho); color: var(--branco); font-size: 0.9em; font-weight: 600; border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s; display: none; }
+        
+        .progress-bar-container { width: 100%; background-color: #f0f0f0; border-radius: 10px; flex-grow: 1; height: 12px; }
+        .progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, var(--azul), var(--lilas)); border-radius: 10px; transition: width 0.4s ease-in-out; }
+        
         .status-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 1000; text-align: center; }
-        .status-box h2 { font-size: 1.8em; }
-        .loader { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid var(--laranja); border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; }
+        .status-box { padding: 32px; }
+        .status-box h2 { font-size: 1.4em; }
+        .status-box p { font-size: 0.9em; }
+        .loader { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--laranja); border-radius: 50%; animation: spin 1s linear infinite; margin: 16px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .checkmark { font-size: 5em; color: var(--laranja); }
+        .checkmark { font-size: 4em; color: var(--laranja); }
 
         /* --- ESTILOS DO CARROSSEL --- */
         .carousel { position: relative; width: 100%; max-width: 550px; margin: 0 auto; border-radius: 15px; overflow: hidden; }
         .carousel-container { display: flex; transition: transform 0.5s ease-in-out; }
-        .carousel-slide { flex: 0 0 100%; display: flex; justify-content: center; align-items: center; padding: 40px; box-sizing: border-box; }
-        .polaroid { background: var(--branco); border: 1px solid #ddd; padding: 15px 15px 45px 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; position: relative; }
+        .carousel-slide { flex: 0 0 100%; display: flex; justify-content: center; align-items: center; padding: 32px; box-sizing: border-box; }
+        .polaroid { background: var(--branco); border: 1px solid #ddd; padding: 12px 12px 36px 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; position: relative; }
         .polaroid img { width: 100%; max-width: 450px; display: block; }
         .polaroid input[type="checkbox"] { display: none; }
         .polaroid.selected { border: 4px solid var(--laranja); transform: scale(1.05) rotate(2deg); box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
         .polaroid.selected::after {
             content: '✓';
             position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 50px;
+            top: 16px;
+            right: 16px;
+            font-size: 40px;
             font-weight: bold;
             color: var(--laranja);
             background-color: rgba(255, 255, 255, 0.8);
             border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            line-height: 60px;
+            width: 48px;
+            height: 48px;
+            line-height: 48px;
             text-align: center;
             text-shadow: 0 0 5px white;
         }
@@ -153,22 +154,22 @@
             background-color: rgba(255, 255, 255, 0.7);
             border: none;
             border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            font-size: 36px;
+            width: 48px;
+            height: 48px;
+            font-size: 28px;
             cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: center;
         }
-        .carousel-counter { text-align: center; margin-top: 15px; font-weight: 600; color: var(--texto-escuro); }
+        .carousel-counter { text-align: center; margin-top: 12px; font-weight: 600; color: var(--texto-escuro); font-size: 0.9em; }
 
         /* --- ESTILOS DO SLIDER --- */
         .slider-group { display: flex; flex-direction: column; align-items: center; }
-        .slider-output { font-size: 1.5em; font-weight: 700; color: var(--vermelho); background-color: var(--creme); padding: 5px 15px; border-radius: 10px; margin-bottom: 15px; }
-        input[type="range"] { -webkit-appearance: none; width: 80%; height: 10px; background: var(--lilas); border-radius: 5px; outline: none; }
-        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 25px; height: 25px; background: var(--laranja); cursor: pointer; border-radius: 50%; }
-        input[type="range"]::-moz-range-thumb { width: 25px; height: 25px; background: var(--laranja); cursor: pointer; border-radius: 50%; }
+        .slider-output { font-size: 1.2em; font-weight: 700; color: var(--vermelho); background-color: var(--creme); padding: 4px 12px; border-radius: 10px; margin-bottom: 12px; }
+        input[type="range"] { -webkit-appearance: none; width: 80%; height: 8px; background: var(--lilas); border-radius: 5px; outline: none; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; background: var(--laranja); cursor: pointer; border-radius: 50%; }
+        input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; background: var(--laranja); cursor: pointer; border-radius: 50%; }
     </style>
 </head>
 <body>
@@ -177,10 +178,6 @@
         <header class="app-header">
             <div class="header">
                 <img src="../logoslabirintar/Labirintar_RGB.png" alt="Logo LABirintar" onerror="this.style.display='none'">
-                <h1>“Uma tarde que mora em mim”</h1>
-            </div>
-            <div class="progress-bar-container">
-                <div class="progress-bar" id="progressBar"></div>
             </div>
         </header>
 
@@ -195,6 +192,7 @@
                     <!-- Bloco Inicial -->
                     <div class="question-block" data-title="Para começar...">
                         <div class="intro-text">
+                            <h1>“Uma tarde que mora em mim”</h1>
                             <p>Este é um instrumento de escuta sensível. Antes de começar, você pode pedir ajuda de um adulto para ler e anotar suas respostas.</p>
                             <p>Não tem certo nem errado, o mais importante é mostrar o que você sente, pensa ou imagina.</p>
                             <span class="adulto-nota">(Para o adulto: “Dê tempo e não conduza as respostas. O importante é registrar o que vibra no mundo da criança”).</span>
@@ -256,7 +254,7 @@
                             <label><input type="checkbox" name="CoisasQueBrilham" value="Brincadeiras"><span>Brincadeiras</span></label>
                             <label><input type="checkbox" name="CoisasQueBrilham" value="Computador"><span>Computador</span></label>
                         </div>
-                         <div class="form-group" style="margin-top: 20px;">
+                         <div class="form-group" style="margin-top: 16px;">
                             <label for="outra-coisa">Outra coisa:</label>
                             <input type="text" id="outra-coisa" name="OutraCoisaBrilha">
                         </div>
@@ -339,6 +337,9 @@
             <div class="footer-fixed">
                 <div class="navigation-buttons">
                     <button id="prevBtn" class="nav-btn">Anterior</button>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
                     <button id="nextBtn" class="nav-btn">Próximo</button>
                     <button id="submitBtn" type="submit" form="diagnosticoForm">Enviar</button>
                 </div>
@@ -458,8 +459,10 @@
                 const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
                 progressBar.style.width = `${progress}%`;
                 prevBtn.style.display = currentQuestionIndex === 0 ? 'none' : 'inline-block';
-                nextBtn.style.display = currentQuestionIndex === questions.length - 1 ? 'none' : 'inline-block';
-                submitBtn.style.display = currentQuestionIndex === questions.length - 1 ? 'inline-block' : 'none';
+                
+                const isLastQuestion = currentQuestionIndex === questions.length - 1;
+                nextBtn.style.display = isLastQuestion ? 'none' : 'inline-block';
+                submitBtn.style.display = isLastQuestion ? 'inline-block' : 'none';
                 
                 answerArea.scrollTop = 0;
             }
