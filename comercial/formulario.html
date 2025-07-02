@@ -33,7 +33,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
         body { font-family: var(--font-body); background-color: var(--color-white); color: var(--color-text); line-height: 1.8; overflow-x: hidden; }
 
-        /* MODIFIED: Increased side padding for better margins */
         .container { width: 90%; max-width: 1100px; margin: 0 auto; padding: 6rem 2rem; }
 
         /* Typography */
@@ -82,7 +81,7 @@
         @media (min-width: 992px) { .problem-grid { grid-template-columns: 1fr 1fr; } }
         .challenge-item { display: flex; justify-content: space-between; align-items: center; background-color: var(--color-light-bg); padding: 1rem 1.5rem; border-radius: 12px; margin-bottom: 1rem; }
         .challenge-item p { margin-bottom: 0; font-weight: 500; }
-        .challenge-item select { padding: 0.5rem; border-radius: 8px; border: 2px solid var(--color-accent-blue); font-weight: bold; cursor: pointer; }
+        .challenge-item select { padding: 0.5rem; border-radius: 8px; border: 2px solid var(--color-secondary); font-weight: bold; cursor: pointer; color: var(--color-secondary); }
         .problem-image-wrapper { background-color: var(--color-light-bg); border-radius: 20px; padding: 2rem; text-align: center; box-shadow: var(--shadow-sm); }
         .problem-image-wrapper h4 { font-family: var(--font-body); font-size: 1.2rem; font-style: italic; color: var(--color-text); }
         .textarea-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
@@ -100,7 +99,7 @@
         .flip-card-front { background: var(--color-white); color: var(--color-text); }
         .flip-card-front i { color: var(--color-primary); margin-bottom: 1rem; }
         .flip-card-front h4 { font-family: var(--font-title); font-size: 1.6rem; }
-        .flip-card-back { background: linear-gradient(145deg, #ffacac, #ffcb7f); color: var(--color-white); transform: rotateY(180deg); }
+        .flip-card-back { background-color: var(--color-accent-blue); color: var(--color-text); transform: rotateY(180deg); }
         .flip-card-back h4 { font-size: 1.4rem; margin-bottom: 0.5rem;}
         .flip-card-back p { font-size: 0.95rem; }
 
@@ -125,20 +124,20 @@
         .tooltip-container .tooltip-text::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: var(--color-text) transparent transparent transparent; }
         .tooltip-container:hover .tooltip-text { visibility: visible; opacity: 1; }
         
-        .diagnostic-link-area { text-align: left; margin-top: 4rem; background: var(--color-light-bg); padding: 2rem; border-radius: 15px; display: grid; grid-template-columns: 1fr; gap: 2rem; align-items: center; }
+        /* MODIFIED: Diagnostic Preview Area background changed */
+        .diagnostic-link-area { text-align: left; margin-top: 4rem; background: var(--color-accent-blue); padding: 2rem; border-radius: 15px; display: grid; grid-template-columns: 1fr; gap: 2rem; align-items: center; }
         @media (min-width: 992px) { .diagnostic-link-area { grid-template-columns: 2fr 1fr; gap: 3rem;} }
         .diagnostic-link-area h4 { text-align: left; }
         .diagnostic-link-area p { max-width: 100%; text-align: left; }
         
-        /* MODIFIED: Diagnostic Preview with new background and iPad format */
         .diagnostic-preview { position: relative; background: #4a4a4a; border-radius: 20px; padding: 10px; box-shadow: 0 20px 40px rgba(0,0,0,0.25); border: 2px solid #555; height: 320px; max-width: 450px; margin: 0 auto; overflow: hidden; }
         .diagnostic-preview::before { content: ''; position: absolute; top: 50%; transform: translateY(-50%); left: -2px; height: 30px; width: 2px; background: #555; border-radius: 4px 0 0 4px; }
         .diagnostic-preview iframe {
-            width: 154%;
-            height: 154%;
+            width: 182%;
+            height: 182%;
             border: none;
             border-radius: 10px;
-            transform: scale(0.65);
+            transform: scale(0.55);
             transform-origin: top left;
         }
         
@@ -315,7 +314,7 @@
                 <p class="section-subtitle">Temos o modelo ideal para o momento e a estratégia da sua escola.</p>
                 <div class="partnership-grid">
                     <div class="model-card split"><h4>Modelo 1: Split de Receita</h4><p>Perfeito para escolas que desejam <strong>inovar sem investimento inicial</strong>.</p><span class="activity-duration">2 horas de atividade/dia</span><div class="split-details"><p><span>50%</span> LABirintar</p><p><span>35%</span> Educador</p><p><strong><span>15%</span> Escola</strong></p></div><p class="description">A escola oferece o espaço e a LABirintar cuida de toda a operação.</p></div>
-                    <div class="model-card subscription"><h4>Modelo 2: Assinatura Mensal</h4><p>Para escolas que buscam ser <strong>protagonistas e maximizar o retorno</strong>.</p><span class="activity-duration">2 horas de atividade/dia</span><div class="split-details"><p><strong><span>50%</span> Escola</strong></p><p><span>35%</span> Educador</p><p><span>15%</span> LABirintar</p></div><p class="description">A escola se torna o motor comercial e fica com a maior parte da receita.</p></div>
+                    <div class="model-card subscription"><h4>Modelo 2: Assinatura Mensal</h4><p>Para escolas que buscam ser <strong>protagonistas e maximizar o retorno</strong>.</p><span class="activity-duration">2 horas de atividade/dia</span><div class="split-details"><p><strong><span>50%</span> Escola</strong></p><p><span>35%</span> Educador</p><p><span>15%</span> LABirintar</p></div><p class="description">A escola se torna o motor comercial e fica com a maior parte da receita. O custo fixo da assinatura corresponde ao valor de uma mensalidade do curricular.</p></div>
                 </div>
                 
                 <div class="simulator fade-in">
