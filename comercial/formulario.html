@@ -186,6 +186,23 @@
         .diagnostic-link-area { text-align: center; margin-top: 4rem; background: var(--color-accent-blue); padding: 3rem 2rem; border-radius: 15px; }
         .diagnostic-link-area h4 { text-align: center; }
         .diagnostic-link-area p { max-width: 600px; margin-left: auto; margin-right: auto; }
+        .diagnostic-preview-container {
+            height: 400px;
+            width: 100%;
+            max-width: 500px;
+            margin: 2rem auto 0 auto;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #fff;
+        }
+        .diagnostic-preview-container iframe {
+            width: 200%;
+            height: 200%;
+            border: none;
+            transform: scale(0.5);
+            transform-origin: 0 0;
+        }
         
         /* Partnership Section */
         .partnership-grid { display: grid; grid-template-columns: 1fr; gap: 3rem; margin-bottom: 4rem; }
@@ -484,7 +501,7 @@
                 { 
                     title: 'Brincar Livre', 
                     folder: 'brincarlivre', 
-                    images: ['IMG_1820.jpeg', 'IMG_1825.jpeg', 'IMG_1826.jpeg', 'IMG_1827.jpeg', 'IMG_1828.jpeg', 'IMG_1861.jpeg', 'IMG_1862.jpeg', 'IMG_1863.jpeg', 'IMG_1865.jpeg', 'IMG_1866.jpeg', 'IMG_1867.jpeg', 'IMG_1868.jpeg', 'IMG_1869.jpeg', 'IMG_1870.jpeg', 'IMG_1871.jpeg', 'IMG_1872.jpeg', 'IMG_1873.jpeg', 'IMG_1874.jpeg', 'IMG_1875.jpeg', 'IMG_1881.jpeg', 'IMG_1882.jpeg', 'IMG_1883.jpeg', 'IMG_1884.jpeg', 'IMG_1885.jpeg', 'IMG_1886.jpeg', 'IMG_1887.jpeg', 'IMG_1888.jpeg', 'IMG_1889.jpeg', 'IMG_1890.jpeg', 'IMG_1891.jpeg', 'IMG_3195.jpeg'], 
+                    images: ['IMG_1804.jpeg', 'IMG_1811.jpeg', 'IMG_1829.jpeg', 'IMG_1830.jpeg', 'IMG_1831.jpeg', 'IMG_1832.jpeg'], 
                     tooltip: null 
                 },
                 { 
@@ -493,14 +510,54 @@
                     images: ['IMG_1820.jpeg', 'IMG_1825.jpeg', 'IMG_1826.jpeg', 'IMG_1827.jpeg', 'IMG_1828.jpeg', 'IMG_1861.jpeg', 'IMG_1862.jpeg', 'IMG_1863.jpeg', 'IMG_1865.jpeg', 'IMG_1866.jpeg', 'IMG_1867.jpeg', 'IMG_1868.jpeg', 'IMG_1869.jpeg', 'IMG_1870.jpeg', 'IMG_1871.jpeg', 'IMG_1872.jpeg', 'IMG_1873.jpeg', 'IMG_1874.jpeg', 'IMG_1875.jpeg', 'IMG_1881.jpeg', 'IMG_1882.jpeg', 'IMG_1883.jpeg', 'IMG_1884.jpeg', 'IMG_1885.jpeg', 'IMG_1886.jpeg', 'IMG_1887.jpeg', 'IMG_1888.jpeg', 'IMG_1889.jpeg', 'IMG_1890.jpeg', 'IMG_1891.jpeg', 'IMG_3195.jpeg'], 
                     tooltip: 'Clube de Leitura, CrioLivros, Artes Visuais, Artes Cênicas, Improvisação, Dança e Música' 
                 },
-                { title: 'Marcenaria', folder: 'marcenaria', images: ['placeholder1.jpg', 'placeholder2.jpg'], tooltip: null },
-                { title: 'Circo', folder: 'circo', images: ['placeholder1.jpg'], tooltip: null },
-                { title: 'Fazeres Manuais', folder: 'fazeresmanuais', images: ['placeholder1.jpg', 'placeholder2.jpg', 'placeholder3.jpg'], tooltip: 'Horta, Panificação, Cozinha Experimental' },
-                { title: 'Tecnologia', folder: 'tecnologia', images: ['placeholder1.jpg', 'placeholder2.jpg', 'placeholder3.jpg'], tooltip: 'Programação de Jogos, Robótica, Criação de Jogos de Tabuleiro e RPG' },
-                { title: 'Mindfulness', folder: 'mindfulness', images: ['placeholder1.jpg'], tooltip: null },
-                { title: 'CidadeVamos', folder: 'cidadevamos', images: ['placeholder1.jpg', 'placeholder2.jpg', 'placeholder3.jpg'], tooltip: null },
-                { title: 'Infância Sem Excesso', folder: 'infanciasemexcesso', images: ['placeholder1.jpg', 'placeholder2.jpg'], tooltip: null },
-                { title: 'Prática Esportiva', folder: 'praticaesportiva', images: ['placeholder1.jpg', 'placeholder2.jpg', 'placeholder3.jpg'], tooltip: null }
+                { 
+                    title: 'Marcenaria', 
+                    folder: 'marcenaria', 
+                    images: ['IMG_1809.jpeg', 'IMG_1810.jpeg', 'IMG_1835.jpeg', 'IMG_1836.jpeg', 'IMG_1837.jpeg'], 
+                    tooltip: null 
+                },
+                { 
+                    title: 'Circo', 
+                    folder: 'circo', 
+                    images: ['IMG_1813.jpeg', 'IMG_1839.jpeg', 'IMG_1840.jpeg', 'IMG_1841.jpeg', 'IMG_1842.jpeg', 'IMG_1843.jpeg', 'IMG_1844.jpeg'], 
+                    tooltip: null 
+                },
+                { 
+                    title: 'Fazeres Manuais', 
+                    folder: 'fazeresmanuais', 
+                    images: ['82d08da1-ed2c-4bfd-908a-4b6e75999604.jpeg', 'IMG_1822.jpeg', 'IMG_1846.jpeg', 'IMG_1847.jpeg', 'IMG_1848.jpeg', 'IMG_1849.jpeg', 'IMG_1850.jpeg', 'IMG_1851.jpeg', 'IMG_1852.jpeg', 'IMG_1853.jpeg'], 
+                    tooltip: 'Horta, Panificação, Cozinha Experimental' 
+                },
+                { 
+                    title: 'Tecnologia', 
+                    folder: 'tecnologia', 
+                    images: ['IMG_1807.jpeg', 'IMG_1808.jpeg', 'IMG_1894.jpeg', 'IMG_1895.jpeg', 'IMG_1896.jpeg', 'IMG_1897.jpeg', 'IMG_1898.jpeg', 'IMG_1899.jpeg', 'IMG_1900.jpeg', 'IMG_1901.jpeg', 'IMG_1902.jpeg', 'IMG_1903.jpeg', 'IMG_1904.jpeg', 'IMG_1905.jpeg', 'IMG_1906.jpeg'], 
+                    tooltip: 'Programação de Jogos, Robótica, Criação de Jogos de Tabuleiro e RPG' 
+                },
+                { 
+                    title: 'Mindfulness', 
+                    folder: 'mindfulness', 
+                    images: ['IMG_1812.jpeg', 'IMG_1854.jpeg', 'IMG_1855.jpeg', 'IMG_1856.jpeg', 'IMG_1857.jpeg', 'IMG_1858.jpeg'], 
+                    tooltip: null 
+                },
+                { 
+                    title: 'CidadeVamos', 
+                    folder: 'cidadevamos', 
+                    images: ['IMG_1912.jpeg', 'IMG_1913.jpeg', 'IMG_1914.jpeg', 'IMG_1915.jpeg', 'IMG_1916.jpeg', 'IMG_1917.jpeg', 'IMG_1918.jpeg', 'IMG_1919.jpeg', 'IMG_1920.jpeg', 'IMG_1921.jpeg', 'IMG_1922.jpeg', 'IMG_1923.jpeg', 'IMG_1924.jpeg', 'IMG_1925.jpeg', 'IMG_1926.jpeg'], 
+                    tooltip: null 
+                },
+                { 
+                    title: 'Infância Sem Excesso', 
+                    folder: 'infanciasemexcesso', 
+                    images: ['IMG_1927.jpeg', 'IMG_1928.jpeg', 'IMG_1929.jpeg', 'IMG_1930.jpeg', 'IMG_1931.jpeg', 'IMG_1932.jpeg', 'IMG_1933.jpeg', 'IMG_1934.jpeg', 'IMG_1935.jpeg', 'IMG_1936.jpeg', 'IMG_1937.jpeg', 'IMG_1938.jpeg', 'IMG_1939.jpeg', 'IMG_1940.jpeg', 'IMG_1941.jpeg', 'IMG_1942.jpeg', 'IMG_1943.jpeg', 'IMG_1944.jpeg', 'IMG_1945.jpeg', 'IMG_1946.jpeg'], 
+                    tooltip: null 
+                },
+                { 
+                    title: 'Prática Esportiva', 
+                    folder: 'praticaesportiva', 
+                    images: ['IMG_1907.jpeg', 'IMG_1908.jpeg', 'IMG_1909.jpeg', 'IMG_1910.jpeg', 'IMG_1911.jpeg'], 
+                    tooltip: null 
+                }
             ];
             const portfolioGrid = document.getElementById('portfolio-grid');
             portfolioData.forEach((item, index) => {
