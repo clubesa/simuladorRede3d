@@ -103,6 +103,46 @@
         .flip-card-back h4 { font-size: 1.4rem; margin-bottom: 0.5rem;}
         .flip-card-back p { font-size: 0.95rem; }
 
+        /* MODIFIED: New Section "Nosso Jeito de Fazer" */
+        .way-of-doing-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        @media (min-width: 768px) {
+            .way-of-doing-grid { grid-template-columns: 1fr 1fr; }
+        }
+        .way-of-doing-card {
+            background: var(--color-white);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow-sm);
+        }
+        .way-of-doing-card h4 {
+            color: var(--color-primary);
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        .way-of-doing-card .subtitle {
+            font-style: italic;
+            color: #555;
+            margin-bottom: 1.5rem;
+        }
+        .structured-routine-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        .structured-routine-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+        }
+        .structured-routine-list i {
+            color: var(--color-secondary);
+        }
+
         /* Portfolio Section */
         .portfolio-grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; }
         @media (min-width: 768px) { .portfolio-grid { grid-template-columns: repeat(2, 1fr); } }
@@ -143,11 +183,14 @@
         .tooltip-container:hover .tooltip-text { visibility: visible; opacity: 1; }
         
         /* MODIFIED: Simplified Diagnostic Area */
-        .diagnostic-link-area { text-align: center; margin-top: 4rem; background: var(--color-accent-blue); padding: 3rem 2rem; border-radius: 15px; display: grid; grid-template-columns: 1fr; gap: 2rem; align-items: center;}
-        @media (min-width: 992px) { .diagnostic-link-area { grid-template-columns: 1fr 1fr; } }
-        .diagnostic-link-area h4, .diagnostic-link-area p { text-align: left; margin-left: 0; margin-right: 0;}
+        .diagnostic-link-area { text-align: center; margin-top: 4rem; background: var(--color-accent-blue); padding: 3rem 2rem; border-radius: 15px; }
+        .diagnostic-link-area h4 { text-align: center; }
+        .diagnostic-link-area p { max-width: 600px; margin-left: auto; margin-right: auto; }
         .diagnostic-preview-container {
-            height: 350px;
+            height: 400px;
+            width: 100%;
+            max-width: 500px;
+            margin: 2rem auto 0 auto;
             border: 1px solid #ccc;
             border-radius: 10px;
             overflow: hidden;
@@ -312,6 +355,31 @@
                 </div>
             </section>
 
+            <!-- NEW SECTION: Nosso Jeito de Fazer -->
+            <section class="section-way-of-doing container fade-in">
+                <h2>Nosso jeito de fazer</h2>
+                <div class="way-of-doing-grid">
+                    <div class="way-of-doing-card">
+                        <h4>Aula como experiência</h4>
+                        <p class="subtitle">Por que eu quero viver isso?</p>
+                        <h4>Aprendizado por Projeto</h4>
+                        <p class="subtitle">Onde eu quero chegar?</p>
+                    </div>
+                    <div class="way-of-doing-card">
+                        <h4>Rotina estruturante</h4>
+                        <ul class="structured-routine-list">
+                            <li><i data-feather="check-circle"></i>Intencionalidade</li>
+                            <li><i data-feather="check-circle"></i>Autonomia</li>
+                            <li><i data-feather="check-circle"></i>Presença</li>
+                            <li><i data-feather="check-circle"></i>Problematização/ Aproximação</li>
+                            <li><i data-feather="check-circle"></i>Ação/ Cooperação</li>
+                            <li><i data-feather="check-circle"></i>Contemplação</li>
+                            <li><i data-feather="check-circle"></i>Documentação</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
             <section class="section-portfolio container fade-in">
                 <h2>Portfólio de Experiências</h2>
                 <p class="section-subtitle">(em levantamento com os parceiros)</p>
@@ -430,27 +498,30 @@
         document.addEventListener('DOMContentLoaded', () => {
             // --- Portfolio Data & Generation ---
             const portfolioData = [
-                { title: 'Brincar Livre', images: ['1801', '1804', '1811', '1816'] },
-                { title: 'Luz e Sombra', images: ['1802', '1806', '1817'] },
-                { title: 'Trabalhos Manuais', images: ['1803'] },
-                { title: 'Projetos de Tecnologias', images: ['1805', '1807', '1808'], tooltip: 'Programação de Jogos, Robótica, Criação de Jogos de Tabuleiro, Impressão 3D' },
-                { title: 'Marcenaria', images: ['1809', '1810'] },
-                { title: 'Mindfulness', images: ['1812'] },
-                { title: 'Circo', images: ['1813'] },
-                { title: 'Culinária', images: ['1814'] },
-                { title: 'Música', images: ['1815', '1818', '1819'] },
-                { title: 'Artes Visuais', images: ['1820'] },
-                { title: 'Esportes', images: ['1821'] },
-                { title: 'Horta', images: ['1822'] },
+                { title: 'Brincar Livre', folder: 'brincarlivre', images: 3, tooltip: null },
+                { title: 'Ateliês', folder: 'atelie', images: 3, tooltip: 'Clube de Leitura, CrioLivros, Artes Visuais, Artes Cênicas, Improvisação, Dança e Música' },
+                { title: 'Marcenaria', folder: 'marcenaria', images: 2, tooltip: null },
+                { title: 'Circo', folder: 'circo', images: 1, tooltip: null },
+                { title: 'Fazeres Manuais', folder: 'fazeresmanuais', images: 3, tooltip: 'Horta, Panificação, Cozinha Experimental' },
+                { title: 'Tecnologia', folder: 'tecnologia', images: 3, tooltip: 'Programação de Jogos, Robótica, Criação de Jogos de Tabuleiro e RPG' },
+                { title: 'Mindfulness', folder: 'mindfulness', images: 1, tooltip: null },
+                { title: 'CidadeVamos', folder: 'cidadevamos', images: 3, tooltip: null },
+                { title: 'Infância Sem Excesso', folder: 'infanciasemexcesso', images: 2, tooltip: null },
+                { title: 'Prática Esportiva', folder: 'praticaesportiva', images: 3, tooltip: null }
             ];
             const portfolioGrid = document.getElementById('portfolio-grid');
             portfolioData.forEach((item, index) => {
                 const card = document.createElement('div');
                 card.className = 'modality-card';
                 const carouselId = `carousel-${index}`;
-                const imagePath = '../diagnostico/';
-                let imageHtml = item.images.map(img => `<img src="${imagePath}IMG_${img}.jpeg" alt="${item.title}">`).join('');
-                let buttonsHtml = item.images.length > 1 ? `<button type="button" class="carousel-btn prev" data-carousel="${carouselId}" data-dir="-1"><i data-feather="chevron-left"></i></button><button type="button" class="carousel-btn next" data-carousel="${carouselId}" data-dir="1"><i data-feather="chevron-right"></i></button>` : '';
+                const imagePath = `../diagnostico/${item.folder}/`;
+                
+                let imageHtml = '';
+                for (let i = 1; i <= item.images; i++) {
+                    imageHtml += `<img src="${imagePath}image${i}.jpg" alt="${item.title}">`;
+                }
+
+                let buttonsHtml = item.images > 1 ? `<button type="button" class="carousel-btn prev" data-carousel="${carouselId}" data-dir="-1"><i data-feather="chevron-left"></i></button><button type="button" class="carousel-btn next" data-carousel="${carouselId}" data-dir="1"><i data-feather="chevron-right"></i></button>` : '';
                 
                 let tooltipHtml = '';
                 if(item.tooltip) {
