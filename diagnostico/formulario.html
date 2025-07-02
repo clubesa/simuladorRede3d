@@ -131,7 +131,8 @@
 
     <div class="container">
         <header class="header">
-            <img src="logoslabirintar/Labirintar_RGB.png" alt="Logo LABirintar" onerror="this.style.display='none'">
+            <!-- CAMINHO DA LOGO ATUALIZADO -->
+            <img src="../logoslabirintar/Labirintar_RGB.png" alt="Logo LABirintar" onerror="this.style.display='none'">
             <h1>“Uma tarde que mora em mim”</h1>
         </header>
 
@@ -363,6 +364,7 @@
                 slide.innerHTML = `
                     <label class="polaroid">
                         <input type="checkbox" name="ImagensSelecionadas" value="${imageName}">
+                        <!-- CAMINHO DAS IMAGENS ATUALIZADO -->
                         <img src="${imageName}" alt="Atividade da LABirintar" onerror="this.style.border='1px solid #ccc'; this.alt='Imagem ${imageName} não encontrada';">
                     </label>
                 `;
