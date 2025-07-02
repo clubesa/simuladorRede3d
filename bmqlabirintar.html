@@ -9,6 +9,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Custom LABirintar & BMQ Palette -->
+    <!-- Application Structure Plan: A single-page application designed as an interactive dashboard. The structure uses a main navigation to jump to key sections: Overview, Company Profiles, Partnership Scenarios, and Comparative Analysis. The core of the application is a tab-based interface for the "Scenarios" section, allowing users to dynamically switch between different partnership models. This non-linear structure was chosen to transform the static report into an exploratory tool, enabling easy comparison and deep dives into specific details, which is more effective for strategic decision-making than a linear document. -->
+    <!-- Visualization & Content Choices: 
+        - Company Profiles: Report Info -> Key assets of LABirintar & BMQ. Goal -> Compare company strengths. Viz/Presentation -> Side-by-side card layout using HTML/Tailwind. Interaction -> None. Justification -> Clear, direct visual comparison of core competencies.
+        - Partnership Scenarios: Report Info -> Detailed descriptions of 3 scenarios with interactive simulators. Goal -> Allow detailed exploration and financial modeling. Viz/Presentation -> Tabbed content sections with sliders and input fields. Interaction -> Clicking tabs reveals scenarios; sliders and inputs trigger real-time calculation updates. Justification -> Empowers user to test assumptions and understand financial implications directly.
+        - Financial Simulation: Report Info -> Monthly earnings projections for BMQ in Scenarios 1 & 2. Goal -> Compare financial outcomes. Viz/Presentation -> Vertical Bar Chart (Chart.js/Canvas). Interaction -> Tooltips on hover; chart data updates dynamically based on user input in the scenario simulators. Justification -> Creates a powerful, centralized dashboard for comparing the financial viability of the main scenarios.
+        - Value Curve (Blue Ocean): Report Info -> Competitive analysis from provided documents. Goal -> Strategically position the partnership against the market. Viz/Presentation -> Custom HTML/CSS/JS Line Chart. Interaction -> Tooltips on hover, legend items toggle dataset visibility. Justification -> Custom strategic visualization to powerfully argue the unique value proposition of the partnership, matching user-provided design reference with added interactivity.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         :root {
             --bmq-red: #c20f0f;
@@ -143,8 +152,8 @@
     <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm border-b border-gray-200">
         <div class="container mx-auto px-6 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-4">
-                 <img src="./IMG_1229.png" alt="Logo da LABirintar" class="h-14">
-                 <img src="./IMG_3170.webp" alt="Logo da BMQ Sports" class="h-14">
+                 <img src="./logoslabirintar/IMG_1229.png" alt="Logo da LABirintar" class="h-14">
+                 <img src="./logoslabirintar/IMG_3170.webp" alt="Logo da BMQ Sports" class="h-14">
             </div>
             <nav class="hidden md:flex space-x-6 font-medium">
                 <a href="#overview" class="text-gray-600 hover:text-[var(--lab-red)] transition">Visão Geral</a>
