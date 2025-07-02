@@ -192,8 +192,7 @@
             <div class="answer-area-scrollable" id="answer-area">
                 <form id="diagnosticoForm">
                     <!-- Bloco Inicial -->
-                    <div class="question-block">
-                        <h3 data-title>Para começar...</h3>
+                    <div class="question-block" data-title="Para começar...">
                         <div class="intro-text">
                             <p>Este é um instrumento de escuta sensível. Antes de começar, você pode pedir ajuda de um adulto para ler e anotar suas respostas.</p>
                             <p>Não tem certo nem errado, o mais importante é mostrar o que você sente, pensa ou imagina.</p>
@@ -212,9 +211,7 @@
                     </div>
 
                     <!-- Pergunta 1 -->
-                    <div class="question-block">
-                        <h3 data-title>1. O que você gostaria de fazer à tarde, depois das aulas?</h3>
-                        <p data-subtitle>Passe as fotos e marque as que você mais gostar!</p>
+                    <div class="question-block" data-title="1. O que você gostaria de fazer à tarde, depois das aulas?" data-subtitle="Passe as fotos e marque as que você mais gostar!">
                         <div class="carousel">
                             <div class="carousel-container" id="carousel-container">
                                 <!-- Imagens serão inseridas aqui pelo JS -->
@@ -228,8 +225,7 @@
                     </div>
 
                     <!-- Pergunta 2 -->
-                    <div class="question-block">
-                        <h3 data-title>2. Se a escola fosse um lugar mágico…</h3>
+                    <div class="question-block" data-title="2. Se a escola fosse um lugar mágico…">
                         <div class="form-group">
                             <label for="som-magico">que som você ouviria?</label>
                             <input type="text" id="som-magico" name="SomMagico" required>
@@ -245,9 +241,7 @@
                     </div>
                     
                     <!-- Pergunta 3 -->
-                    <div class="question-block">
-                        <h3 data-title>3. Coisas que brilham na minha cabeça</h3>
-                        <p data-subtitle>Tem algo que você tem muita vontade de aprender ou explorar de um jeito mais livre? Pode marcar quantas quiser:</p>
+                    <div class="question-block" data-title="3. Coisas que brilham na minha cabeça" data-subtitle="Tem algo que você tem muita vontade de aprender ou explorar de um jeito mais livre? Pode marcar quantas quiser:">
                         <div class="options-list">
                             <label><input type="checkbox" name="CoisasQueBrilham" value="Música"><span>Música</span></label>
                             <label><input type="checkbox" name="CoisasQueBrilham" value="Jogos"><span>Jogos</span></label>
@@ -268,8 +262,7 @@
                     </div>
 
                     <!-- Pergunta 4 -->
-                    <div class="question-block">
-                        <h3 data-title>4. Se pudesse criar uma aula nova…</h3>
+                    <div class="question-block" data-title="4. Se pudesse criar uma aula nova…">
                         <div class="form-group">
                             <label for="nome-aula">como ela se chamaria?</label>
                             <input type="text" id="nome-aula" name="NomeAulaNova" required>
@@ -281,8 +274,7 @@
                     </div>
                     
                     <!-- Pergunta 5 -->
-                    <div class="question-block">
-                        <h3 data-title>5. Se você pudesse guardar o momento mais gostoso da sua tarde em uma caixinha, qual seria?</h3>
+                    <div class="question-block" data-title="5. Se você pudesse guardar o momento mais gostoso da sua tarde em uma caixinha, qual seria?">
                         <div class="options-list">
                             <label><input type="radio" name="MomentoNaCaixinha" value="Estar com amigos" required><span>Estar com amigos</span></label>
                             <label><input type="radio" name="MomentoNaCaixinha" value="Inventar coisas" required><span>Inventar coisas</span></label>
@@ -297,8 +289,7 @@
                     </div>
 
                     <!-- Pergunta 6 -->
-                    <div class="question-block">
-                        <h3 data-title>6. Qual lugar da escola poderia virar um novo mundo?</h3>
+                    <div class="question-block" data-title="6. Qual lugar da escola poderia virar um novo mundo?">
                         <div class="form-group">
                             <label for="lugar-patio">O pátio poderia virar…?</label>
                             <input type="text" id="lugar-patio" name="LugarPatio" required>
@@ -318,8 +309,7 @@
                     </div>
 
                     <!-- Pergunta 7 -->
-                    <div class="question-block">
-                        <h3 data-title>7. Invenções que só existem na minha cabeça (por enquanto!)</h3>
+                    <div class="question-block" data-title="7. Invenções que só existem na minha cabeça (por enquanto!)">
                         <div class="form-group">
                             <label for="invencao-maluca">💡 Tem alguma ideia maluca ou legal que você inventaria para a escola?</label>
                             <textarea id="invencao-maluca" name="InvencaoMaluca" rows="4" required></textarea>
@@ -327,8 +317,7 @@
                     </div>
                     
                     <!-- Pergunta 8 -->
-                    <div class="question-block">
-                        <h3 data-title>8. Se pudesse escolher para você uma peça de um quebra-cabeça que representa a escola…</h3>
+                    <div class="question-block" data-title="8. Se pudesse escolher para você uma peça de um quebra-cabeça que representa a escola…">
                         <div class="form-group">
                             <label for="peca-quebra-cabeca">o que estaria desenhado nesta peça?</label>
                             <input type="text" id="peca-quebra-cabeca" name="PecaQuebraCabeca" required>
@@ -336,8 +325,7 @@
                     </div>
 
                     <!-- Pergunta 9 -->
-                    <div class="question-block">
-                        <h3 data-title>9. Quer deixar um recado para a LABirintar?</h3>
+                    <div class="question-block" data-title="9. Quer deixar um recado para a LABirintar?">
                         <div class="form-group">
                             <label for="recado-final">Pode escrever uma frase, uma palavra inventada, uma coisa que você queira dizer só pra gente.</label>
                             <textarea id="recado-final" name="RecadoFinal" rows="4"></textarea>
@@ -458,14 +446,13 @@
             function updateFormView() {
                 questions.forEach((q, i) => q.classList.toggle('active', i === currentQuestionIndex));
                 
-                // Atualiza o cabeçalho da pergunta
                 const activeQuestion = questions[currentQuestionIndex];
-                const titleEl = activeQuestion.querySelector('[data-title]');
-                const subtitleEl = activeQuestion.querySelector('[data-subtitle]');
+                const titleText = activeQuestion.getAttribute('data-title');
+                const subtitleText = activeQuestion.getAttribute('data-subtitle');
                 
-                dynamicTitle.innerHTML = titleEl ? titleEl.innerHTML : '';
-                dynamicSubtitle.innerHTML = subtitleEl ? subtitleEl.innerHTML : '';
-                dynamicSubtitle.style.display = subtitleEl ? 'block' : 'none';
+                dynamicTitle.innerHTML = titleText || '';
+                dynamicSubtitle.innerHTML = subtitleText || '';
+                dynamicSubtitle.style.display = subtitleText ? 'block' : 'none';
 
                 const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
                 progressBar.style.width = `${progress}%`;
@@ -473,7 +460,7 @@
                 nextBtn.style.display = currentQuestionIndex === questions.length - 1 ? 'none' : 'inline-block';
                 submitBtn.style.display = currentQuestionIndex === questions.length - 1 ? 'inline-block' : 'none';
                 
-                answerArea.scrollTop = 0; // Rola a área de respostas para o topo
+                answerArea.scrollTop = 0;
             }
 
             function validateCurrentQuestion() {
