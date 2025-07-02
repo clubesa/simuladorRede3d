@@ -105,7 +105,7 @@
         .flip-card-front { background: var(--color-white); color: var(--color-text); }
         .flip-card-front i { color: var(--color-primary); margin-bottom: 1rem; }
         .flip-card-front h4 { font-family: var(--font-title); font-size: 1.6rem; }
-        .flip-card-back { background-color: var(--color-accent-blue); color: var(--color-text); transform: rotateY(180deg); }
+        .flip-card-back { background: linear-gradient(145deg, #ffacac, #ffcb7f); color: var(--color-white); transform: rotateY(180deg); }
         .flip-card-back h4 { font-size: 1.4rem; margin-bottom: 0.5rem;}
         .flip-card-back p { font-size: 0.95rem; }
 
@@ -164,33 +164,27 @@
         .modality-card-header { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; }
         .modality-card-header h4 { margin-bottom: 0; }
         .modality-card-header input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--color-primary); }
-        .tooltip-container { position: relative; display: inline-flex; align-items: center; }
-        .tooltip-container .tooltip-icon { cursor: pointer; }
-        .tooltip-container .tooltip-text {
-            visibility: hidden;
-            width: max-content;
-            max-width: 220px;
-            background-color: var(--color-text);
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 10px 12px;
-            position: absolute;
-            z-index: 10;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 0.85rem;
-            line-height: 1.4;
-        }
-        .tooltip-container .tooltip-text.visible { visibility: visible; opacity: 1; }
-        .tooltip-container .tooltip-text::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: var(--color-text) transparent transparent transparent; }
         
+        /* MODIFIED: Simplified Diagnostic Area */
         .diagnostic-link-area { text-align: center; margin-top: 4rem; background: var(--color-accent-blue); padding: 3rem 2rem; border-radius: 15px; }
         .diagnostic-link-area h4 { text-align: center; }
         .diagnostic-link-area p { max-width: 600px; margin-left: auto; margin-right: auto; }
+        .diagnostic-preview-container {
+            height: 500px;
+            width: 250px;
+            margin: 2rem auto 0 auto;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: var(--shadow-md);
+        }
+        .diagnostic-preview-container iframe {
+            width: 200%;
+            height: 200%;
+            border: none;
+            transform: scale(0.5);
+            transform-origin: 0 0;
+        }
         
         /* Partnership Section */
         .partnership-grid { display: grid; grid-template-columns: 1fr; gap: 3rem; margin-bottom: 4rem; }
@@ -389,9 +383,14 @@
                     </div>
                 <!-- MODIFIED: Simplified diagnostic area -->
                 <div class="diagnostic-link-area">
-                    <h4>Não tem certeza de quais experiências escolher?</h4>
-                    <p>Use nosso formulário de diagnóstico para pesquisar os interesses de alunos e famílias. Copie o link e compartilhe com sua equipe pedagógica.</p>
-                    <button type="button" id="copy-diagnostic-link" class="btn btn-primary">Copiar Link do Diagnóstico</button>
+                    <div class="diagnostic-link-text">
+                        <h4>Não tem certeza de quais experiências escolher?</h4>
+                        <p>Use nosso formulário de diagnóstico para pesquisar os interesses de alunos e famílias. Copie o link e compartilhe com sua equipe pedagógica.</p>
+                        <button type="button" id="copy-diagnostic-link" class="btn btn-primary">Copiar Link do Diagnóstico</button>
+                    </div>
+                    <div class="diagnostic-preview-container">
+                        <iframe src="https://clubesa.github.io/simuladorRede3d/diagnostico/formulario.html" title="Preview do Formulário de Diagnóstico"></iframe>
+                    </div>
                 </div>
             </section>
             
@@ -567,12 +566,12 @@
 
                 let buttonsHtml = item.images.length > 1 ? `<button type="button" class="carousel-btn prev" data-carousel="${carouselId}" data-dir="-1"><i data-feather="chevron-left"></i></button><button type="button" class="carousel-btn next" data-carousel="${carouselId}" data-dir="1"><i data-feather="chevron-right"></i></button>` : '';
                 
-                let tooltipHtml = '';
+                let marqueeHtml = '';
                 if(item.tooltip) {
-                    tooltipHtml = `<div class="tooltip-container"><i data-feather="info" class="tooltip-icon" style="width: 18px; height: 18px; margin-left: 8px;"></i><span class="tooltip-text">${item.tooltip}</span></div>`;
+                    marqueeHtml = `<div class="marquee"><div class="marquee-content">${item.tooltip}</div></div>`;
                 }
 
-                card.innerHTML = `<div class="carousel" id="${carouselId}"><div class="carousel-images">${imageHtml}</div>${buttonsHtml}</div><div class="modality-card-content"><div class="modality-card-header"><h4>${item.title}</h4>${tooltipHtml}<input type="checkbox" name="modalidades_selecionadas" value="${item.title}" style="margin-left: auto;"></div></div>`;
+                card.innerHTML = `<div class="carousel" id="${carouselId}"><div class="carousel-images">${imageHtml}</div>${marqueeHtml}${buttonsHtml}</div><div class="modality-card-content"><div class="modality-card-header"><h4>${item.title}</h4><input type="checkbox" name="modalidades_selecionadas" value="${item.title}" style="margin-left: auto;"></div></div>`;
                 portfolioGrid.appendChild(card);
             });
             feather.replace();
