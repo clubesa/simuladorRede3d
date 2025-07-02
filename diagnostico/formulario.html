@@ -3,700 +3,497 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LABirintar - Formulário Comercial para Escolas</title>
-
-    <!-- Google Fonts -->
+    <title>Diagnóstico de Interesses | LABirintar</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
-    
-    <!-- Feather Icons for modern icons -->
-    <script src="https://unpkg.com/feather-icons"></script>
-
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* CSS Custom Properties (Variables) */
         :root {
-            --color-primary: #ff595a;   /* Coral Red */
-            --color-secondary: #ffa400; /* Mustard Yellow */
-            --color-light-bg: #ffe9c9;  /* Light Cream */
-            --color-accent-lavender: #e6cbe4;
-            --color-accent-blue: #aec5e7;
-            --color-text: #2c2c2c;
-            --color-white: #ffffff;
-            --font-title: 'Lora', serif;
-            --font-body: 'Inter', sans-serif;
-            --shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.1);
+            --vermelho: #ff595a;
+            --laranja: #ffa400;
+            --creme: #ffe9c9;
+            --lilas: #e6cbe4;
+            --azul: #aec5e7;
+            --texto-escuro: #3d3d3d;
+            --branco: #ffffff;
+            --sombra-suave: rgba(0, 0, 0, 0.08);
         }
-
-        /* General Body and Reset Styles */
-        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
-        body { font-family: var(--font-body); background-color: var(--color-white); color: var(--color-text); line-height: 1.8; overflow-x: hidden; }
-
-        .container { width: 90%; max-width: 1100px; margin: 0 auto; padding: 6rem 2rem; }
-
-        /* Typography */
-        h1, h2, h3, h4 { font-family: var(--font-title); font-weight: 600; line-height: 1.3; }
-        h1 { font-size: clamp(2.8rem, 6vw, 4.5rem); color: var(--color-white); text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
-        h2 { font-size: clamp(2.2rem, 5vw, 3.2rem); text-align: center; margin-bottom: 1rem; }
-        h3 { font-size: clamp(1.5rem, 4vw, 2rem); color: var(--color-primary); margin-bottom: 1rem; }
-        h4 { font-size: clamp(1.2rem, 3vw, 1.5rem); margin-bottom: 1rem; }
-        p { margin-bottom: 1.5rem; max-width: 650px; }
-        .section-subtitle { text-align: center; font-size: 1.1rem; max-width: 700px; margin: 0 auto 4rem auto; color: #555; }
-
-        /* Fade-in Animation on Scroll */
-        .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
-        .fade-in.visible { opacity: 1; transform: translateY(0); }
-
-        /* Header Section */
-        .hero { position: relative; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1rem; background: linear-gradient(145deg, var(--color-accent-blue), var(--color-accent-lavender)); overflow: hidden; }
-        .hero-logo { width: 350px; max-width: 80%; margin-bottom: 2rem; filter: drop-shadow(var(--shadow-md)); }
-        .hero .subtitle { font-size: 1.3rem; color: var(--color-white); font-weight: 300; letter-spacing: 1px; text-shadow: 0 1px 5px rgba(0,0,0,0.15); }
-
-        /* Vision Section with Scroller */
-        .vision-scroller-container {
-            max-width: 100%;
-            overflow-x: auto;
-            padding: 1rem 0 2rem 0;
-            scrollbar-width: thin;
-            scrollbar-color: var(--color-accent-blue) transparent;
-        }
-        .vision-scroller-container::-webkit-scrollbar { height: 8px; }
-        .vision-scroller-container::-webkit-scrollbar-track { background: transparent; }
-        .vision-scroller-container::-webkit-scrollbar-thumb { background-color: var(--color-accent-blue); border-radius: 10px; }
-        .vision-scroller { display: flex; flex-wrap: nowrap; gap: 2rem; width: max-content; }
-        .vision-card {
-            flex: 0 0 300px;
-            background: var(--color-white);
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: var(--shadow-md);
-            border-top: 4px solid var(--color-primary);
-        }
-        .vision-card h4 { font-size: 1.2rem; margin-bottom: 1rem; color: var(--color-primary); }
-        .vision-card p { font-size: 0.95rem; line-height: 1.6; }
-        
-        /* Problem Section with Ranking */
-        .problem-grid { display: grid; grid-template-columns: 1fr; gap: 3rem; align-items: flex-start; }
-        @media (min-width: 992px) { .problem-grid { grid-template-columns: 1fr 1fr; } }
-        .challenge-item { display: flex; justify-content: space-between; align-items: center; background-color: var(--color-light-bg); padding: 1rem 1.5rem; border-radius: 12px; margin-bottom: 1rem; }
-        .challenge-item p { margin-bottom: 0; font-weight: 500; }
-        .challenge-item select { padding: 0.5rem; border-radius: 8px; border: 2px solid var(--color-accent-blue); font-weight: bold; cursor: pointer; color: var(--color-text); }
-        .problem-image-wrapper { background-color: var(--color-light-bg); border-radius: 20px; padding: 2rem; text-align: center; box-shadow: var(--shadow-sm); }
-        .problem-image-wrapper h4 { font-family: var(--font-body); font-size: 1.2rem; font-style: italic; color: var(--color-text); }
-        .textarea-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
-        .textarea-group textarea { width: 100%; min-height: 120px; padding: 1rem; border-radius: 12px; border: 2px solid var(--color-accent-blue); font-family: var(--font-body); font-size: 1rem; resize: vertical; }
-
-        /* Solution Section */
-        .section-solution { background: linear-gradient(145deg, var(--color-accent-lavender), var(--color-white)); padding: 6rem 0; }
-        .section-solution .container { padding-top: 0; padding-bottom: 0; }
-        .solution-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; perspective: 1000px; }
-        @media (min-width: 768px) { .solution-grid { grid-template-columns: repeat(2, 1fr); } }
-        .flip-card { background-color: transparent; height: 350px; border-radius: 20px; }
-        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.8s; transform-style: preserve-3d; box-shadow: var(--shadow-md); border-radius: 20px; }
-        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
-        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; }
-        .flip-card-front { background: var(--color-white); color: var(--color-text); }
-        .flip-card-front i { color: var(--color-primary); margin-bottom: 1rem; }
-        .flip-card-front h4 { font-family: var(--font-title); font-size: 1.6rem; }
-        .flip-card-back { background-color: var(--color-accent-blue); color: var(--color-text); transform: rotateY(180deg); }
-        .flip-card-back h4 { font-size: 1.4rem; margin-bottom: 0.5rem;}
-        .flip-card-back p { font-size: 0.95rem; }
-
-        /* MODIFIED: New Section "Nosso Jeito de Fazer" */
-        .way-of-doing-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 2rem;
-        }
-        @media (min-width: 768px) {
-            .way-of-doing-grid { grid-template-columns: 1fr 1fr; }
-        }
-        .way-of-doing-card {
-            background: var(--color-white);
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: var(--shadow-sm);
-        }
-        .way-of-doing-card h4 {
-            color: var(--color-primary);
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
-        }
-        .way-of-doing-card .subtitle {
-            font-style: italic;
-            color: #555;
-            margin-bottom: 1.5rem;
-        }
-        .structured-routine-list {
-            list-style: none;
-            padding-left: 0;
-        }
-        .structured-routine-list li {
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--creme);
+            color: var(--texto-escuro);
+            margin: 0;
+            padding: 20px;
             display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 0.75rem;
-            font-weight: 500;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
         }
-        .structured-routine-list i {
-            color: var(--color-secondary);
-        }
-
-        /* Portfolio Section */
-        .portfolio-grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; }
-        @media (min-width: 768px) { .portfolio-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (min-width: 1024px) { .portfolio-grid { grid-template-columns: repeat(3, 1fr); } }
-        .modality-card { background: var(--color-white); border-radius: 15px; box-shadow: var(--shadow-md); }
-        .modality-card .carousel { position: relative; width: 100%; height: 200px; border-radius: 15px 15px 0 0; overflow: hidden; }
-        .modality-card .carousel-images { display: flex; height: 100%; transition: transform 0.5s ease-in-out; }
-        .modality-card .carousel-images img { width: 100%; height: 100%; object-fit: cover; flex-shrink: 0; }
-        .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255, 255, 255, 0.7); border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-sm); }
-        .carousel-btn.prev { left: 10px; }
-        .carousel-btn.next { right: 10px; }
-        .modality-card-content { padding: 1.5rem; }
-        .modality-card-header { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; }
-        .modality-card-header h4 { margin-bottom: 0; }
-        .modality-card-header input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--color-primary); }
-        .tooltip-container { position: relative; display: inline-flex; align-items: center; }
-        .tooltip-container .tooltip-icon { cursor: help; }
-        .tooltip-container .tooltip-text {
-            visibility: hidden;
-            width: max-content;
-            max-width: 220px;
-            background-color: var(--color-text);
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 10px 12px;
-            position: absolute;
-            z-index: 10;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 0.85rem;
-            line-height: 1.4;
-        }
-        .tooltip-container .tooltip-text::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: var(--color-text) transparent transparent transparent; }
-        .tooltip-container:hover .tooltip-text { visibility: visible; opacity: 1; }
-        
-        /* MODIFIED: Simplified Diagnostic Area */
-        .diagnostic-link-area { text-align: center; margin-top: 4rem; background: var(--color-accent-blue); padding: 3rem 2rem; border-radius: 15px; }
-        .diagnostic-link-area h4 { text-align: center; }
-        .diagnostic-link-area p { max-width: 600px; margin-left: auto; margin-right: auto; }
-        .diagnostic-preview-container {
-            height: 400px;
+        .container {
+            background-color: var(--branco);
+            padding: 30px 40px;
+            border-radius: 24px;
+            box-shadow: 0 12px 30px var(--sombra-suave);
+            max-width: 700px;
             width: 100%;
-            max-width: 500px;
-            margin: 2rem auto 0 auto;
-            border: 1px solid #ccc;
-            border-radius: 10px;
+            box-sizing: border-box;
             overflow: hidden;
-            background: #fff;
         }
-        .diagnostic-preview-container iframe {
-            width: 200%;
-            height: 200%;
+        .header { text-align: center; margin-bottom: 20px; }
+        .header img { max-width: 282px; margin-bottom: 15px; }
+        .header h1 { color: var(--vermelho); font-size: 1.5em; font-weight: 700; margin: 0; }
+        .intro-text { background-color: #fafafa; padding: 20px; border-radius: 12px; margin-bottom: 25px; font-style: italic; line-height: 1.6; }
+        .intro-text .adulto-nota { font-size: 0.9em; color: #555; display: block; margin-top: 10px; }
+        .progress-bar-container { width: 100%; background-color: #f0f0f0; border-radius: 10px; margin: 30px 0; }
+        .progress-bar { width: 0%; height: 15px; background: linear-gradient(90deg, var(--azul), var(--lilas)); border-radius: 10px; transition: width 0.4s ease-in-out; }
+        .question-block { display: none; padding: 10px; animation: slideIn 0.5s forwards; }
+        .question-block.active { display: block; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        .question-title { margin-top: 0; margin-bottom: 20px; font-size: 1.4em; font-weight: 600; line-height: 1.4; }
+        .form-group { margin-bottom: 25px; }
+        .form-group label { display: block; margin-bottom: 10px; font-weight: 600; font-size: 1.1em; }
+        .form-group input[type="text"], .form-group input[type="number"], .form-group textarea {
+            width: 100%; padding: 14px; border: 2px solid var(--lilas); border-radius: 10px;
+            box-sizing: border-box; font-size: 1em; font-family: 'Poppins', sans-serif;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--laranja); box-shadow: 0 0 0 3px rgba(255, 164, 0, 0.3); }
+        .options-list label {
+            display: flex; align-items: center; background-color: #fafafa; padding: 15px;
+            border-radius: 12px; margin-bottom: 12px; border: 2px solid var(--lilas);
+            cursor: pointer; transition: all 0.2s ease-out;
+        }
+        .options-list label:hover { border-color: var(--laranja); transform: translateY(-3px); box-shadow: 0 4px 10px var(--sombra-suave); }
+        .options-list input[type="radio"], .options-list input[type="checkbox"] {
+            transform: scale(1.5); margin-right: 15px; accent-color: var(--vermelho);
+        }
+        .navigation-buttons { display: flex; justify-content: space-between; align-items: center; margin-top: 30px; gap: 15px; }
+        .nav-btn { padding: 12px 30px; background-color: var(--lilas); color: var(--texto-escuro); font-size: 1.1em; font-weight: 600; border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s; }
+        .nav-btn:hover { transform: scale(1.05); }
+        .nav-btn#nextBtn { background-color: var(--laranja); color: var(--branco); }
+        #submitBtn { padding: 12px 30px; background: var(--vermelho); color: var(--branco); font-size: 1.1em; font-weight: 600; border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s; display: none; }
+        #submitBtn:hover { transform: scale(1.05); }
+        .status-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 1000; text-align: center; }
+        .status-box h2 { font-size: 1.8em; }
+        .loader { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid var(--laranja); border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .checkmark { font-size: 5em; color: var(--laranja); }
+
+        /* --- ESTILOS DO CARROSSEL (ATUALIZADO) --- */
+        .carousel { position: relative; width: 100%; max-width: 550px; margin: 0 auto; border-radius: 15px; overflow: hidden; }
+        .carousel-container { display: flex; transition: transform 0.5s ease-in-out; }
+        .carousel-slide { flex: 0 0 100%; display: flex; justify-content: center; align-items: center; padding: 40px; box-sizing: border-box; }
+        .polaroid { background: var(--branco); border: 1px solid #ddd; padding: 15px 15px 45px 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; position: relative; }
+        .polaroid img { width: 100%; max-width: 450px; display: block; }
+        .polaroid input[type="checkbox"] { display: none; }
+        .polaroid.selected { border: 4px solid var(--laranja); transform: scale(1.05) rotate(2deg); box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
+        .polaroid.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 50px;
+            font-weight: bold;
+            color: var(--laranja);
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            line-height: 60px;
+            text-align: center;
+            text-shadow: 0 0 5px white;
+        }
+        .carousel-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 100%; display: flex; justify-content: space-between; padding: 0; box-sizing: border-box; pointer-events: none; }
+        .carousel-btn {
+            pointer-events: all;
+            background-color: rgba(255, 255, 255, 0.7);
             border: none;
-            transform: scale(0.5);
-            transform-origin: 0 0;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 36px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        
-        /* Partnership Section */
-        .partnership-grid { display: grid; grid-template-columns: 1fr; gap: 3rem; margin-bottom: 4rem; }
-        @media (min-width: 992px) { .partnership-grid { grid-template-columns: 1fr 1fr; } }
-        .model-card { background: var(--color-white); padding: 2.5rem; border-radius: 20px; box-shadow: var(--shadow-md); border-top: 5px solid; transition: transform 0.3s, box-shadow 0.3s; }
-        .model-card:hover { transform: translateY(-10px); box-shadow: 0 15px 40px rgba(0,0,0,0.12); }
-        .model-card.split { border-color: var(--color-primary); }
-        .model-card.subscription { border-color: var(--color-secondary); }
-        .model-card h4 { font-size: 1.8rem; margin-bottom: 1rem; }
-        .model-card .split-details { font-size: 1.2rem; font-weight: 500; margin: 1.5rem 0; padding-left: 1rem; border-left: 3px solid #eee; }
-        .model-card .split-details span { font-weight: 700; color: var(--color-primary); }
-        .model-card .description { font-style: italic; color: #666; }
-        .model-card .activity-duration { font-weight: bold; color: var(--color-primary); margin-top: 1rem; display: block; }
-        
-        /* Simulator Styles */
-        .simulator { background: var(--color-light-bg); padding: 2rem; border-radius: 20px; }
-        @media (min-width: 768px) { .simulator { padding: 3rem; } }
-        .simulator-header { margin-bottom: 2rem; }
-        .simulator-inputs { display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; }
-        @media (min-width: 768px) { .simulator-inputs { grid-template-columns: 1fr 1fr; } }
-        .input-group { display: flex; flex-direction: column; }
-        .input-group label { font-weight: 500; margin-bottom: 0.5rem; }
-        .input-group input[type="text"], 
-        .input-group input[type="number"],
-        .input-group input[type="tel"] { 
-            width: 100%; 
-            padding: 0.8rem 1rem; 
-            border: 2px solid var(--color-accent-blue); 
-            border-radius: 10px; 
-            font-family: var(--font-body); 
-            font-size: 1rem; 
-        }
-        .input-group input[readonly] { background-color: #f0f0f0; cursor: not-allowed; }
-        .slider-group { display: flex; flex-direction: column; }
-        .slider-group .label-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
-        .slider-group label { font-weight: 500; margin-bottom: 0; }
-        .slider-group .slider-value { font-weight: bold; color: var(--color-primary); padding-left: 1rem; }
-        input[type="range"] { -webkit-appearance: none; width: 100%; height: 8px; background: var(--color-accent-blue); border-radius: 5px; outline: none; }
-        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; background: var(--color-primary); cursor: pointer; border-radius: 50%; }
-        input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; background: var(--color-primary); cursor: pointer; border-radius: 50%; }
-        .financial-comparison-row { grid-column: 1 / -1; display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--color-accent-blue); }
-        .financial-comparison-row .input-group { flex: 1; }
-        .financial-comparison-row .input-group.percentage { flex: 0.7; text-align: center; }
-        .financial-comparison-row .input-group.percentage input { text-align: center; font-weight: bold; color: var(--color-primary); }
+        .carousel-counter { text-align: center; margin-top: 15px; font-weight: 600; color: var(--texto-escuro); }
 
-        #results { margin-top: 2rem; display: grid; grid-template-columns: 1fr; gap: 1.5rem; text-align: left; }
-        @media (min-width: 768px) { #results { grid-template-columns: 1fr 1fr; } }
-        .result-card { background: var(--color-white); padding: 1.5rem; border-radius: 15px; box-shadow: var(--shadow-sm); }
-        .result-card h4 { font-size: 1.2rem; }
-        .result-card .gain-value { font-size: 1.8rem; font-weight: bold; color: var(--color-primary); }
-        .result-card .formula { font-size: 0.8rem; font-style: italic; color: #777; }
-
-        /* Benefits Section */
-        .benefits-cloud { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; }
-        .benefit-tag input[type="checkbox"] { display: none; }
-        .benefit-tag label { display: inline-block; background-color: var(--color-accent-blue); color: var(--color-text); padding: 0.8rem 1.5rem; border-radius: 50px; font-weight: 500; transition: transform 0.3s, background-color 0.3s; cursor: pointer; }
-        .benefit-tag input[type="checkbox"]:checked + label { transform: scale(1.05); background-color: var(--color-secondary); color: var(--color-white); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        
-        /* Footer & Modal */
-        footer { background-color: var(--color-text); color: var(--color-white); text-align: center; padding: 5rem 1rem; }
-        footer h2 { color: var(--color-white); }
-        footer p { max-width: 600px; margin: 0 auto 2.5rem auto; opacity: 0.8; }
-        .footer-buttons { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; }
-        .btn { display: inline-block; padding: 1rem 2.5rem; border-radius: 50px; text-decoration: none; font-weight: 700; transition: transform 0.3s, box-shadow 0.3s; border: none; cursor: pointer; font-size: 1rem; }
-        .btn:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
-        .btn-primary { background-color: var(--color-primary); color: var(--color-white); }
-        .btn-secondary { background-color: var(--color-secondary); color: var(--color-white); }
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.4s ease; z-index: 1000; }
-        .modal-overlay.visible { opacity: 1; visibility: visible; }
-        .modal-content { background: var(--color-white); padding: 2.5rem; border-radius: 20px; width: 90%; max-width: 500px; box-shadow: var(--shadow-md); transform: scale(0.9); transition: all 0.4s ease; }
-        .modal-overlay.visible .modal-content { transform: scale(1); }
-        .modal-content .input-group { width: 100%; margin-bottom: 1rem; }
-        .modal-content .input-group input { width: 100%; }
-        
+        /* --- ESTILOS DO SLIDER --- */
+        .slider-group { display: flex; flex-direction: column; align-items: center; }
+        .slider-output { font-size: 1.5em; font-weight: 700; color: var(--vermelho); background-color: var(--creme); padding: 5px 15px; border-radius: 10px; margin-bottom: 15px; }
+        input[type="range"] { -webkit-appearance: none; width: 80%; height: 10px; background: var(--lilas); border-radius: 5px; outline: none; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 25px; height: 25px; background: var(--laranja); cursor: pointer; border-radius: 50%; }
+        input[type="range"]::-moz-range-thumb { width: 25px; height: 25px; background: var(--laranja); cursor: pointer; border-radius: 50%; }
     </style>
 </head>
 <body>
 
-    <header class="hero">
-        <img src="../logoslabirintar/Labirintar_RGB.png" alt="Logo LABirintar" class="hero-logo fade-in">
-        <h1 class="fade-in">Educar é ocupar o tempo com sentido.</h1>
-        <p class="subtitle fade-in">E sentido se constrói em rede.</p>
-    </header>
+    <div class="container">
+        <header class="header">
+            <!-- CAMINHO DA LOGO ATUALIZADO -->
+            <img src="../logoslabirintar/Labirintar_RGB.png" alt="Logo LABirintar" onerror="this.style.display='none'">
+            <h1>“Uma tarde que mora em mim”</h1>
+        </header>
 
-    <form id="commercial-form">
-        <main>
-            <section class="section-vision container fade-in">
-                <h2>A escola em tempo integral precisa mais do que tempo: ela precisa de experiência com sentido.</h2>
-                <p class="section-subtitle">A LABirintar é o ecossistema que torna isso possível.</p>
-                <div class="vision-scroller-container">
-                    <div class="vision-scroller">
-                        <div class="vision-card">
-                            <h4>Plataforma Inteligente</h4>
-                            <p>Conectamos escolas, educadores e famílias por meio de uma plataforma viva, sensível e inteligente que simplifica toda a gestão do contraturno.</p>
-                        </div>
-                        <div class="vision-card">
-                            <h4>Geração de Receita</h4>
-                            <p>Otimizamos o uso de espaços ociosos da sua escola, transformando-os em ambientes de aprendizagem que geram nova receita e impulsionam matrículas no currículo regular.</p>
-                        </div>
-                        <div class="vision-card">
-                            <h4>Desenvolvimento Integral</h4>
-                            <p>Vamos além da recreação. Nossas experiências são baseadas em ciência e dados para promover o desenvolvimento holístico das crianças, com foco em habilidades socioemocionais.</p>
-                        </div>
-                        <div class="vision-card">
-                            <h4>Ecossistema Colaborativo</h4>
-                            <p>Oferecemos um convite para caminhar conosco, em uma rede de apoio contínuo e escuta ativa que fortalece vínculos e amplia o impacto da educação integral.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="section-problem container fade-in">
-                <h2>A Cartografia do Desafio</h2>
-                <div class="problem-grid">
-                    <div class="challenges-ranking">
-                        <p class="section-subtitle" style="text-align: left; margin: 0 0 2rem 0;">Classifique os desafios abaixo em ordem de importância para sua instituição (1 = mais importante).</p>
-                        <div class="challenge-item">
-                            <p>Diferenciar-se sem onerar a operação</p>
-                            <select name="ranking_diferenciar" class="ranking-select" required><option value="">Prioridade</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
-                        </div>
-                        <div class="challenge-item">
-                            <p>Atrair e reter alunos com propostas significativas</p>
-                            <select name="ranking_reter" class="ranking-select" required><option value="">Prioridade</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
-                        </div>
-                        <div class="challenge-item">
-                            <p>Transformar espaços ociosos em ambientes vivos</p>
-                            <select name="ranking_espacos" class="ranking-select" required><option value="">Prioridade</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
-                        </div>
-                    </div>
-                    <div class="problem-image-wrapper">
-                        <i data-feather="map" style="width: 80px; height: 80px; color: var(--color-secondary); stroke-width: 1.5;"></i>
-                        <div class="textarea-group">
-                            <label for="open-challenge">Quais são os maiores desafios do seu contraturno hoje?</label>
-                            <textarea id="open-challenge" name="desafio_aberto" placeholder="Descreva aqui..."></textarea>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="section-solution fade-in">
-                <div class="container">
-                    <h2>Nossa Solução: Um Ecossistema Integrado</h2>
-                    <p class="section-subtitle">Conectamos quatro pilares para criar uma experiência de contraturno única, viva e pulsante.</p>
-                    <div class="solution-grid">
-                        <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i data-feather="cpu" style="width: 48px; height: 48px;"></i><h4>Tecnologia</h4></div><div class="flip-card-back"><h4>Gestão Inteligente</h4><p>Plataforma digital que organiza, automatiza e simplifica todo o ciclo do contraturno escolar, da matrícula ao pagamento.</p></div></div></div>
-                        <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i data-feather="award" style="width: 48px; height: 48px;"></i><h4>Rede de Educadores Empreendedores</h4></div><div class="flip-card-back"><h4>Rede Qualificada</h4><p>Educadores autorais, engajados e em formação contínua, que oferecem experiências únicas e ampliam a rede com indicações qualificadas, contribuindo diretamente para o impacto e alcance da escola.</p></div></div></div>
-                        <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i data-feather="heart" style="width: 48px; height: 48px;"></i><h4>Curadoria Pedagógica</h4></div><div class="flip-card-back"><h4>Experiências Vivas</h4><p>Atividades integradas ao projeto educacional da escola, com base em escuta das infâncias e evidências pedagógicas. Vai além da ocupação do tempo: promove desenvolvimento integral, múltiplas linguagens e experiências com sentido.</p></div></div></div>
-                        <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i data-feather="share-2" style="width: 48px; height: 48px;"></i><h4>Comunidade Colaborativa</h4></div><div class="flip-card-back"><h4>Ecossistema Educacional</h4><p>Ecossistema vivo que conecta escolas, educadores e famílias. Compartilhamos ferramentas, afetos, suporte contínuo e escuta ativa para fortalecer vínculos, impulsionar matrículas e ampliar o impacto da educação integral.</p></div></div></div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- NEW SECTION: Nosso Jeito de Fazer -->
-            <section class="section-way-of-doing container fade-in">
-                <h2>Nosso jeito de fazer</h2>
-                <div class="way-of-doing-grid">
-                    <div class="way-of-doing-card">
-                        <h4>Aula como experiência</h4>
-                        <p class="subtitle">Por que eu quero viver isso?</p>
-                        <h4>Aprendizado por Projeto</h4>
-                        <p class="subtitle">Onde eu quero chegar?</p>
-                    </div>
-                    <div class="way-of-doing-card">
-                        <h4>Rotina estruturante</h4>
-                        <ul class="structured-routine-list">
-                            <li><i data-feather="check-circle"></i>Intencionalidade</li>
-                            <li><i data-feather="check-circle"></i>Autonomia</li>
-                            <li><i data-feather="check-circle"></i>Presença</li>
-                            <li><i data-feather="check-circle"></i>Problematização/ Aproximação</li>
-                            <li><i data-feather="check-circle"></i>Ação/ Cooperação</li>
-                            <li><i data-feather="check-circle"></i>Contemplação</li>
-                            <li><i data-feather="check-circle"></i>Documentação</li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
-
-            <section class="section-portfolio container fade-in">
-                <h2>Portfólio de Experiências</h2>
-                <p class="section-subtitle">(em levantamento com os parceiros)</p>
-                <div id="portfolio-grid" class="portfolio-grid">
-                    </div>
-                <!-- MODIFIED: Simplified diagnostic area -->
-                <div class="diagnostic-link-area">
-                    <div class="diagnostic-link-text">
-                        <h4>Não tem certeza de quais experiências escolher?</h4>
-                        <p>Use nosso formulário de diagnóstico para pesquisar os interesses de alunos e famílias. Copie o link e compartilhe com sua equipe pedagógica.</p>
-                        <button type="button" id="copy-diagnostic-link" class="btn btn-primary">Copiar Link do Diagnóstico</button>
-                    </div>
-                    <div class="diagnostic-preview-container">
-                        <iframe src="https://clubesa.github.io/simuladorRede3d/diagnostico/formulario.html" title="Preview do Formulário de Diagnóstico"></iframe>
-                    </div>
-                </div>
-            </section>
-            
-            <section class="section-partnership container fade-in">
-                <h2>Modelos de Parceria Flexíveis</h2>
-                <p class="section-subtitle">Temos o modelo ideal para o momento e a estratégia da sua escola.</p>
-                <div class="partnership-grid">
-                    <div class="model-card split"><h4>Modelo 1: Split de Receita</h4><p>Perfeito para escolas que desejam <strong>inovar sem investimento inicial</strong>.</p><span class="activity-duration">2 horas de atividade/dia</span><div class="split-details"><p><span>50%</span> LABirintar</p><p><span>35%</span> Educador</p><p><strong><span>15%</span> Escola</strong></p></div><p class="description">A escola oferece o espaço e a LABirintar cuida de toda a operação.</p></div>
-                    <div class="model-card subscription"><h4>Modelo 2: Assinatura Mensal</h4><p>Para escolas que buscam ser <strong>protagonistas e maximizar o retorno</strong>.</p><span class="activity-duration">2 horas de atividade/dia</span><div class="split-details"><p><strong><span>50%</span> Escola</strong></p><p><span>35%</span> Educador</p><p><span>15%</span> LABirintar</p></div><p class="description">A escola se torna o motor comercial e fica com a maior parte da receita. O custo fixo da assinatura corresponde ao valor de uma mensalidade do curricular.</p></div>
-                </div>
-                
-                <div class="simulator fade-in">
-                    <div class="simulator-header">
-                        <h3><i data-feather="bar-chart-2" style="vertical-align: -4px; margin-right: 8px;"></i>Simule o seu Potencial de Ganho</h3>
-                    </div>
-                    <div class="simulator-inputs">
-                        <div class="input-group">
-                            <label for="totalAlunos">Total de alunos da escola</label>
-                            <input type="number" id="totalAlunos" placeholder="Ex: 500">
-                        </div>
-                        <div class="slider-group">
-                            <div class="label-container">
-                                <label for="metaConversao">Meta de conversão para o extra</label>
-                                <span id="metaConversaoValue" class="slider-value">10%</span>
-                            </div>
-                            <input type="range" id="metaConversao" min="0" max="100" value="10">
-                        </div>
-                        <div class="input-group">
-                            <label for="alunosExtra">Alunos no extracurricular (calculado)</label>
-                            <input type="text" id="alunosExtra" readonly>
-                        </div>
-                        <div class="slider-group">
-                             <div class="label-container">
-                                <label for="frequenciaSemanal">Frequência semanal média</label>
-                                <span id="frequenciaSemanalValue" class="slider-value">2x / semana</span>
-                            </div>
-                            <input type="range" id="frequenciaSemanal" min="1" max="5" value="2">
-                        </div>
-                        
-                        <div class="financial-comparison-row">
-                            <div class="input-group">
-                                <label for="mensalidadeCurricular">Mensalidade do curricular (R$)</label>
-                                <input type="number" id="mensalidadeCurricular" placeholder="Ex: 1500">
-                            </div>
-                            <div class="input-group percentage">
-                                <label for="percentualCurricular">% sobre curricular</label>
-                                <input type="text" id="percentualCurricular" readonly>
-                            </div>
-                            <div class="input-group">
-                                <label for="mensalidadeExtra">Mensalidade do extra (sugestão R$)</label>
-                                <input type="text" id="mensalidadeExtra" readonly>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="results"></div>
-                </div>
-            </section>
-
-            <section class="section-benefits container fade-in">
-                <h2>Quais destes benefícios mais importam para sua escola?</h2>
-                <p class="section-subtitle">Selecione as opções que representam maior valor para sua instituição.</p>
-                <div class="benefits-cloud">
-                    <div class="benefit-tag"><input type="checkbox" id="b1" name="beneficios" value="Novas receitas"><label for="b1">Novas receitas recorrentes</label></div>
-                    <div class="benefit-tag"><input type="checkbox" id="b2" name="beneficios" value="Ocupação de espaços"><label for="b2">Ocupação inteligente de espaços</label></div>
-                    <div class="benefit-tag"><input type="checkbox" id="b3" name="beneficios" value="Aumento de matrículas"><label for="b3">Aumento de matrículas e retenção</label></div>
-                    <div class="benefit-tag"><input type="checkbox" id="b4" name="beneficios" value="Educação Integral"><label for="b4">Alinhamento com a Educação Integral</label></div>
-                    <div class="benefit-tag"><input type="checkbox" id="b5" name="beneficios" value="Simplificação da gestão"><label for="b5">Simplificação da gestão do contraturno</label></div>
-                    <div class="benefit-tag"><input type="checkbox" id="b6" name="beneficios" value="Reputação de inovação"><label for="b6">Fortalecimento da reputação de inovação</label></div>
-                    <div class="benefit-tag"><input type="checkbox" id="b7" name="beneficios" value="Engajamento das famílias"><label for="b7">Engajamento das famílias</label></div>
-                </div>
-            </section>
-        </main>
-    </form>
-    
-    <footer>
-        <div class="container">
-            <h2>Escolha Caminhar Conosco</h2>
-            <p>A LABirintar transforma o contraturno. Preencha seus dados e nossa equipe entrará em contato.</p>
-            <div class="footer-buttons">
-                <button type="button" id="open-modal-btn" class="btn btn-secondary">Receber Contato</button>
-            </div>
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar"></div>
         </div>
-    </footer>
 
-    <div id="contact-modal" class="modal-overlay">
-        <div class="modal-content">
-            <h3>Informações de Contato</h3>
-            <p>Deixe seus dados para que nossa equipe possa retornar.</p>
-            <div class="input-group"><label for="contact-name">Seu nome</label><input type="text" id="contact-name" name="contato_nome" required></div>
-            <div class="input-group"><label for="contact-phone">Telefone</label><input type="tel" id="contact-phone" name="contato_telefone" placeholder="(11) 99999-9999" required></div>
-            <div class="input-group"><label for="contact-role">Cargo</label><input type="text" id="contact-role" name="contato_cargo" required></div>
-            <div class="input-group"><label for="contact-school">Escola</label><input type="text" id="contact-school" name="contato_escola" required></div>
-            <button type="submit" form="commercial-form" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Enviar</button>
+        <form id="diagnosticoForm">
+            <!-- Bloco Inicial -->
+            <div class="question-block">
+                <div class="intro-text">
+                    <p>Este é um instrumento de escuta sensível. Antes de começar, você pode pedir ajuda de um adulto para ler e anotar suas respostas.</p>
+                    <p>Não tem certo nem errado, o mais importante é mostrar o que você sente, pensa ou imagina.</p>
+                    <span class="adulto-nota">(Para o adulto: “Dê tempo e não conduza as respostas. O importante é registrar o que vibra no mundo da criança”).</span>
+                </div>
+                <div class="form-group slider-group">
+                    <label for="idade">Qual a sua idade?</label>
+                    <output for="idade" id="idade-output">9</output>
+                    <input type="range" id="idade" name="Idade" min="6" max="12" value="9" required>
+                </div>
+                <div class="form-group slider-group">
+                    <label for="ano">Em que ano você está?</label>
+                    <output for="ano" id="ano-output">3º ano</output>
+                    <input type="range" id="ano" name="Ano" min="1" max="6" value="3" required>
+                </div>
+            </div>
+
+            <!-- Pergunta 1 -->
+            <div class="question-block">
+                <h3 class="question-title">1. O que você gostaria de fazer à tarde, depois das aulas?</h3>
+                <p style="text-align: center;">Passe as fotos e marque as que você mais gostar!</p>
+                <div class="carousel">
+                    <div class="carousel-container" id="carousel-container">
+                        <!-- Imagens serão inseridas aqui pelo JS -->
+                    </div>
+                    <div class="carousel-nav">
+                        <button type="button" class="carousel-btn" id="prev-btn">‹</button>
+                        <button type="button" class="carousel-btn" id="next-btn">›</button>
+                    </div>
+                </div>
+                <div class="carousel-counter" id="carousel-counter">1 / 22</div>
+            </div>
+
+            <!-- Pergunta 2 -->
+            <div class="question-block">
+                <h3 class="question-title">2. Se a escola fosse um lugar mágico…</h3>
+                <div class="form-group">
+                    <label for="som-magico">que som você ouviria?</label>
+                    <input type="text" id="som-magico" name="SomMagico" required>
+                </div>
+                <div class="form-group">
+                    <label for="sentimento-magico">o que sentiria ao entrar?</label>
+                    <input type="text" id="sentimento-magico" name="SentimentoMagico" required>
+                </div>
+                <div class="form-group">
+                    <label for="surpresa-magica">que surpresa viveria ali?</label>
+                    <input type="text" id="surpresa-magica" name="SurpresaMagica" required>
+                </div>
+            </div>
+            
+            <!-- Pergunta 3 -->
+            <div class="question-block">
+                <h3 class="question-title">3. Coisas que brilham na minha cabeça</h3>
+                <p>Tem algo que você tem muita vontade de aprender ou explorar de um jeito mais livre? Pode marcar quantas quiser:</p>
+                <div class="options-list">
+                    <label><input type="checkbox" name="CoisasQueBrilham" value="Música"><span>Música</span></label>
+                    <label><input type="checkbox" name="CoisasQueBrilham" value="Jogos"><span>Jogos</span></label>
+                    <label><input type="checkbox" name="CoisasQueBrilham" value="Corpo"><span>Corpo</span></label>
+                    <label><input type="checkbox" name="CoisasQueBrilham" value="Plantas e natureza"><span>Plantas e natureza</span></label>
+                    <label><input type="checkbox" name="CoisasQueBrilham" value="Robôs e invenções"><span>Robôs e invenções</span></label>
+                    <label><input type="checkbox" name="CoisasQueBrilham" value="Histórias e livros"><span>Histórias e livros</span></label>
+                    <label><input type="checkbox" name="CoisasQueBrilham" value="Ferramentas"><span>Ferramentas</span></label>
+                    <label><input type="checkbox" name="CoisasQueBrilham" value="Comida"><span>Comida</span></label>
+                    <label><input type="checkbox" name="CoisasQueBrilham" value="Bichos"><span>Bichos</span></label>
+                    <label><input type="checkbox" name="CoisasQueBrilham" value="Brincadeiras"><span>Brincadeiras</span></label>
+                    <label><input type="checkbox" name="CoisasQueBrilham" value="Computador"><span>Computador</span></label>
+                </div>
+                 <div class="form-group" style="margin-top: 20px;">
+                    <label for="outra-coisa">Outra coisa:</label>
+                    <input type="text" id="outra-coisa" name="OutraCoisaBrilha">
+                </div>
+            </div>
+
+            <!-- Pergunta 4 -->
+            <div class="question-block">
+                <h3 class="question-title">4. Se pudesse criar uma aula nova…</h3>
+                <div class="form-group">
+                    <label for="nome-aula">como ela se chamaria?</label>
+                    <input type="text" id="nome-aula" name="NomeAulaNova" required>
+                </div>
+                <div class="form-group">
+                    <label for="o-que-fariam">o que fariam nela?</label>
+                    <textarea id="o-que-fariam" name="OQueFariamAula" rows="4" required></textarea>
+                </div>
+            </div>
+            
+            <!-- Pergunta 5 -->
+            <div class="question-block">
+                <h3 class="question-title">5. Se você pudesse guardar o momento mais gostoso da sua tarde em uma caixinha, qual seria?</h3>
+                <div class="options-list">
+                    <label><input type="radio" name="MomentoNaCaixinha" value="Estar com amigos" required><span>Estar com amigos</span></label>
+                    <label><input type="radio" name="MomentoNaCaixinha" value="Inventar coisas" required><span>Inventar coisas</span></label>
+                    <label><input type="radio" name="MomentoNaCaixinha" value="Ficar em silêncio" required><span>Ficar em silêncio</span></label>
+                    <label><input type="radio" name="MomentoNaCaixinha" value="Mexer no computador" required><span>Mexer no computador</span></label>
+                    <label><input type="radio" name="MomentoNaCaixinha" value="Jogar um jogo" required><span>Jogar um jogo</span></label>
+                    <label><input type="radio" name="MomentoNaCaixinha" value="Movimentar o corpo" required><span>Movimentar o corpo</span></label>
+                    <label><input type="radio" name="MomentoNaCaixinha" value="Descobrir algo novo" required><span>Descobrir algo novo</span></label>
+                    <label><input type="radio" name="MomentoNaCaixinha" value="Brincar sem hora" required><span>Brincar sem hora</span></label>
+                    <label><input type="radio" name="MomentoNaCaixinha" value="Construir algo" required><span>Construir algo</span></label>
+                </div>
+            </div>
+
+            <!-- Pergunta 6 -->
+            <div class="question-block">
+                <h3 class="question-title">6. Qual lugar da escola poderia virar um novo mundo?</h3>
+                <div class="form-group">
+                    <label for="lugar-patio">O pátio poderia virar…?</label>
+                    <input type="text" id="lugar-patio" name="LugarPatio" required>
+                </div>
+                <div class="form-group">
+                    <label for="lugar-quadra">A quadra poderia se transformar em…?</label>
+                    <input type="text" id="lugar-quadra" name="LugarQuadra" required>
+                </div>
+                <div class="form-group">
+                    <label for="lugar-biblioteca">A biblioteca poderia se abrir para…?</label>
+                    <input type="text" id="lugar-biblioteca" name="LugarBiblioteca" required>
+                </div>
+                <div class="form-group">
+                    <label for="lugar-salas">As salas de aulas seriam reorganizadas e funcionariam como…?</label>
+                    <input type="text" id="lugar-salas" name="LugarSalas" required>
+                </div>
+            </div>
+
+            <!-- Pergunta 7 -->
+            <div class="question-block">
+                <h3 class="question-title">7. Invenções que só existem na minha cabeça (por enquanto!)</h3>
+                <div class="form-group">
+                    <label for="invencao-maluca">💡 Tem alguma ideia maluca ou legal que você inventaria para a escola?</label>
+                    <textarea id="invencao-maluca" name="InvencaoMaluca" rows="4" required></textarea>
+                </div>
+            </div>
+            
+            <!-- Pergunta 8 -->
+            <div class="question-block">
+                <h3 class="question-title">8. Se pudesse escolher para você uma peça de um quebra-cabeça que representa a escola…</h3>
+                <div class="form-group">
+                    <label for="peca-quebra-cabeca">o que estaria desenhado nesta peça?</label>
+                    <input type="text" id="peca-quebra-cabeca" name="PecaQuebraCabeca" required>
+                </div>
+            </div>
+
+            <!-- Pergunta 9 -->
+            <div class="question-block">
+                <h3 class="question-title">9. Quer deixar um recado para a LABirintar?</h3>
+                <div class="form-group">
+                    <label for="recado-final">Pode escrever uma frase, uma palavra inventada, uma coisa que você queira dizer só pra gente.</label>
+                    <textarea id="recado-final" name="RecadoFinal" rows="4"></textarea>
+                </div>
+            </div>
+
+        </form>
+
+        <div class="navigation-buttons">
+            <button id="prevBtn" class="nav-btn">Anterior</button>
+            <button id="nextBtn" class="nav-btn">Próximo</button>
+            <button id="submitBtn" type="submit" form="diagnosticoForm">Enviar</button>
+        </div>
+    </div>
+
+    <div class="status-overlay" id="statusOverlay">
+        <div class="status-box" id="loadingBox">
+            <h2>Enviando...</h2>
+            <div class="loader"></div>
+        </div>
+        <div class="status-box" id="successBox" style="display: none;">
+            <div class="checkmark">✓</div>
+            <h2>Obrigada por dividir com a gente o que mora no seu desejo.</h2>
+            <p>Agora vamos transformar isso em experiências vivas e cheias de sentido.<br>Você deixou uma marca no mundo. A LABirintar ouviu.</p>
         </div>
     </div>
 
     <script>
-        // Activate Feather Icons
-        feather.replace();
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzmx4t83GJOxXgc4__4vpEp3qdnKQ_cifoF8RTkTUVtZjbrni5TYMgPjLCzvAbh8lzy/exec";
 
-        document.addEventListener('DOMContentLoaded', () => {
-            // --- Portfolio Data & Generation ---
-            const portfolioData = [
-                { title: 'Brincar Livre', folder: 'brincarlivre', images: 3, tooltip: null },
-                { title: 'Ateliês', folder: 'atelie', images: 3, tooltip: 'Clube de Leitura, CrioLivros, Artes Visuais, Artes Cênicas, Improvisação, Dança e Música' },
-                { title: 'Marcenaria', folder: 'marcenaria', images: 2, tooltip: null },
-                { title: 'Circo', folder: 'circo', images: 1, tooltip: null },
-                { title: 'Fazeres Manuais', folder: 'fazeresmanuais', images: 3, tooltip: 'Horta, Panificação, Cozinha Experimental' },
-                { title: 'Tecnologia', folder: 'tecnologia', images: 3, tooltip: 'Programação de Jogos, Robótica, Criação de Jogos de Tabuleiro e RPG' },
-                { title: 'Mindfulness', folder: 'mindfulness', images: 1, tooltip: null },
-                { title: 'CidadeVamos', folder: 'cidadevamos', images: 3, tooltip: null },
-                { title: 'Infância Sem Excesso', folder: 'infanciasemexcesso', images: 2, tooltip: null },
-                { title: 'Prática Esportiva', folder: 'praticaesportiva', images: 3, tooltip: null }
-            ];
-            const portfolioGrid = document.getElementById('portfolio-grid');
-            portfolioData.forEach((item, index) => {
-                const card = document.createElement('div');
-                card.className = 'modality-card';
-                const carouselId = `carousel-${index}`;
-                const imagePath = `../diagnostico/${item.folder}/`;
-                
-                let imageHtml = '';
-                for (let i = 1; i <= item.images; i++) {
-                    imageHtml += `<img src="${imagePath}image${i}.jpg" alt="${item.title}">`;
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('diagnosticoForm');
+            const questions = Array.from(form.querySelectorAll('.question-block'));
+            const nextBtn = document.getElementById('nextBtn');
+            const prevBtn = document.getElementById('prevBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            const progressBar = document.getElementById('progressBar');
+            const statusOverlay = document.getElementById('statusOverlay');
+            const loadingBox = document.getElementById('loadingBox');
+            const successBox = document.getElementById('successBox');
+            let currentQuestionIndex = 0;
+
+            // --- LÓGICA DOS SLIDERS ---
+            const idadeSlider = document.getElementById('idade');
+            const idadeOutput = document.getElementById('idade-output');
+            const anoSlider = document.getElementById('ano');
+            const anoOutput = document.getElementById('ano-output');
+
+            idadeSlider.oninput = function() { idadeOutput.textContent = this.value; }
+            anoSlider.oninput = function() { anoOutput.textContent = `${this.value}º ano`; }
+
+            // --- LÓGICA DO CARROSSEL (ATUALIZADA) ---
+            const carouselContainer = document.getElementById('carousel-container');
+            const totalImages = 22;
+            let currentImageIndex = 0;
+            
+            let remainingImages = [];
+            for (let i = 2; i <= totalImages; i++) {
+                remainingImages.push(`IMG_18${String(i).padStart(2, '0')}.jpeg`);
+            }
+
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
                 }
+            }
+            shuffleArray(remainingImages);
 
-                let buttonsHtml = item.images > 1 ? `<button type="button" class="carousel-btn prev" data-carousel="${carouselId}" data-dir="-1"><i data-feather="chevron-left"></i></button><button type="button" class="carousel-btn next" data-carousel="${carouselId}" data-dir="1"><i data-feather="chevron-right"></i></button>` : '';
+            const imageNames = [`IMG_1801.jpeg`, ...remainingImages];
+
+            imageNames.forEach(imageName => {
+                const slide = document.createElement('div');
+                slide.className = 'carousel-slide';
+                slide.innerHTML = `
+                    <label class="polaroid">
+                        <input type="checkbox" name="ImagensSelecionadas" value="${imageName}">
+                        <!-- CAMINHO DAS IMAGENS ATUALIZADO -->
+                        <img src="${imageName}" alt="Atividade da LABirintar" onerror="this.style.border='1px solid #ccc'; this.alt='Imagem ${imageName} não encontrada';">
+                    </label>
+                `;
+                carouselContainer.appendChild(slide);
                 
-                let tooltipHtml = '';
-                if(item.tooltip) {
-                    tooltipHtml = `<div class="tooltip-container"><i data-feather="info" class="tooltip-icon" style="width: 18px; height: 18px; margin-left: 8px;"></i><span class="tooltip-text">${item.tooltip}</span></div>`;
-                }
-
-                card.innerHTML = `<div class="carousel" id="${carouselId}"><div class="carousel-images">${imageHtml}</div>${buttonsHtml}</div><div class="modality-card-content"><div class="modality-card-header"><h4>${item.title}</h4>${tooltipHtml}<input type="checkbox" name="modalidades_selecionadas" value="${item.title}" style="margin-left: auto;"></div></div>`;
-                portfolioGrid.appendChild(card);
-            });
-            feather.replace();
-
-            // --- Carousel Logic ---
-            const carousels = {};
-            document.querySelectorAll('.carousel').forEach(c => { carousels[c.id] = { index: 0, total: c.querySelectorAll('img').length }; });
-            document.querySelectorAll('.carousel-btn').forEach(button => {
-                button.addEventListener('click', () => {
-                    const carouselId = button.dataset.carousel;
-                    const dir = parseInt(button.dataset.dir);
-                    const state = carousels[carouselId];
-                    const container = document.querySelector(`#${carouselId} .carousel-images`);
-                    state.index = (state.index + dir + state.total) % state.total;
-                    container.style.transform = `translateX(-${state.index * 100}%)`;
+                const polaroidLabel = slide.querySelector('.polaroid');
+                const checkbox = polaroidLabel.querySelector('input[type="checkbox"]');
+                
+                checkbox.addEventListener('change', function() {
+                    polaroidLabel.classList.toggle('selected', this.checked);
                 });
             });
+            
+            const slides = document.querySelectorAll('.carousel-slide');
+            const carouselPrevBtn = document.getElementById('prev-btn');
+            const carouselNextBtn = document.getElementById('next-btn');
+            const counterElement = document.getElementById('carousel-counter');
 
-            // --- Exclusive Ranking Logic ---
-            const rankingSelects = document.querySelectorAll('.ranking-select');
-            function updateRankingOptions() {
-                const selectedValues = Array.from(rankingSelects).map(s => s.value).filter(v => v !== "");
-                rankingSelects.forEach(select => {
-                    Array.from(select.options).forEach(option => {
-                        if (option.value !== "" && option.value !== select.value) { option.disabled = selectedValues.includes(option.value); }
-                    });
-                });
+            function updateCarousel() {
+                carouselContainer.style.transform = `translateX(-${currentImageIndex * 100}%)`;
+                counterElement.textContent = `${currentImageIndex + 1} / ${totalImages}`;
             }
-            rankingSelects.forEach(select => select.addEventListener('change', updateRankingOptions));
-            updateRankingOptions();
 
-            // --- Copy Diagnostic Link ---
-            const copyBtn = document.getElementById('copy-diagnostic-link');
-            copyBtn.addEventListener('click', () => {
-                const link = 'https://clubesa.github.io/simuladorRede3d/diagnostico/formulario.html';
-                navigator.clipboard.writeText(link).then(() => {
-                    copyBtn.textContent = 'Link Copiado!';
-                    setTimeout(() => { copyBtn.textContent = 'Copiar Link do Diagnóstico'; }, 2000);
-                }).catch(err => console.error('Failed to copy: ', err));
+            carouselPrevBtn.addEventListener('click', () => {
+                currentImageIndex = (currentImageIndex > 0) ? currentImageIndex - 1 : totalImages - 1;
+                updateCarousel();
             });
 
-            // --- Animations ---
-            const fadeInElements = document.querySelectorAll('.fade-in');
-            const observer = new IntersectionObserver(entries => {
-                entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } });
-            }, { threshold: 0.1 });
-            fadeInElements.forEach(el => observer.observe(el));
+            carouselNextBtn.addEventListener('click', () => {
+                currentImageIndex = (currentImageIndex < totalImages - 1) ? currentImageIndex + 1 : 0;
+                updateCarousel();
+            });
 
-            // --- Simulator Logic ---
-            const totalAlunosInput = document.getElementById('totalAlunos');
-            const mensalidadeCurricularInput = document.getElementById('mensalidadeCurricular');
-            const metaConversaoSlider = document.getElementById('metaConversao');
-            const metaConversaoValue = document.getElementById('metaConversaoValue');
-            const alunosExtraInput = document.getElementById('alunosExtra');
-            const frequenciaSemanalSlider = document.getElementById('frequenciaSemanal');
-            const frequenciaSemanalValue = document.getElementById('frequenciaSemanalValue');
-            const mensalidadeExtraInput = document.getElementById('mensalidadeExtra');
-            const percentualCurricularInput = document.getElementById('percentualCurricular');
-            const resultsDiv = document.getElementById('results');
-
-            const ticketPrices = { 1: 298, 2: 447, 3: 759, 4: 948, 5: 948 };
-
-            function calculateResults() {
-                const alunosExtra = parseInt(alunosExtraInput.value) || 0;
-                const mensalidadeExtraVal = parseFloat(mensalidadeExtraInput.value) || 0;
-                const mensalidadeCurricularVal = parseFloat(mensalidadeCurricularInput.value) || 0; 
+            // --- LÓGICA DO FORMULÁRIO PRINCIPAL ---
+            function updateFormView() {
+                questions.forEach((q, i) => q.classList.toggle('active', i === currentQuestionIndex));
+                const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+                progressBar.style.width = `${progress}%`;
+                prevBtn.style.display = currentQuestionIndex === 0 ? 'none' : 'inline-block';
+                nextBtn.style.display = currentQuestionIndex === questions.length - 1 ? 'none' : 'inline-block';
+                submitBtn.style.display = currentQuestionIndex === questions.length - 1 ? 'inline-block' : 'none';
                 
-                if (alunosExtra <= 0) {
-                    resultsDiv.innerHTML = ""; // Clear results if no students
-                    return;
+                const introText = document.querySelector('.intro-text');
+                if (introText) {
+                    introText.style.display = currentQuestionIndex === 0 ? 'block' : 'none';
                 }
 
-                const totalRevenue = alunosExtra * mensalidadeExtraVal;
-                const gainModel1 = totalRevenue * 0.15;
-                const costModel2 = mensalidadeCurricularVal > 0 ? mensalidadeCurricularVal : 2000;
-                const gainModel2 = (totalRevenue * 0.50) - costModel2;
-                
-                const formatCurrency = (value) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-
-                resultsDiv.innerHTML = `
-                    <div class="result-card">
-                        <h4>Ganho com Modelo 1 (Split)</h4>
-                        <p class="gain-value">${formatCurrency(gainModel1)}</p>
-                        <p class="formula">15% da receita total de ${formatCurrency(totalRevenue)}</p>
-                    </div>
-                    <div class="result-card">
-                        <h4>Ganho com Modelo 2 (Assinatura)</h4>
-                        <p class="gain-value">${formatCurrency(gainModel2)}</p>
-                        <p class="formula">50% da receita (${formatCurrency(totalRevenue * 0.5)}) - Custo da Assinatura (${formatCurrency(costModel2)})</p>
-                    </div>`;
+                const firstInput = questions[currentQuestionIndex].querySelector('input, textarea, .carousel-btn');
+                if (firstInput) firstInput.focus();
             }
-            
-            function updateSimulatorFields() {
-                const totalAlunos = parseInt(totalAlunosInput.value) || 0;
-                const meta = metaConversaoSlider.value;
-                metaConversaoValue.textContent = `${meta}%`;
-                alunosExtraInput.value = Math.round((totalAlunos * meta) / 100);
 
-                const frequencia = frequenciaSemanalSlider.value;
-                frequenciaSemanalValue.textContent = `${frequencia}x / semana`;
-                const mensalidadeExtra = ticketPrices[frequencia];
-                mensalidadeExtraInput.value = mensalidadeExtra;
+            function validateCurrentQuestion() {
+                const currentQuestion = questions[currentQuestionIndex];
 
-                const mensalidadeCurricular = parseFloat(mensalidadeCurricularInput.value) || 0;
-                if (mensalidadeCurricular > 0) {
-                    const percentual = (mensalidadeExtra / mensalidadeCurricular) * 100;
-                    percentualCurricularInput.value = `${percentual.toFixed(1)}%`;
-                } else {
-                    percentualCurricularInput.value = '-';
-                }
-                calculateResults(); 
-            }
-            
-            const simulatorInputs = [totalAlunosInput, mensalidadeCurricularInput, metaConversaoSlider, frequenciaSemanalSlider];
-            simulatorInputs.forEach(input => input.addEventListener('input', updateSimulatorFields));
-            updateSimulatorFields();
-
-            // --- Modal Logic ---
-            const modal = document.getElementById('contact-modal');
-            document.getElementById('open-modal-btn').addEventListener('click', () => modal.classList.add('visible'));
-            modal.addEventListener('click', (e) => { if (e.target === modal) { modal.classList.remove('visible'); } });
-
-            // --- Form Submission Logic ---
-            const form = document.getElementById('commercial-form');
-            const allFormInputs = form.querySelectorAll('input, select, textarea');
-
-            function getFormData() {
-                const formData = new FormData(form);
-                const data = {};
-                for (let [key, value] of formData.entries()) {
-                     if (key === 'beneficios' || key === 'modalidades_selecionadas') {
-                        if (!data[key]) data[key] = [];
-                        data[key].push(value);
-                    } else {
-                        data[key] = value;
+                if (currentQuestionIndex === 1) {
+                    const selectedImages = form.querySelectorAll('input[name="ImagensSelecionadas"]:checked');
+                    if (selectedImages.length === 0) {
+                        return false; 
                     }
                 }
-                data.simulador_total_alunos = totalAlunosInput.value;
-                data.simulador_meta_conversao = metaConversaoSlider.value;
-                data.simulador_frequencia_semanal = frequenciaSemanalSlider.value;
-                data.simulador_mensalidade_curricular = mensalidadeCurricularInput.value;
-                return data;
+
+                const inputs = currentQuestion.querySelectorAll('input[required], textarea[required]');
+                let isValid = true;
+                inputs.forEach(input => {
+                    if (input.type === 'radio' || input.type === 'checkbox') {
+                        const group = currentQuestion.querySelectorAll(`input[name="${input.name}"]`);
+                        if (!Array.from(group).some(radio => radio.checked)) {
+                            isValid = false;
+                        }
+                    } else if (!input.value.trim()) {
+                        isValid = false;
+                    }
+                });
+                return isValid;
             }
 
-            function savePartialData() {
-                const data = getFormData();
-                console.log("Saving partial data (demonstration):", data);
-            }
-
-            allFormInputs.forEach(input => {
-                input.addEventListener('change', savePartialData);
+            nextBtn.addEventListener('click', () => {
+                if (validateCurrentQuestion()) {
+                    if (currentQuestionIndex < questions.length - 1) {
+                        currentQuestionIndex++;
+                        updateFormView();
+                    }
+                } else {
+                    if (currentQuestionIndex === 1) {
+                        alert('Ops! Escolha pelo menos uma foto para continuar.');
+                    } else {
+                        alert('Ops! Responda a esta pergunta para continuar.');
+                    }
+                }
             });
 
-            form.addEventListener('submit', (e) => {
+            prevBtn.addEventListener('click', () => {
+                if (currentQuestionIndex > 0) {
+                    currentQuestionIndex--;
+                    updateFormView();
+                }
+            });
+
+            form.addEventListener('submit', function(e) {
                 e.preventDefault();
-                const finalData = getFormData();
-                finalData.contato_nome = document.getElementById('contact-name').value;
-                finalData.contato_telefone = document.getElementById('contact-phone').value;
-                finalData.contato_cargo = document.getElementById('contact-role').value;
-                finalData.contato_escola = document.getElementById('contact-school').value;
+                if (!validateCurrentQuestion()) {
+                    if (currentQuestionIndex === 1) {
+                        alert('Ops! Escolha pelo menos uma foto para continuar.');
+                    } else {
+                        alert('Ops! Responda a esta pergunta para continuar.');
+                    }
+                    return;
+                }
+                statusOverlay.style.display = 'flex';
+                loadingBox.style.display = 'block';
+                successBox.style.display = 'none';
 
-                console.log("Final form data submitted:", finalData);
-                alert("Obrigado! Suas respostas foram enviadas com sucesso. (Demonstração)");
-                modal.classList.remove('visible');
-                form.reset();
-                updateRankingOptions();
-                updateSimulatorFields();
+                fetch(SCRIPT_URL, { method: 'POST', body: new FormData(form) })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.result === 'success') {
+                            loadingBox.style.display = 'none';
+                            successBox.style.display = 'block';
+                        } else {
+                            throw new Error(data.message || 'Erro desconhecido do script.');
+                        }
+                    })
+                    .catch(error => {
+                        statusOverlay.style.display = 'none';
+                        alert('Ocorreu um erro: ' + error.message);
+                    });
             });
+            updateFormView();
+            updateCarousel();
         });
     </script>
 </body>
