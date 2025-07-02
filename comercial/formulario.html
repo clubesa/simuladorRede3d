@@ -142,28 +142,23 @@
         .tooltip-container .tooltip-text::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: var(--color-text) transparent transparent transparent; }
         .tooltip-container:hover .tooltip-text { visibility: visible; opacity: 1; }
         
-        .diagnostic-link-area { text-align: left; margin-top: 4rem; background: var(--color-accent-blue); padding: 2rem; border-radius: 15px; display: grid; grid-template-columns: 1fr; gap: 2rem; align-items: center; }
-        @media (min-width: 992px) { .diagnostic-link-area { grid-template-columns: 2fr 1fr; gap: 3rem;} }
-        .diagnostic-link-area h4 { text-align: left; }
-        .diagnostic-link-area p { max-width: 100%; text-align: left; }
-        
-        /* MODIFIED: Diagnostic Preview without device frame, scaled down */
-        .diagnostic-preview {
-            position: relative;
-            height: 400px; /* Adjust height to contain the scaled iframe */
-            width: 100%;
-            max-width: 450px;
-            margin: 0 auto;
+        /* MODIFIED: Simplified Diagnostic Area */
+        .diagnostic-link-area { text-align: center; margin-top: 4rem; background: var(--color-accent-blue); padding: 3rem 2rem; border-radius: 15px; display: grid; grid-template-columns: 1fr; gap: 2rem; align-items: center;}
+        @media (min-width: 992px) { .diagnostic-link-area { grid-template-columns: 1fr 1fr; } }
+        .diagnostic-link-area h4, .diagnostic-link-area p { text-align: left; margin-left: 0; margin-right: 0;}
+        .diagnostic-preview-container {
+            height: 350px;
             border: 1px solid #ccc;
             border-radius: 10px;
-            overflow: hidden; /* Crucial to contain the scaled iframe */
+            overflow: hidden;
+            background: #fff;
         }
-        .diagnostic-preview iframe {
-            width: 200%; /* 100% / 0.5 scale */
-            height: 200%; /* 100% / 0.5 scale */
+        .diagnostic-preview-container iframe {
+            width: 200%;
+            height: 200%;
             border: none;
             transform: scale(0.5);
-            transform-origin: 0 0; /* Scale from top-left corner */
+            transform-origin: 0 0;
         }
         
         /* Partnership Section */
@@ -322,13 +317,14 @@
                 <p class="section-subtitle">(em levantamento com os parceiros)</p>
                 <div id="portfolio-grid" class="portfolio-grid">
                     </div>
+                <!-- MODIFIED: Simplified diagnostic area -->
                 <div class="diagnostic-link-area">
                     <div class="diagnostic-link-text">
                         <h4>Não tem certeza de quais experiências escolher?</h4>
                         <p>Use nosso formulário de diagnóstico para pesquisar os interesses de alunos e famílias. Copie o link e compartilhe com sua equipe pedagógica.</p>
                         <button type="button" id="copy-diagnostic-link" class="btn btn-primary">Copiar Link do Diagnóstico</button>
                     </div>
-                    <div class="diagnostic-preview">
+                    <div class="diagnostic-preview-container">
                         <iframe src="https://clubesa.github.io/simuladorRede3d/diagnostico/formulario.html" title="Preview do Formulário de Diagnóstico"></iframe>
                     </div>
                 </div>
