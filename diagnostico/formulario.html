@@ -18,52 +18,57 @@
             --branco: #ffffff;
             --sombra-suave: rgba(0, 0, 0, 0.08);
         }
+        /* --- ESTRUTURA PRINCIPAL DA PÁGINA --- */
+        html {
+            height: 100%;
+        }
         body {
             font-family: 'Poppins', sans-serif;
             background-color: var(--creme);
             color: var(--texto-escuro);
             margin: 0;
             padding: 20px;
+            height: calc(100% - 40px);
             display: flex;
             justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
+            align-items: center;
         }
-        .container {
-            background-color: var(--branco);
-            padding: 0 40px 30px 40px; /* Padding superior removido para o header cuidar disso */
-            border-radius: 24px;
-            box-shadow: 0 12px 30px var(--sombra-suave);
-            max-width: 700px;
+        .app-container {
+            display: flex;
+            flex-direction: column;
             width: 100%;
-            box-sizing: border-box;
-        }
-        
-        /* --- CABEÇALHO FIXO (APP BAR) --- */
-        .sticky-header {
-            position: -webkit-sticky;
-            position: sticky;
-            top: 0;
-            background-color: var(--branco);
-            z-index: 10;
-            padding: 20px 0 10px 0;
-            margin-bottom: 20px;
-            transition: box-shadow 0.3s;
-            /* A sombra aparece quando o header é "ativado" pelo scroll */
-        }
-        .sticky-header.scrolled {
-             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-             border-bottom: 1px solid #f0f0f0;
+            max-width: 700px;
+            height: 100%;
+            max-height: 95vh;
         }
 
+        /* --- CABEÇALHO FIXO (APP BAR) --- */
+        .app-header {
+            flex-shrink: 0; /* Impede que o header encolha */
+            background-color: var(--branco);
+            padding: 20px 40px;
+            border-radius: 24px;
+            box-shadow: 0 6px 12px var(--sombra-suave);
+            z-index: 10;
+        }
         .header { text-align: center; margin-bottom: 20px; }
         .header img { max-width: 282px; margin-bottom: 15px; }
         .header h1 { color: var(--vermelho); font-size: 1.5em; font-weight: 700; margin: 0; }
-        .intro-text { background-color: #fafafa; padding: 20px; border-radius: 12px; margin-bottom: 25px; font-style: italic; line-height: 1.6; }
-        .intro-text .adulto-nota { font-size: 0.9em; color: #555; display: block; margin-top: 10px; }
-        .progress-bar-container { width: 100%; background-color: #f0f0f0; border-radius: 10px; margin: 20px 0; }
+        .progress-bar-container { width: 100%; background-color: #f0f0f0; border-radius: 10px; margin-top: 20px; }
         .progress-bar { width: 0%; height: 15px; background: linear-gradient(90deg, var(--azul), var(--lilas)); border-radius: 10px; transition: width 0.4s ease-in-out; }
         
+        /* --- ÁREA DE CONTEÚDO COM SCROLL --- */
+        .content-area {
+            flex-grow: 1; /* Ocupa o espaço restante */
+            background-color: var(--branco);
+            padding: 30px 40px;
+            border-radius: 24px;
+            box-shadow: 0 6px 12px var(--sombra-suave);
+            margin-top: 20px; /* Cria o espaço com o fundo da página */
+            overflow-y: auto; /* Habilita o scroll apenas nesta área */
+        }
+        .intro-text { background-color: #fafafa; padding: 20px; border-radius: 12px; margin-bottom: 25px; font-style: italic; line-height: 1.6; }
+        .intro-text .adulto-nota { font-size: 0.9em; color: #555; display: block; margin-top: 10px; }
         .question-block { display: none; padding: 10px; animation: slideIn 0.5s forwards; }
         .question-block.active { display: block; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateX(0); } }
@@ -147,177 +152,179 @@
 </head>
 <body>
 
-    <div class="container">
-        <div class="sticky-header" id="sticky-header">
-            <header class="header">
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header">
                 <img src="../logoslabirintar/Labirintar_RGB.png" alt="Logo LABirintar" onerror="this.style.display='none'">
                 <h1>“Uma tarde que mora em mim”</h1>
-            </header>
+            </div>
             <div class="progress-bar-container">
                 <div class="progress-bar" id="progressBar"></div>
             </div>
-        </div>
+        </header>
 
-        <form id="diagnosticoForm">
-            <!-- Bloco Inicial -->
-            <div class="question-block">
-                <div class="intro-text">
-                    <p>Este é um instrumento de escuta sensível. Antes de começar, você pode pedir ajuda de um adulto para ler e anotar suas respostas.</p>
-                    <p>Não tem certo nem errado, o mais importante é mostrar o que você sente, pensa ou imagina.</p>
-                    <span class="adulto-nota">(Para o adulto: “Dê tempo e não conduza as respostas. O importante é registrar o que vibra no mundo da criança”).</span>
-                </div>
-                <div class="form-group slider-group">
-                    <label for="idade">Qual a sua idade?</label>
-                    <output for="idade" id="idade-output">9</output>
-                    <input type="range" id="idade" name="Idade" min="6" max="12" value="9" required>
-                </div>
-                <div class="form-group slider-group">
-                    <label for="ano">Em que ano você está?</label>
-                    <output for="ano" id="ano-output">3º ano</output>
-                    <input type="range" id="ano" name="Ano" min="1" max="6" value="3" required>
-                </div>
-            </div>
-
-            <!-- Pergunta 1 -->
-            <div class="question-block">
-                <h3 class="question-title">1. O que você gostaria de fazer à tarde, depois das aulas?</h3>
-                <p style="text-align: center;">Passe as fotos e marque as que você mais gostar!</p>
-                <div class="carousel">
-                    <div class="carousel-container" id="carousel-container">
-                        <!-- Imagens serão inseridas aqui pelo JS -->
+        <main class="content-area">
+            <form id="diagnosticoForm">
+                <!-- Bloco Inicial -->
+                <div class="question-block">
+                    <div class="intro-text">
+                        <p>Este é um instrumento de escuta sensível. Antes de começar, você pode pedir ajuda de um adulto para ler e anotar suas respostas.</p>
+                        <p>Não tem certo nem errado, o mais importante é mostrar o que você sente, pensa ou imagina.</p>
+                        <span class="adulto-nota">(Para o adulto: “Dê tempo e não conduza as respostas. O importante é registrar o que vibra no mundo da criança”).</span>
                     </div>
-                    <div class="carousel-nav">
-                        <button type="button" class="carousel-btn" id="prev-btn">‹</button>
-                        <button type="button" class="carousel-btn" id="next-btn">›</button>
+                    <div class="form-group slider-group">
+                        <label for="idade">Qual a sua idade?</label>
+                        <output for="idade" id="idade-output">9</output>
+                        <input type="range" id="idade" name="Idade" min="6" max="12" value="9" required>
+                    </div>
+                    <div class="form-group slider-group">
+                        <label for="ano">Em que ano você está?</label>
+                        <output for="ano" id="ano-output">3º ano</output>
+                        <input type="range" id="ano" name="Ano" min="1" max="6" value="3" required>
                     </div>
                 </div>
-                <div class="carousel-counter" id="carousel-counter">1 / 22</div>
-            </div>
 
-            <!-- Pergunta 2 -->
-            <div class="question-block">
-                <h3 class="question-title">2. Se a escola fosse um lugar mágico…</h3>
-                <div class="form-group">
-                    <label for="som-magico">que som você ouviria?</label>
-                    <input type="text" id="som-magico" name="SomMagico" required>
+                <!-- Pergunta 1 -->
+                <div class="question-block">
+                    <h3 class="question-title">1. O que você gostaria de fazer à tarde, depois das aulas?</h3>
+                    <p style="text-align: center;">Passe as fotos e marque as que você mais gostar!</p>
+                    <div class="carousel">
+                        <div class="carousel-container" id="carousel-container">
+                            <!-- Imagens serão inseridas aqui pelo JS -->
+                        </div>
+                        <div class="carousel-nav">
+                            <button type="button" class="carousel-btn" id="prev-btn">‹</button>
+                            <button type="button" class="carousel-btn" id="next-btn">›</button>
+                        </div>
+                    </div>
+                    <div class="carousel-counter" id="carousel-counter">1 / 22</div>
                 </div>
-                <div class="form-group">
-                    <label for="sentimento-magico">o que sentiria ao entrar?</label>
-                    <input type="text" id="sentimento-magico" name="SentimentoMagico" required>
-                </div>
-                <div class="form-group">
-                    <label for="surpresa-magica">que surpresa viveria ali?</label>
-                    <input type="text" id="surpresa-magica" name="SurpresaMagica" required>
-                </div>
-            </div>
-            
-            <!-- Pergunta 3 -->
-            <div class="question-block">
-                <h3 class="question-title">3. Coisas que brilham na minha cabeça</h3>
-                <p>Tem algo que você tem muita vontade de aprender ou explorar de um jeito mais livre? Pode marcar quantas quiser:</p>
-                <div class="options-list">
-                    <label><input type="checkbox" name="CoisasQueBrilham" value="Música"><span>Música</span></label>
-                    <label><input type="checkbox" name="CoisasQueBrilham" value="Jogos"><span>Jogos</span></label>
-                    <label><input type="checkbox" name="CoisasQueBrilham" value="Corpo"><span>Corpo</span></label>
-                    <label><input type="checkbox" name="CoisasQueBrilham" value="Plantas e natureza"><span>Plantas e natureza</span></label>
-                    <label><input type="checkbox" name="CoisasQueBrilham" value="Robôs e invenções"><span>Robôs e invenções</span></label>
-                    <label><input type="checkbox" name="CoisasQueBrilham" value="Histórias e livros"><span>Histórias e livros</span></label>
-                    <label><input type="checkbox" name="CoisasQueBrilham" value="Ferramentas"><span>Ferramentas</span></label>
-                    <label><input type="checkbox" name="CoisasQueBrilham" value="Comida"><span>Comida</span></label>
-                    <label><input type="checkbox" name="CoisasQueBrilham" value="Bichos"><span>Bichos</span></label>
-                    <label><input type="checkbox" name="CoisasQueBrilham" value="Brincadeiras"><span>Brincadeiras</span></label>
-                    <label><input type="checkbox" name="CoisasQueBrilham" value="Computador"><span>Computador</span></label>
-                </div>
-                 <div class="form-group" style="margin-top: 20px;">
-                    <label for="outra-coisa">Outra coisa:</label>
-                    <input type="text" id="outra-coisa" name="OutraCoisaBrilha">
-                </div>
-            </div>
 
-            <!-- Pergunta 4 -->
-            <div class="question-block">
-                <h3 class="question-title">4. Se pudesse criar uma aula nova…</h3>
-                <div class="form-group">
-                    <label for="nome-aula">como ela se chamaria?</label>
-                    <input type="text" id="nome-aula" name="NomeAulaNova" required>
+                <!-- Pergunta 2 -->
+                <div class="question-block">
+                    <h3 class="question-title">2. Se a escola fosse um lugar mágico…</h3>
+                    <div class="form-group">
+                        <label for="som-magico">que som você ouviria?</label>
+                        <input type="text" id="som-magico" name="SomMagico" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="sentimento-magico">o que sentiria ao entrar?</label>
+                        <input type="text" id="sentimento-magico" name="SentimentoMagico" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="surpresa-magica">que surpresa viveria ali?</label>
+                        <input type="text" id="surpresa-magica" name="SurpresaMagica" required>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="o-que-fariam">o que fariam nela?</label>
-                    <textarea id="o-que-fariam" name="OQueFariamAula" rows="4" required></textarea>
+                
+                <!-- Pergunta 3 -->
+                <div class="question-block">
+                    <h3 class="question-title">3. Coisas que brilham na minha cabeça</h3>
+                    <p>Tem algo que você tem muita vontade de aprender ou explorar de um jeito mais livre? Pode marcar quantas quiser:</p>
+                    <div class="options-list">
+                        <label><input type="checkbox" name="CoisasQueBrilham" value="Música"><span>Música</span></label>
+                        <label><input type="checkbox" name="CoisasQueBrilham" value="Jogos"><span>Jogos</span></label>
+                        <label><input type="checkbox" name="CoisasQueBrilham" value="Corpo"><span>Corpo</span></label>
+                        <label><input type="checkbox" name="CoisasQueBrilham" value="Plantas e natureza"><span>Plantas e natureza</span></label>
+                        <label><input type="checkbox" name="CoisasQueBrilham" value="Robôs e invenções"><span>Robôs e invenções</span></label>
+                        <label><input type="checkbox" name="CoisasQueBrilham" value="Histórias e livros"><span>Histórias e livros</span></label>
+                        <label><input type="checkbox" name="CoisasQueBrilham" value="Ferramentas"><span>Ferramentas</span></label>
+                        <label><input type="checkbox" name="CoisasQueBrilham" value="Comida"><span>Comida</span></label>
+                        <label><input type="checkbox" name="CoisasQueBrilham" value="Bichos"><span>Bichos</span></label>
+                        <label><input type="checkbox" name="CoisasQueBrilham" value="Brincadeiras"><span>Brincadeiras</span></label>
+                        <label><input type="checkbox" name="CoisasQueBrilham" value="Computador"><span>Computador</span></label>
+                    </div>
+                     <div class="form-group" style="margin-top: 20px;">
+                        <label for="outra-coisa">Outra coisa:</label>
+                        <input type="text" id="outra-coisa" name="OutraCoisaBrilha">
+                    </div>
                 </div>
-            </div>
-            
-            <!-- Pergunta 5 -->
-            <div class="question-block">
-                <h3 class="question-title">5. Se você pudesse guardar o momento mais gostoso da sua tarde em uma caixinha, qual seria?</h3>
-                <div class="options-list">
-                    <label><input type="radio" name="MomentoNaCaixinha" value="Estar com amigos" required><span>Estar com amigos</span></label>
-                    <label><input type="radio" name="MomentoNaCaixinha" value="Inventar coisas" required><span>Inventar coisas</span></label>
-                    <label><input type="radio" name="MomentoNaCaixinha" value="Ficar em silêncio" required><span>Ficar em silêncio</span></label>
-                    <label><input type="radio" name="MomentoNaCaixinha" value="Mexer no computador" required><span>Mexer no computador</span></label>
-                    <label><input type="radio" name="MomentoNaCaixinha" value="Jogar um jogo" required><span>Jogar um jogo</span></label>
-                    <label><input type="radio" name="MomentoNaCaixinha" value="Movimentar o corpo" required><span>Movimentar o corpo</span></label>
-                    <label><input type="radio" name="MomentoNaCaixinha" value="Descobrir algo novo" required><span>Descobrir algo novo</span></label>
-                    <label><input type="radio" name="MomentoNaCaixinha" value="Brincar sem hora" required><span>Brincar sem hora</span></label>
-                    <label><input type="radio" name="MomentoNaCaixinha" value="Construir algo" required><span>Construir algo</span></label>
-                </div>
-            </div>
 
-            <!-- Pergunta 6 -->
-            <div class="question-block">
-                <h3 class="question-title">6. Qual lugar da escola poderia virar um novo mundo?</h3>
-                <div class="form-group">
-                    <label for="lugar-patio">O pátio poderia virar…?</label>
-                    <input type="text" id="lugar-patio" name="LugarPatio" required>
+                <!-- Pergunta 4 -->
+                <div class="question-block">
+                    <h3 class="question-title">4. Se pudesse criar uma aula nova…</h3>
+                    <div class="form-group">
+                        <label for="nome-aula">como ela se chamaria?</label>
+                        <input type="text" id="nome-aula" name="NomeAulaNova" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="o-que-fariam">o que fariam nela?</label>
+                        <textarea id="o-que-fariam" name="OQueFariamAula" rows="4" required></textarea>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="lugar-quadra">A quadra poderia se transformar em…?</label>
-                    <input type="text" id="lugar-quadra" name="LugarQuadra" required>
+                
+                <!-- Pergunta 5 -->
+                <div class="question-block">
+                    <h3 class="question-title">5. Se você pudesse guardar o momento mais gostoso da sua tarde em uma caixinha, qual seria?</h3>
+                    <div class="options-list">
+                        <label><input type="radio" name="MomentoNaCaixinha" value="Estar com amigos" required><span>Estar com amigos</span></label>
+                        <label><input type="radio" name="MomentoNaCaixinha" value="Inventar coisas" required><span>Inventar coisas</span></label>
+                        <label><input type="radio" name="MomentoNaCaixinha" value="Ficar em silêncio" required><span>Ficar em silêncio</span></label>
+                        <label><input type="radio" name="MomentoNaCaixinha" value="Mexer no computador" required><span>Mexer no computador</span></label>
+                        <label><input type="radio" name="MomentoNaCaixinha" value="Jogar um jogo" required><span>Jogar um jogo</span></label>
+                        <label><input type="radio" name="MomentoNaCaixinha" value="Movimentar o corpo" required><span>Movimentar o corpo</span></label>
+                        <label><input type="radio" name="MomentoNaCaixinha" value="Descobrir algo novo" required><span>Descobrir algo novo</span></label>
+                        <label><input type="radio" name="MomentoNaCaixinha" value="Brincar sem hora" required><span>Brincar sem hora</span></label>
+                        <label><input type="radio" name="MomentoNaCaixinha" value="Construir algo" required><span>Construir algo</span></label>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="lugar-biblioteca">A biblioteca poderia se abrir para…?</label>
-                    <input type="text" id="lugar-biblioteca" name="LugarBiblioteca" required>
-                </div>
-                <div class="form-group">
-                    <label for="lugar-salas">As salas de aulas seriam reorganizadas e funcionariam como…?</label>
-                    <input type="text" id="lugar-salas" name="LugarSalas" required>
-                </div>
-            </div>
 
-            <!-- Pergunta 7 -->
-            <div class="question-block">
-                <h3 class="question-title">7. Invenções que só existem na minha cabeça (por enquanto!)</h3>
-                <div class="form-group">
-                    <label for="invencao-maluca">💡 Tem alguma ideia maluca ou legal que você inventaria para a escola?</label>
-                    <textarea id="invencao-maluca" name="InvencaoMaluca" rows="4" required></textarea>
+                <!-- Pergunta 6 -->
+                <div class="question-block">
+                    <h3 class="question-title">6. Qual lugar da escola poderia virar um novo mundo?</h3>
+                    <div class="form-group">
+                        <label for="lugar-patio">O pátio poderia virar…?</label>
+                        <input type="text" id="lugar-patio" name="LugarPatio" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lugar-quadra">A quadra poderia se transformar em…?</label>
+                        <input type="text" id="lugar-quadra" name="LugarQuadra" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lugar-biblioteca">A biblioteca poderia se abrir para…?</label>
+                        <input type="text" id="lugar-biblioteca" name="LugarBiblioteca" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lugar-salas">As salas de aulas seriam reorganizadas e funcionariam como…?</label>
+                        <input type="text" id="lugar-salas" name="LugarSalas" required>
+                    </div>
                 </div>
-            </div>
-            
-            <!-- Pergunta 8 -->
-            <div class="question-block">
-                <h3 class="question-title">8. Se pudesse escolher para você uma peça de um quebra-cabeça que representa a escola…</h3>
-                <div class="form-group">
-                    <label for="peca-quebra-cabeca">o que estaria desenhado nesta peça?</label>
-                    <input type="text" id="peca-quebra-cabeca" name="PecaQuebraCabeca" required>
+
+                <!-- Pergunta 7 -->
+                <div class="question-block">
+                    <h3 class="question-title">7. Invenções que só existem na minha cabeça (por enquanto!)</h3>
+                    <div class="form-group">
+                        <label for="invencao-maluca">💡 Tem alguma ideia maluca ou legal que você inventaria para a escola?</label>
+                        <textarea id="invencao-maluca" name="InvencaoMaluca" rows="4" required></textarea>
+                    </div>
                 </div>
-            </div>
-
-            <!-- Pergunta 9 -->
-            <div class="question-block">
-                <h3 class="question-title">9. Quer deixar um recado para a LABirintar?</h3>
-                <div class="form-group">
-                    <label for="recado-final">Pode escrever uma frase, uma palavra inventada, uma coisa que você queira dizer só pra gente.</label>
-                    <textarea id="recado-final" name="RecadoFinal" rows="4"></textarea>
+                
+                <!-- Pergunta 8 -->
+                <div class="question-block">
+                    <h3 class="question-title">8. Se pudesse escolher para você uma peça de um quebra-cabeça que representa a escola…</h3>
+                    <div class="form-group">
+                        <label for="peca-quebra-cabeca">o que estaria desenhado nesta peça?</label>
+                        <input type="text" id="peca-quebra-cabeca" name="PecaQuebraCabeca" required>
+                    </div>
                 </div>
+
+                <!-- Pergunta 9 -->
+                <div class="question-block">
+                    <h3 class="question-title">9. Quer deixar um recado para a LABirintar?</h3>
+                    <div class="form-group">
+                        <label for="recado-final">Pode escrever uma frase, uma palavra inventada, uma coisa que você queira dizer só pra gente.</label>
+                        <textarea id="recado-final" name="RecadoFinal" rows="4"></textarea>
+                    </div>
+                </div>
+
+            </form>
+
+            <div class="navigation-buttons">
+                <button id="prevBtn" class="nav-btn">Anterior</button>
+                <button id="nextBtn" class="nav-btn">Próximo</button>
+                <button id="submitBtn" type="submit" form="diagnosticoForm">Enviar</button>
             </div>
-
-        </form>
-
-        <div class="navigation-buttons">
-            <button id="prevBtn" class="nav-btn">Anterior</button>
-            <button id="nextBtn" class="nav-btn">Próximo</button>
-            <button id="submitBtn" type="submit" form="diagnosticoForm">Enviar</button>
-        </div>
+        </main>
     </div>
 
     <div class="status-overlay" id="statusOverlay">
@@ -346,16 +353,6 @@
             const loadingBox = document.getElementById('loadingBox');
             const successBox = document.getElementById('successBox');
             let currentQuestionIndex = 0;
-
-            // --- LÓGICA DO HEADER FIXO ---
-            const stickyHeader = document.getElementById('sticky-header');
-            window.onscroll = function() {
-                if (window.pageYOffset > 0) {
-                    stickyHeader.classList.add("scrolled");
-                } else {
-                    stickyHeader.classList.remove("scrolled");
-                }
-            };
             
             // --- LÓGICA DOS SLIDERS ---
             const idadeSlider = document.getElementById('idade');
