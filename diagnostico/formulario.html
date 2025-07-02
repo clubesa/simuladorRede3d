@@ -31,29 +31,31 @@
         }
         .container {
             background-color: var(--branco);
-            padding: 30px 40px;
+            padding: 0 40px 30px 40px; /* Padding superior removido para o header cuidar disso */
             border-radius: 24px;
             box-shadow: 0 12px 30px var(--sombra-suave);
             max-width: 700px;
             width: 100%;
             box-sizing: border-box;
-            /* overflow: hidden; Removido para permitir o sticky header */
         }
         
-        /* --- CABEÇALHO FIXO --- */
+        /* --- CABEÇALHO FIXO (APP BAR) --- */
         .sticky-header {
             position: -webkit-sticky;
             position: sticky;
             top: 0;
             background-color: var(--branco);
             z-index: 10;
-            padding-top: 20px;
-            margin: -30px -40px 0 -40px;
-            padding-left: 40px;
-            padding-right: 40px;
-            border-bottom: 1px solid #f0f0f0; /* Linha tênue */
-            padding-bottom: 10px;
+            padding: 20px 0 10px 0;
+            margin-bottom: 20px;
+            transition: box-shadow 0.3s;
+            /* A sombra aparece quando o header é "ativado" pelo scroll */
         }
+        .sticky-header.scrolled {
+             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+             border-bottom: 1px solid #f0f0f0;
+        }
+
         .header { text-align: center; margin-bottom: 20px; }
         .header img { max-width: 282px; margin-bottom: 15px; }
         .header h1 { color: var(--vermelho); font-size: 1.5em; font-weight: 700; margin: 0; }
@@ -62,7 +64,7 @@
         .progress-bar-container { width: 100%; background-color: #f0f0f0; border-radius: 10px; margin: 20px 0; }
         .progress-bar { width: 0%; height: 15px; background: linear-gradient(90deg, var(--azul), var(--lilas)); border-radius: 10px; transition: width 0.4s ease-in-out; }
         
-        .question-block { display: none; padding: 10px; margin-top: 20px; animation: slideIn 0.5s forwards; }
+        .question-block { display: none; padding: 10px; animation: slideIn 0.5s forwards; }
         .question-block.active { display: block; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateX(0); } }
         .question-title { margin-top: 0; margin-bottom: 20px; font-size: 1.4em; font-weight: 600; line-height: 1.4; }
@@ -146,7 +148,7 @@
 <body>
 
     <div class="container">
-        <div class="sticky-header">
+        <div class="sticky-header" id="sticky-header">
             <header class="header">
                 <img src="../logoslabirintar/Labirintar_RGB.png" alt="Logo LABirintar" onerror="this.style.display='none'">
                 <h1>“Uma tarde que mora em mim”</h1>
@@ -345,6 +347,16 @@
             const successBox = document.getElementById('successBox');
             let currentQuestionIndex = 0;
 
+            // --- LÓGICA DO HEADER FIXO ---
+            const stickyHeader = document.getElementById('sticky-header');
+            window.onscroll = function() {
+                if (window.pageYOffset > 0) {
+                    stickyHeader.classList.add("scrolled");
+                } else {
+                    stickyHeader.classList.remove("scrolled");
+                }
+            };
+            
             // --- LÓGICA DOS SLIDERS ---
             const idadeSlider = document.getElementById('idade');
             const idadeOutput = document.getElementById('idade-output');
@@ -354,7 +366,7 @@
             idadeSlider.oninput = function() { idadeOutput.textContent = this.value; }
             anoSlider.oninput = function() { anoOutput.textContent = `${this.value}º ano`; }
 
-            // --- LÓGICA DO CARROSSEL (ATUALIZADA) ---
+            // --- LÓGICA DO CARROSSEL ---
             const carouselContainer = document.getElementById('carousel-container');
             const totalImages = 22;
             let currentImageIndex = 0;
