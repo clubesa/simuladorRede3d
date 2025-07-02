@@ -131,7 +131,7 @@
 
     <div class="container">
         <header class="header">
-            <img src="Labirintar_RGB.png" alt="Logo LABirintar" onerror="this.style.display='none'">
+            <img src="logoslabirintar/Labirintar_RGB.png" alt="Logo LABirintar" onerror="this.style.display='none'">
             <h1>“Uma tarde que mora em mim”</h1>
         </header>
 
@@ -417,11 +417,10 @@
             function validateCurrentQuestion() {
                 const currentQuestion = questions[currentQuestionIndex];
 
-                // Validação específica para o carrossel (índice 1)
                 if (currentQuestionIndex === 1) {
                     const selectedImages = form.querySelectorAll('input[name="ImagensSelecionadas"]:checked');
                     if (selectedImages.length === 0) {
-                        return false; // Falha na validação se nenhuma imagem for selecionada
+                        return false; 
                     }
                 }
 
@@ -447,7 +446,6 @@
                         updateFormView();
                     }
                 } else {
-                    // Mensagem de alerta personalizada
                     if (currentQuestionIndex === 1) {
                         alert('Ops! Escolha pelo menos uma foto para continuar.');
                     } else {
@@ -466,7 +464,7 @@
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 if (!validateCurrentQuestion()) {
-                     if (currentQuestionIndex === 1) {
+                    if (currentQuestionIndex === 1) {
                         alert('Ops! Escolha pelo menos uma foto para continuar.');
                     } else {
                         alert('Ops! Responda a esta pergunta para continuar.');
