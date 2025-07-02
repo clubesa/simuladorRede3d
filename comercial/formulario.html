@@ -81,7 +81,6 @@
         @media (min-width: 992px) { .problem-grid { grid-template-columns: 1fr 1fr; } }
         .challenge-item { display: flex; justify-content: space-between; align-items: center; background-color: var(--color-light-bg); padding: 1rem 1.5rem; border-radius: 12px; margin-bottom: 1rem; }
         .challenge-item p { margin-bottom: 0; font-weight: 500; }
-        /* MODIFIED: List box color reverted */
         .challenge-item select { padding: 0.5rem; border-radius: 8px; border: 2px solid var(--color-accent-blue); font-weight: bold; cursor: pointer; color: var(--color-text); }
         .problem-image-wrapper { background-color: var(--color-light-bg); border-radius: 20px; padding: 2rem; text-align: center; box-shadow: var(--shadow-sm); }
         .problem-image-wrapper h4 { font-family: var(--font-body); font-size: 1.2rem; font-style: italic; color: var(--color-text); }
@@ -121,7 +120,26 @@
         .modality-card-header input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--color-primary); }
         .tooltip-container { position: relative; display: inline-flex; align-items: center; }
         .tooltip-container .tooltip-icon { cursor: help; }
-        .tooltip-container .tooltip-text { visibility: hidden; width: 200px; background-color: var(--color-text); color: #fff; text-align: center; border-radius: 6px; padding: 8px; position: absolute; z-index: 1; bottom: 125%; left: 50%; margin-left: -100px; opacity: 0; transition: opacity 0.3s; font-size: 0.85rem; line-height: 1.4; }
+        /* MODIFIED: Tooltip padding and width adjusted */
+        .tooltip-container .tooltip-text {
+            visibility: hidden;
+            width: max-content;
+            max-width: 220px;
+            background-color: var(--color-text);
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px 12px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
         .tooltip-container .tooltip-text::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: var(--color-text) transparent transparent transparent; }
         .tooltip-container:hover .tooltip-text { visibility: visible; opacity: 1; }
         
@@ -130,7 +148,6 @@
         .diagnostic-link-area h4 { text-align: left; }
         .diagnostic-link-area p { max-width: 100%; text-align: left; }
         
-        /* MODIFIED: Diagnostic Preview with centered content */
         .diagnostic-preview { position: relative; background: #4a4a4a; border-radius: 20px; padding: 10px; box-shadow: 0 20px 40px rgba(0,0,0,0.25); border: 2px solid #555; height: 320px; max-width: 450px; margin: 0 auto; overflow: hidden; display: flex; justify-content: center; align-items: center; }
         .diagnostic-preview iframe {
             width: 182%;
