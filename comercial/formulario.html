@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LABirintar - Proposta Comercial para Escolas</title>
+    <title>LABirintar - Formulário Comercial para Escolas</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,625 +30,393 @@
         }
 
         /* General Body and Reset Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: var(--font-body);
-            background-color: var(--color-white);
-            color: var(--color-text);
-            line-height: 1.8;
-            overflow-x: hidden;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        body { font-family: var(--font-body); background-color: var(--color-white); color: var(--color-text); line-height: 1.8; overflow-x: hidden; }
 
         /* Layout Container */
-        .container {
-            width: 90%;
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 6rem 0;
-        }
+        .container { width: 90%; max-width: 1100px; margin: 0 auto; padding: 6rem 0; }
 
         /* Typography */
-        h1, h2, h3 {
-            font-family: var(--font-title);
-            font-weight: 600;
-            line-height: 1.3;
-        }
-
-        h1 {
-            font-size: clamp(2.8rem, 6vw, 4.5rem);
-            color: var(--color-white);
-            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-
-        h2 {
-            font-size: clamp(2.2rem, 5vw, 3.2rem);
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-
-        h3 {
-            font-size: clamp(1.5rem, 4vw, 2rem);
-            color: var(--color-primary);
-            margin-bottom: 1rem;
-        }
-        
-        p {
-            margin-bottom: 1.5rem;
-            max-width: 650px;
-        }
-        
-        .section-subtitle {
-            text-align: center;
-            font-size: 1.1rem;
-            max-width: 700px;
-            margin: 0 auto 4rem auto;
-            color: #555;
-        }
+        h1, h2, h3, h4 { font-family: var(--font-title); font-weight: 600; line-height: 1.3; }
+        h1 { font-size: clamp(2.8rem, 6vw, 4.5rem); color: var(--color-white); text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        h2 { font-size: clamp(2.2rem, 5vw, 3.2rem); text-align: center; margin-bottom: 1rem; }
+        h3 { font-size: clamp(1.5rem, 4vw, 2rem); color: var(--color-primary); margin-bottom: 1rem; }
+        h4 { font-size: clamp(1.2rem, 3vw, 1.5rem); margin-bottom: 1rem; }
+        p { margin-bottom: 1.5rem; max-width: 650px; }
+        .section-subtitle { text-align: center; font-size: 1.1rem; max-width: 700px; margin: 0 auto 4rem auto; color: #555; }
 
         /* Fade-in Animation on Scroll */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-        }
-
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
 
         /* Header Section */
-        .hero {
-            position: relative;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 1rem;
-            background: linear-gradient(145deg, var(--color-accent-blue), var(--color-accent-lavender));
-            overflow: hidden;
-        }
+        .hero { position: relative; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1rem; background: linear-gradient(145deg, var(--color-accent-blue), var(--color-accent-lavender)); overflow: hidden; }
+        .hero-logo { width: 140px; margin-bottom: 2rem; filter: drop-shadow(var(--shadow-md)); }
+        .hero .subtitle { font-size: 1.3rem; color: var(--color-white); font-weight: 300; letter-spacing: 1px; text-shadow: 0 1px 5px rgba(0,0,0,0.15); }
 
-        .hero-logo {
-            width: 140px;
-            margin-bottom: 2rem;
-            filter: drop-shadow(var(--shadow-md));
-        }
-
-        .hero .subtitle {
-            font-size: 1.3rem;
-            color: var(--color-white);
-            font-weight: 300;
-            letter-spacing: 1px;
-            text-shadow: 0 1px 5px rgba(0,0,0,0.15);
-        }
-
-        /* Section Styles */
-        .section-vision {
-            background-color: var(--color-white);
-            text-align: center;
-        }
-
-        .vision-quote {
-            font-family: var(--font-title);
-            font-size: clamp(1.6rem, 4vw, 2.4rem);
-            font-style: italic;
-            color: var(--color-primary);
-            max-width: 800px;
-            margin: 0 auto 2rem auto;
-        }
+        /* Section Vision */
+        .section-vision { background-color: var(--color-white); text-align: center; }
+        .vision-quote { font-family: var(--font-title); font-size: clamp(1.6rem, 4vw, 2.4rem); font-style: italic; color: var(--color-primary); max-width: 800px; margin: 0 auto 2rem auto; }
+        .section-vision p { margin-left: auto; margin-right: auto; }
         
-        /* MODIFIED: This rule centers the paragraph blocks inside the vision section */
-        .section-vision p {
-            margin-left: auto;
-            margin-right: auto;
-        }
+        /* MODIFIED: Problem Section with Ranking */
+        .problem-grid { display: grid; grid-template-columns: 1fr; gap: 3rem; align-items: flex-start; }
+        @media (min-width: 992px) { .problem-grid { grid-template-columns: 1fr 1fr; } }
+        .challenge-item { display: flex; justify-content: space-between; align-items: center; background-color: var(--color-light-bg); padding: 1rem 1.5rem; border-radius: 12px; margin-bottom: 1rem; }
+        .challenge-item p { margin-bottom: 0; font-weight: 500; }
+        .challenge-item select { padding: 0.5rem; border-radius: 8px; border: 2px solid var(--color-accent-blue); font-weight: bold; cursor: pointer; }
+        .problem-image-wrapper { background-color: var(--color-light-bg); border-radius: 20px; padding: 2rem; text-align: center; box-shadow: var(--shadow-sm); }
+        .problem-image-wrapper h4 { font-family: var(--font-body); font-size: 1.2rem; font-style: italic; color: var(--color-text); }
+        .textarea-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+        .textarea-group textarea { width: 100%; min-height: 120px; padding: 1rem; border-radius: 12px; border: 2px solid var(--color-accent-blue); font-family: var(--font-body); font-size: 1rem; resize: vertical; }
+
+        /* Solution Section */
+        .section-solution { background: linear-gradient(145deg, var(--color-accent-lavender), var(--color-white)); padding: 6rem 0; }
+        .solution-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; perspective: 1000px; }
+        @media (min-width: 768px) { .solution-grid { grid-template-columns: repeat(2, 1fr); } }
+        .flip-card { background-color: transparent; height: 320px; border-radius: 20px; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.8s; transform-style: preserve-3d; box-shadow: var(--shadow-md); border-radius: 20px; }
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; }
+        .flip-card-front { background: var(--color-white); color: var(--color-text); }
+        .flip-card-front i { color: var(--color-primary); margin-bottom: 1rem; }
+        .flip-card-front h4 { font-family: var(--font-title); font-size: 1.6rem; }
+        .flip-card-back { background: linear-gradient(145deg, var(--color-primary), var(--color-secondary)); color: var(--color-white); transform: rotateY(180deg); }
+
+        /* NEW: Portfolio Section */
+        .portfolio-grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; }
+        @media (min-width: 768px) { .portfolio-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1024px) { .portfolio-grid { grid-template-columns: repeat(3, 1fr); } }
+        .modality-card { background: var(--color-white); border-radius: 15px; box-shadow: var(--shadow-md); overflow: hidden; }
+        .modality-card .carousel { position: relative; width: 100%; height: 200px; }
+        .modality-card .carousel-images { display: flex; height: 100%; transition: transform 0.5s ease-in-out; }
+        .modality-card .carousel-images img { width: 100%; height: 100%; object-fit: cover; flex-shrink: 0; }
+        .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255, 255, 255, 0.7); border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-sm); }
+        .carousel-btn.prev { left: 10px; }
+        .carousel-btn.next { right: 10px; }
+        .modality-card-content { padding: 1.5rem; }
+        .modality-card-header { display: flex; justify-content: space-between; align-items: center; }
+        .modality-card-header h4 { margin-bottom: 0; }
+        .modality-card-header input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--color-primary); }
+        .diagnostic-link-area { text-align: center; margin-top: 4rem; background: var(--color-light-bg); padding: 2rem; border-radius: 15px; }
+        .diagnostic-link-area p { max-width: 500px; margin-left: auto; margin-right: auto; }
         
-        .section-problem {
-            background-color: var(--color-white);
-        }
-
-        .problem-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 2rem;
-            align-items: center;
-        }
-        @media (min-width: 768px) {
-            .problem-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
-        .problem-content ul {
-            list-style: none;
-            padding-left: 0;
-        }
-        .problem-content li {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-        }
-        .problem-content i {
-            color: var(--color-secondary);
-        }
-
-        .problem-image-wrapper {
-            background-color: var(--color-light-bg);
-            border-radius: 20px;
-            padding: 2rem;
-            text-align: center;
-            box-shadow: var(--shadow-sm);
-        }
-        .problem-image-wrapper h4 {
-            font-family: var(--font-body);
-            font-size: 1.2rem;
-            font-style: italic;
-            color: var(--color-text);
-        }
-
-        /* Solution Section with Flip Cards */
-        .section-solution {
-            background: linear-gradient(145deg, var(--color-accent-lavender), var(--color-white));
-            padding: 6rem 0;
-        }
-        
-        .solution-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 2rem;
-            perspective: 1000px;
-        }
-
-        .flip-card {
-            background-color: transparent;
-            height: 320px;
-            border-radius: 20px;
-        }
-
-        .flip-card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            transition: transform 0.8s;
-            transform-style: preserve-3d;
-            box-shadow: var(--shadow-md);
-            border-radius: 20px;
-        }
-
-        .flip-card:hover .flip-card-inner {
-            transform: rotateY(180deg);
-        }
-
-        .flip-card-front, .flip-card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-            border-radius: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-        }
-
-        .flip-card-front {
-            background: var(--color-white);
-            color: var(--color-text);
-        }
-        .flip-card-front i {
-            color: var(--color-primary);
-            margin-bottom: 1rem;
-        }
-        .flip-card-front h4 {
-            font-family: var(--font-title);
-            font-size: 1.6rem;
-        }
-
-        .flip-card-back {
-            background: linear-gradient(145deg, var(--color-primary), var(--color-secondary));
-            color: var(--color-white);
-            transform: rotateY(180deg);
-        }
-
         /* Partnership Section */
-        .partnership-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 3rem;
-            margin-bottom: 4rem;
-        }
-        @media (min-width: 992px) {
-            .partnership-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
-        .model-card {
-            background: var(--color-white);
-            padding: 2.5rem;
-            border-radius: 20px;
-            box-shadow: var(--shadow-md);
-            border-top: 5px solid;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        .model-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
-        }
+        .partnership-grid { display: grid; grid-template-columns: 1fr; gap: 3rem; margin-bottom: 4rem; }
+        @media (min-width: 992px) { .partnership-grid { grid-template-columns: 1fr 1fr; } }
+        .model-card { background: var(--color-white); padding: 2.5rem; border-radius: 20px; box-shadow: var(--shadow-md); border-top: 5px solid; transition: transform 0.3s, box-shadow 0.3s; }
+        .model-card:hover { transform: translateY(-10px); box-shadow: 0 15px 40px rgba(0,0,0,0.12); }
         .model-card.split { border-color: var(--color-primary); }
         .model-card.subscription { border-color: var(--color-secondary); }
-
-        .model-card h4 {
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-        }
-        .model-card .split-details {
-            font-size: 1.2rem;
-            font-weight: 500;
-            margin: 1.5rem 0;
-            padding-left: 1rem;
-            border-left: 3px solid #eee;
-        }
-        .model-card .split-details span {
-            font-weight: 700;
-            color: var(--color-primary);
-        }
-        .model-card .description {
-            font-style: italic;
-            color: #666;
-        }
+        .model-card h4 { font-size: 1.8rem; margin-bottom: 1rem; }
+        .model-card .split-details { font-size: 1.2rem; font-weight: 500; margin: 1.5rem 0; padding-left: 1rem; border-left: 3px solid #eee; }
+        .model-card .split-details span { font-weight: 700; color: var(--color-primary); }
+        .model-card .description { font-style: italic; color: #666; }
 
         /* Calculator */
-        .simulator {
-            background: var(--color-light-bg);
-            padding: 3rem;
-            border-radius: 20px;
-        }
-        .simulator-inputs {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 2rem;
-            margin: 2rem 0;
-        }
-        .input-group {
-            display: flex;
-            flex-direction: column;
-        }
-        .input-group label {
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-        }
-        .input-group input {
-            width: 220px;
-            padding: 0.8rem 1rem;
-            border: 2px solid var(--color-accent-blue);
-            border-radius: 10px;
-            font-family: var(--font-body);
-            font-size: 1rem;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        .input-group input:focus {
-            outline: none;
-            border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px rgba(255, 89, 90, 0.3);
-        }
-        #results {
-            margin-top: 2rem;
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 2rem;
-            text-align: left;
-        }
-        @media (min-width: 768px) {
-            #results { grid-template-columns: 1fr 1fr; }
-        }
-        .result-card {
-            background: var(--color-white);
-            padding: 1.5rem;
-            border-radius: 15px;
-            box-shadow: var(--shadow-sm);
-        }
+        .simulator { background: var(--color-light-bg); padding: 3rem; border-radius: 20px; }
+        .simulator-inputs { display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; margin: 2rem 0; }
+        .input-group { display: flex; flex-direction: column; }
+        .input-group label { font-weight: 500; margin-bottom: 0.5rem; }
+        .input-group input { width: 220px; padding: 0.8rem 1rem; border: 2px solid var(--color-accent-blue); border-radius: 10px; font-family: var(--font-body); font-size: 1rem; transition: border-color 0.3s, box-shadow 0.3s; }
+        .input-group input:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(255, 89, 90, 0.3); }
+        #results { margin-top: 2rem; display: grid; grid-template-columns: 1fr; gap: 2rem; text-align: left; }
+        @media (min-width: 768px) { #results { grid-template-columns: 1fr 1fr; } }
+        .result-card { background: var(--color-white); padding: 1.5rem; border-radius: 15px; box-shadow: var(--shadow-sm); }
 
         /* Benefits Section */
-        .section-benefits {
-            background-color: var(--color-white);
-        }
-        .benefits-cloud {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 1rem;
-        }
-        .benefit-tag {
-            background-color: var(--color-accent-blue);
-            color: var(--color-text);
-            padding: 0.8rem 1.5rem;
-            border-radius: 50px;
-            font-weight: 500;
-            transition: transform 0.3s, background-color 0.3s;
-            cursor: default;
-        }
-        .benefit-tag:hover {
-            transform: scale(1.05);
-            background-color: var(--color-secondary);
-            color: var(--color-white);
-        }
+        .benefits-cloud { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; }
+        .benefit-tag input[type="checkbox"] { display: none; }
+        .benefit-tag label { display: inline-block; background-color: var(--color-accent-blue); color: var(--color-text); padding: 0.8rem 1.5rem; border-radius: 50px; font-weight: 500; transition: transform 0.3s, background-color 0.3s; cursor: pointer; }
+        .benefit-tag input[type="checkbox"]:checked + label { transform: scale(1.05); background-color: var(--color-secondary); color: var(--color-white); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         
-        /* Footer */
-        footer {
-            background-color: var(--color-text);
-            color: var(--color-white);
-            text-align: center;
-            padding: 5rem 1rem;
-        }
+        /* Footer & Modal */
+        footer { background-color: var(--color-text); color: var(--color-white); text-align: center; padding: 5rem 1rem; }
         footer h2 { color: var(--color-white); }
-        footer p {
-            max-width: 600px;
-            margin: 0 auto 2.5rem auto;
-            opacity: 0.8;
-        }
-        .footer-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-        }
-        .btn {
-            display: inline-block;
-            padding: 1rem 2.5rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 700;
-            transition: transform 0.3s, box-shadow 0.3s;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-        .btn:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-md);
-        }
-        .btn-primary {
-            background-color: var(--color-primary);
-            color: var(--color-white);
-        }
-        .btn-secondary {
-            background-color: var(--color-secondary);
-            color: var(--color-white);
-        }
+        footer p { max-width: 600px; margin: 0 auto 2.5rem auto; opacity: 0.8; }
+        .footer-buttons { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; }
+        .btn { display: inline-block; padding: 1rem 2.5rem; border-radius: 50px; text-decoration: none; font-weight: 700; transition: transform 0.3s, box-shadow 0.3s; border: none; cursor: pointer; font-size: 1rem; }
+        .btn:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+        .btn-primary { background-color: var(--color-primary); color: var(--color-white); }
+        .btn-secondary { background-color: var(--color-secondary); color: var(--color-white); }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.4s ease; z-index: 1000; }
+        .modal-overlay.visible { opacity: 1; visibility: visible; }
+        .modal-content { background: var(--color-white); padding: 2.5rem; border-radius: 20px; width: 90%; max-width: 500px; box-shadow: var(--shadow-md); transform: scale(0.9); transition: all 0.4s ease; }
+        .modal-overlay.visible .modal-content { transform: scale(1); }
+        .modal-content .input-group { width: 100%; margin-bottom: 1rem; }
+        .modal-content .input-group input { width: 100%; }
 
     </style>
 </head>
 <body>
 
     <header class="hero">
-        <img src="IMG_1229.png" alt="Logo LABirintar" class="hero-logo fade-in">
+        <img src="../logoslabirintar/Labirintar_RGB.png" alt="Logo LABirintar" class="hero-logo fade-in">
         <h1 class="fade-in">Educar é ocupar o tempo com sentido.</h1>
         <p class="subtitle fade-in">E sentido se constrói em rede.</p>
     </header>
 
-    <main>
-        <section class="section-vision container fade-in">
-            <p class="vision-quote">“A escola em tempo integral precisa mais do que tempo: ela precisa de experiência com sentido.”</p>
-            <p>Apresentamos a <strong>LABirintar</strong>: um ecossistema que conecta escolas, educadores e famílias por meio de uma plataforma viva, sensível e inteligente de gestão do contraturno. Este é um convite a caminhar conosco.</p>
-        </section>
+    <form id="commercial-form">
+        <main>
+            <section class="section-vision container fade-in">
+                <p class="vision-quote">“A escola em tempo integral precisa mais do que tempo: ela precisa de experiência com sentido.”</p>
+                <p>Apresentamos a <strong>LABirintar</strong>: um ecossistema que conecta escolas, educadores e famílias por meio de uma plataforma viva, sensível e inteligente de gestão do contraturno. Este é um convite a caminhar conosco.</p>
+            </section>
 
-        <section class="section-problem container fade-in">
-             <div class="problem-grid">
-                <div class="problem-content">
-                    <h2>A Cartografia do Desafio</h2>
-                    <p>Com R$ 40 bilhões movimentados anualmente no mercado, as escolas buscam soluções para se destacar. Sua instituição enfrenta o desafio de:</p>
-                    <ul>
-                        <li><i data-feather="crosshair"></i>Diferenciar-se sem onerar a operação?</li>
-                        <li><i data-feather="users"></i>Atrair e reter alunos com propostas significativas?</li>
-                        <li><i data-feather="box"></i>Transformar espaços ociosos em ambientes vivos?</li>
-                    </ul>
-                </div>
-                <div class="problem-image-wrapper">
-                    <i data-feather="map" style="width: 80px; height: 80px; color: var(--color-secondary); stroke-width: 1.5;"></i>
-                    <h4>Quais são os maiores desafios do seu contraturno hoje?</h4>
-                </div>
-            </div>
-        </section>
-
-        <section class="section-solution fade-in">
-            <div class="container" style="padding: 0;">
-                <h2>Nossa Solução: Um Ecossistema Integrado</h2>
-                <p class="section-subtitle">Conectamos quatro pilares para criar uma experiência de contraturno única, viva e pulsante.</p>
-                <div class="solution-grid">
-                    <!-- Card 1 -->
-                    <div class="flip-card">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <i data-feather="cpu" style="width: 48px; height: 48px;"></i>
-                                <h4>Tecnologia</h4>
-                            </div>
-                            <div class="flip-card-back">
-                                <h4>Gestão Inteligente</h4>
-                                <p>Sistema automatizado que simplifica a gestão, comunicação e pagamentos, liberando tempo para o que realmente importa: educar.</p>
-                            </div>
+            <section class="section-problem container fade-in">
+                <h2>A Cartografia do Desafio</h2>
+                <div class="problem-grid">
+                    <div class="challenges-ranking">
+                        <p class="section-subtitle" style="text-align: left; margin: 0 0 2rem 0;">Classifique os desafios abaixo em ordem de importância para sua instituição (1 = mais importante).</p>
+                        <div class="challenge-item">
+                            <p>Diferenciar-se sem onerar a operação</p>
+                            <select name="ranking_diferenciar" class="ranking-select" required><option value="">Prioridade</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
+                        </div>
+                        <div class="challenge-item">
+                            <p>Atrair e reter alunos com propostas significativas</p>
+                            <select name="ranking_reter" class="ranking-select" required><option value="">Prioridade</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
+                        </div>
+                        <div class="challenge-item">
+                            <p>Transformar espaços ociosos em ambientes vivos</p>
+                            <select name="ranking_espacos" class="ranking-select" required><option value="">Prioridade</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
                         </div>
                     </div>
-                    <!-- Card 2 -->
-                    <div class="flip-card">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <i data-feather="award" style="width: 48px; height: 48px;"></i>
-                                <h4>Rede de Educadores</h4>
-                            </div>
-                            <div class="flip-card-back">
-                                <h4>Excelência Curada</h4>
-                                <p>Acesso a uma rede de educadores empreendedores com formação contínua, garantindo oficinas de alta qualidade e engajamento.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Card 3 -->
-                    <div class="flip-card">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <i data-feather="heart" style="width: 48px; height: 48px;"></i>
-                                <h4>Curadoria Pedagógica</h4>
-                            </div>
-                            <div class="flip-card-back">
-                                <h4>Experiências Vivas</h4>
-                                <p>Desenvolvemos jornadas de aprendizagem integrais, afetivas e que despertam a curiosidade e a paixão dos alunos.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Card 4 -->
-                    <div class="flip-card">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <i data-feather="share-2" style="width: 48px; height: 48px;"></i>
-                                <h4>Comunidade em Rede</h4>
-                            </div>
-                            <div class="flip-card-back">
-                                <h4>Aprendizagem Conectada</h4>
-                                <p>Unimos escolas, famílias e educadores, fortalecendo laços e criando uma poderosa comunidade de apoio e crescimento mútuo.</p>
-                            </div>
+                    <div class="problem-image-wrapper">
+                        <i data-feather="map" style="width: 80px; height: 80px; color: var(--color-secondary); stroke-width: 1.5;"></i>
+                        <div class="textarea-group">
+                            <label for="open-challenge">Quais são os maiores desafios do seu contraturno hoje?</label>
+                            <textarea id="open-challenge" name="desafio_aberto" placeholder="Descreva aqui..."></textarea>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
-        
-        <section class="section-partnership container fade-in">
-            <h2>Modelos de Parceria Flexíveis</h2>
-            <p class="section-subtitle">Temos o modelo ideal para o momento e a estratégia da sua escola.</p>
-            <div class="partnership-grid">
-                <div class="model-card split">
-                    <h4>Modelo 1: Split de Receita</h4>
-                    <p>Perfeito para escolas que desejam <strong>inovar sem investimento inicial</strong>, validando a parceria de forma segura.</p>
-                    <div class="split-details">
-                        <p><span>50%</span> LABirintar</p>
-                        <p><span>35%</span> Educador</p>
-                        <p><strong><span>15%</span> Escola</strong></p>
-                    </div>
-                    <p class="description">A escola oferece o espaço e a LABirintar cuida de toda a operação e gestão.</p>
-                </div>
-                <div class="model-card subscription">
-                    <h4>Modelo 2: Assinatura Mensal</h4>
-                    <p>Para escolas que buscam ser <strong>protagonistas e maximizar o retorno financeiro</strong> da parceria.</p>
-                     <div class="split-details">
-                        <p><strong><span>50%</span> Escola</strong></p>
-                        <p><span>35%</span> Educador</p>
-                        <p><span>15%</span> LABirintar</p>
-                    </div>
-                    <p class="description">Com uma mensalidade fixa, a escola se torna o motor comercial e fica com a maior parte da receita.</p>
-                </div>
-            </div>
+            </section>
 
-            <div class="simulator fade-in">
-                <h3><i data-feather="bar-chart-2" style="vertical-align: -4px; margin-right: 8px;"></i>Simule seu Potencial de Receita</h3>
-                <div class="simulator-inputs">
-                    <div class="input-group">
-                        <label for="monthlyFee">Taxa Mensal Média (TM)</label>
-                        <input type="number" id="monthlyFee" placeholder="Ex: 300">
-                    </div>
-                    <div class="input-group">
-                        <label for="studentCount">Nº de Alunos Participantes</label>
-                        <input type="number" id="studentCount" placeholder="Ex: 50">
+            <section class="section-solution fade-in">
+                <div class="container" style="padding-top: 0; padding-bottom: 0;">
+                    <h2>Nossa Solução: Um Ecossistema Integrado</h2>
+                    <p class="section-subtitle">Conectamos quatro pilares para criar uma experiência de contraturno única, viva e pulsante.</p>
+                    <div class="solution-grid">
+                        <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i data-feather="cpu" style="width: 48px; height: 48px;"></i><h4>Tecnologia</h4></div><div class="flip-card-back"><h4>Gestão Inteligente</h4><p>Sistema automatizado que simplifica a gestão, comunicação e pagamentos.</p></div></div></div>
+                        <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i data-feather="award" style="width: 48px; height: 48px;"></i><h4>Rede de Educadores</h4></div><div class="flip-card-back"><h4>Excelência Curada</h4><p>Acesso a uma rede de educadores com formação contínua, garantindo oficinas de alta qualidade.</p></div></div></div>
+                        <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i data-feather="heart" style="width: 48px; height: 48px;"></i><h4>Curadoria Pedagógica</h4></div><div class="flip-card-back"><h4>Experiências Vivas</h4><p>Desenvolvemos jornadas de aprendizagem integrais e afetivas que despertam a paixão dos alunos.</p></div></div></div>
+                        <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i data-feather="share-2" style="width: 48px; height: 48px;"></i><h4>Comunidade em Rede</h4></div><div class="flip-card-back"><h4>Aprendizagem Conectada</h4><p>Unimos escolas, famílias e educadores, fortalecendo laços e criando uma comunidade de apoio.</p></div></div></div>
                     </div>
                 </div>
-                <button id="calculateBtn" class="btn btn-primary">Calcular Potencial</button>
-                <div id="results"></div>
-            </div>
-        </section>
+            </section>
 
-        <section class="section-benefits container fade-in">
-            <h2>Impacto e Valor Agregado</h2>
-            <p class="section-subtitle">Além da receita, a parceria com a LABirintar gera benefícios que reverberam por toda a comunidade escolar.</p>
-            <div class="benefits-cloud">
-                <span class="benefit-tag">Novas receitas recorrentes</span>
-                <span class="benefit-tag">Ocupação inteligente de espaços</span>
-                <span class="benefit-tag">Aumento de matrículas e retenção</span>
-                <span class="benefit-tag">Alinhamento com a Educação Integral</span>
-                <span class="benefit-tag">Simplificação da gestão do contraturno</span>
-                <span class="benefit-tag">Fortalecimento da reputação de inovação</span>
-                <span class="benefit-tag">Engajamento das famílias</span>
-            </div>
-        </section>
-    </main>
+            <section class="section-portfolio container fade-in">
+                <h2>Portfólio de Modalidades</h2>
+                <p class="section-subtitle">(em levantamento com os parceiros)</p>
+                <div id="portfolio-grid" class="portfolio-grid">
+                    <!-- Portfolio cards will be injected here by JavaScript -->
+                </div>
+                <div class="diagnostic-link-area">
+                    <h4>Não tem certeza de quais modalidades escolher?</h4>
+                    <p>Use nosso formulário de diagnóstico para pesquisar os interesses dos alunos e famílias. Copie o link e compartilhe com sua equipe pedagógica.</p>
+                    <button type="button" id="copy-diagnostic-link" class="btn btn-primary">Copiar Link do Diagnóstico</button>
+                </div>
+            </section>
+            
+            <section class="section-partnership container fade-in">
+                <h2>Modelos de Parceria Flexíveis</h2>
+                <p class="section-subtitle">Temos o modelo ideal para o momento e a estratégia da sua escola.</p>
+                <div class="partnership-grid">
+                    <div class="model-card split"><h4>Modelo 1: Split de Receita</h4><p>Perfeito para escolas que desejam <strong>inovar sem investimento inicial</strong>.</p><div class="split-details"><p><span>50%</span> LABirintar</p><p><span>35%</span> Educador</p><p><strong><span>15%</span> Escola</strong></p></div><p class="description">A escola oferece o espaço e a LABirintar cuida de toda a operação.</p></div>
+                    <div class="model-card subscription"><h4>Modelo 2: Assinatura Mensal</h4><p>Para escolas que buscam ser <strong>protagonistas e maximizar o retorno</strong>.</p><div class="split-details"><p><strong><span>50%</span> Escola</strong></p><p><span>35%</span> Educador</p><p><span>15%</span> LABirintar</p></div><p class="description">A escola se torna o motor comercial e fica com a maior parte da receita.</p></div>
+                </div>
+                <div class="simulator fade-in">
+                    <h3><i data-feather="bar-chart-2" style="vertical-align: -4px; margin-right: 8px;"></i>Simule seu Potencial de Receita</h3>
+                    <div class="simulator-inputs"><div class="input-group"><label for="monthlyFee">Taxa Mensal Média (TM)</label><input type="number" id="monthlyFee" placeholder="Ex: 300"></div><div class="input-group"><label for="studentCount">Nº de Alunos Participantes</label><input type="number" id="studentCount" placeholder="Ex: 50"></div></div>
+                    <button id="calculateBtn" type="button" class="btn btn-primary">Calcular Potencial</button>
+                    <div id="results"></div>
+                </div>
+            </section>
+
+            <section class="section-benefits container fade-in">
+                <h2>Quais destes benefícios mais importam para sua escola?</h2>
+                <p class="section-subtitle">Selecione as opções que representam maior valor para sua instituição.</p>
+                <div class="benefits-cloud">
+                    <div class="benefit-tag"><input type="checkbox" id="b1" name="beneficios" value="Novas receitas"><label for="b1">Novas receitas recorrentes</label></div>
+                    <div class="benefit-tag"><input type="checkbox" id="b2" name="beneficios" value="Ocupação de espaços"><label for="b2">Ocupação inteligente de espaços</label></div>
+                    <div class="benefit-tag"><input type="checkbox" id="b3" name="beneficios" value="Aumento de matrículas"><label for="b3">Aumento de matrículas e retenção</label></div>
+                    <div class="benefit-tag"><input type="checkbox" id="b4" name="beneficios" value="Educação Integral"><label for="b4">Alinhamento com a Educação Integral</label></div>
+                    <div class="benefit-tag"><input type="checkbox" id="b5" name="beneficios" value="Simplificação da gestão"><label for="b5">Simplificação da gestão do contraturno</label></div>
+                    <div class="benefit-tag"><input type="checkbox" id="b6" name="beneficios" value="Reputação de inovação"><label for="b6">Fortalecimento da reputação de inovação</label></div>
+                    <div class="benefit-tag"><input type="checkbox" id="b7" name="beneficios" value="Engajamento das famílias"><label for="b7">Engajamento das famílias</label></div>
+                </div>
+            </section>
+        </main>
+    </form>
     
     <footer>
         <div class="container">
             <h2>Escolha Caminhar Conosco</h2>
-            <p>A LABirintar transforma o contraturno. Somos uma plataforma-viva. Uma rede que cresce com cada nova escola, educador e criança. Vamos construir o futuro da educação juntos?</p>
+            <p>A LABirintar transforma o contraturno. Preencha seus dados e nossa equipe entrará em contato para construir o futuro da educação juntos.</p>
             <div class="footer-buttons">
-                <a href="mailto:contato@labirintar.com" class="btn btn-primary">Agendar uma Conversa</a>
-                <a href="#" class="btn btn-secondary">Receber Contato</a>
+                <button type="button" id="open-modal-btn" class="btn btn-secondary">Receber Contato</button>
             </div>
         </div>
     </footer>
+
+    <div id="contact-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>Informações de Contato</h3>
+            <p>Deixe seus dados para que nossa equipe possa retornar.</p>
+            <div class="input-group"><label for="contact-name">Seu nome</label><input type="text" id="contact-name" name="contato_nome" required></div>
+            <div class="input-group"><label for="contact-phone">Telefone</label><input type="tel" id="contact-phone" name="contato_telefone" placeholder="(11) 99999-9999" required></div>
+            <div class="input-group"><label for="contact-role">Cargo</label><input type="text" id="contact-role" name="contato_cargo" required></div>
+            <div class="input-group"><label for="contact-school">Escola</label><input type="text" id="contact-school" name="contato_escola" required></div>
+            <button type="submit" form="commercial-form" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Enviar</button>
+        </div>
+    </div>
 
     <script>
         // Activate Feather Icons
         feather.replace();
 
-        // JavaScript for animations and interactivity
         document.addEventListener('DOMContentLoaded', () => {
-            // 1. Scroll-triggered fade-in animations
-            const fadeInElements = document.querySelectorAll('.fade-in');
-            const observer = new IntersectionObserver(entries => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, {
-                threshold: 0.1
-            });
-            fadeInElements.forEach(el => observer.observe(el));
+            // --- Portfolio Data & Generation ---
+            const portfolioData = [
+                { title: 'Brincar Livre', images: ['1801', '1804', '1811', '1816'] },
+                { title: 'Luz e Sombra', images: ['1802', '1806', '1817'] },
+                { title: 'Cerâmica', images: ['1803'] },
+                { title: 'Programação de Jogos', images: ['1805', '1807', '1808'] },
+                { title: 'Marcenaria', images: ['1809', '1810'] },
+                { title: 'Mindfulness', images: ['1812'] },
+                { title: 'Circo', images: ['1813'] },
+                { title: 'Culinária', images: ['1814'] },
+                { title: 'Música', images: ['1815', '1818', '1819'] },
+                { title: 'Pintura', images: ['1820'] },
+                { title: 'Esportes', images: ['1821'] },
+                { title: 'Horta', images: ['1822'] },
+            ];
 
-            // 2. Partnership Revenue Calculator
-            const calculateBtn = document.getElementById('calculateBtn');
-            const resultsDiv = document.getElementById('results');
-            const monthlyFeeInput = document.getElementById('monthlyFee');
-            const studentCountInput = document.getElementById('studentCount');
+            const portfolioGrid = document.getElementById('portfolio-grid');
+            portfolioData.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'modality-card';
+                const carouselId = `carousel-${index}`;
+                const imagePath = '../diagnostico/';
 
-            calculateBtn.addEventListener('click', () => {
-                const fee = parseFloat(monthlyFeeInput.value) || 0;
-                const students = parseInt(studentCountInput.value) || 0;
+                let imageHtml = item.images.map(img => `<img src="${imagePath}IMG_${img}.jpeg" alt="${item.title}">`).join('');
+                let buttonsHtml = item.images.length > 1 ? `
+                    <button type="button" class="carousel-btn prev" data-carousel="${carouselId}" data-dir="-1"><i data-feather="chevron-left"></i></button>
+                    <button type="button" class="carousel-btn next" data-carousel="${carouselId}" data-dir="1"><i data-feather="chevron-right"></i></button>
+                ` : '';
 
-                if (fee <= 0 || students <= 0) {
-                    resultsDiv.innerHTML = `<p style="text-align: center; color: var(--color-primary);">Por favor, insira valores válidos para a simulação.</p>`;
-                    return;
-                }
-
-                const totalRevenue = fee * students;
-                const schoolRevenue1 = totalRevenue * 0.15;
-                const schoolRevenue2 = totalRevenue * 0.50;
-                
-                const formatCurrency = (value) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-
-                resultsDiv.innerHTML = `
-                    <div class="result-card">
-                        <h4>Modelo Split</h4>
-                        <p>Receita mensal estimada:</p>
-                        <h3 style="color: var(--color-primary);">${formatCurrency(schoolRevenue1)}</h3>
+                card.innerHTML = `
+                    <div class="carousel" id="${carouselId}">
+                        <div class="carousel-images">${imageHtml}</div>
+                        ${buttonsHtml}
                     </div>
-                    <div class="result-card">
-                        <h4>Modelo Assinatura</h4>
-                        <p>Receita mensal estimada:</p>
-                        <h3 style="color: var(--color-primary);">${formatCurrency(schoolRevenue2)}</h3>
+                    <div class="modality-card-content">
+                        <div class="modality-card-header">
+                            <h4>${item.title}</h4>
+                            <input type="checkbox" name="modalidades_selecionadas" value="${item.title}">
+                        </div>
                     </div>
                 `;
+                portfolioGrid.appendChild(card);
+            });
+            feather.replace(); // Re-run feather to render new icons
+
+            // --- Carousel Logic ---
+            const carousels = {};
+            document.querySelectorAll('.carousel').forEach(c => {
+                carousels[c.id] = { index: 0, total: c.querySelectorAll('img').length };
+            });
+
+            document.querySelectorAll('.carousel-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const carouselId = button.dataset.carousel;
+                    const dir = parseInt(button.dataset.dir);
+                    const state = carousels[carouselId];
+                    const container = document.querySelector(`#${carouselId} .carousel-images`);
+                    
+                    state.index = (state.index + dir + state.total) % state.total;
+                    container.style.transform = `translateX(-${state.index * 100}%)`;
+                });
+            });
+
+            // --- Exclusive Ranking Logic ---
+            const rankingSelects = document.querySelectorAll('.ranking-select');
+            function updateRankingOptions() {
+                const selectedValues = Array.from(rankingSelects).map(s => s.value).filter(v => v !== "");
+                rankingSelects.forEach(select => {
+                    Array.from(select.options).forEach(option => {
+                        if (option.value !== "" && option.value !== select.value) {
+                            option.disabled = selectedValues.includes(option.value);
+                        }
+                    });
+                });
+            }
+            rankingSelects.forEach(select => select.addEventListener('change', updateRankingOptions));
+            updateRankingOptions();
+
+            // --- Copy Diagnostic Link ---
+            const copyBtn = document.getElementById('copy-diagnostic-link');
+            copyBtn.addEventListener('click', () => {
+                const link = 'https://clubesa.github.io/simuladorRede3d/diagnostico/formulario.html';
+                navigator.clipboard.writeText(link).then(() => {
+                    copyBtn.textContent = 'Link Copiado!';
+                    setTimeout(() => { copyBtn.textContent = 'Copiar Link do Diagnóstico'; }, 2000);
+                }).catch(err => console.error('Failed to copy: ', err));
+            });
+
+            // --- Animations ---
+            const fadeInElements = document.querySelectorAll('.fade-in');
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } });
+            }, { threshold: 0.1 });
+            fadeInElements.forEach(el => observer.observe(el));
+
+            // --- Calculator Logic ---
+            document.getElementById('calculateBtn').addEventListener('click', () => {
+                const resultsDiv = document.getElementById('results');
+                const fee = parseFloat(document.getElementById('monthlyFee').value) || 0;
+                const students = parseInt(document.getElementById('studentCount').value) || 0;
+                if (fee <= 0 || students <= 0) { resultsDiv.innerHTML = `<p style="text-align: center; color: var(--color-primary);">Por favor, insira valores válidos.</p>`; return; }
+                const formatCurrency = (value) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                resultsDiv.innerHTML = `
+                    <div class="result-card"><h4>Modelo Split</h4><p>Receita mensal estimada:</p><h3 style="color: var(--color-primary);">${formatCurrency(fee * students * 0.15)}</h3></div>
+                    <div class="result-card"><h4>Modelo Assinatura</h4><p>Receita mensal estimada:</p><h3 style="color: var(--color-primary);">${formatCurrency(fee * students * 0.50)}</h3></div>`;
+            });
+
+            // --- Modal Logic ---
+            const modal = document.getElementById('contact-modal');
+            document.getElementById('open-modal-btn').addEventListener('click', () => modal.classList.add('visible'));
+            modal.addEventListener('click', (e) => { if (e.target === modal) { modal.classList.remove('visible'); } });
+
+            // --- Form Submission Logic ---
+            const form = document.getElementById('commercial-form');
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const formData = new FormData(form);
+                const data = {};
+                for (let [key, value] of formData.entries()) {
+                    if (key.endsWith('[]')) { // Simplified for checkboxes
+                        key = key.slice(0, -2);
+                        if (!data[key]) data[key] = [];
+                        data[key].push(value);
+                    } else {
+                        data[key] = value;
+                    }
+                }
+                
+                // Get selected modalities
+                data.modalidades_selecionadas = Array.from(document.querySelectorAll('input[name="modalidades_selecionadas"]:checked')).map(cb => cb.value);
+
+                // Get contact info from modal
+                data.contato_nome = document.getElementById('contact-name').value;
+                data.contato_telefone = document.getElementById('contact-phone').value;
+                data.contato_cargo = document.getElementById('contact-role').value;
+                data.contato_escola = document.getElementById('contact-school').value;
+
+                console.log("Form data collected:", data);
+                alert("Obrigado! Suas respostas foram enviadas com sucesso. (Demonstração)");
+                modal.classList.remove('visible');
+                form.reset();
+                updateRankingOptions();
             });
         });
     </script>
