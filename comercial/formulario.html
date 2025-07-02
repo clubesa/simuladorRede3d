@@ -33,7 +33,10 @@
         * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
         body { font-family: var(--font-body); background-color: var(--color-white); color: var(--color-text); line-height: 1.8; overflow-x: hidden; }
 
-        .container { width: 90%; max-width: 1100px; margin: 0 auto; padding: 6rem 2rem; }
+        .container { width: 100%; max-width: 1100px; margin: 0 auto; padding: 6rem 1rem; }
+        @media (min-width: 640px) {
+            .container { padding: 6rem 2rem; }
+        }
 
         /* Typography */
         h1, h2, h3, h4 { font-family: var(--font-title); font-weight: 600; line-height: 1.3; }
@@ -60,11 +63,12 @@
             padding: 1rem 0 2rem 0;
             scrollbar-width: thin;
             scrollbar-color: var(--color-accent-blue) transparent;
+            scroll-snap-type: x mandatory;
         }
         .vision-scroller-container::-webkit-scrollbar { height: 8px; }
         .vision-scroller-container::-webkit-scrollbar-track { background: transparent; }
         .vision-scroller-container::-webkit-scrollbar-thumb { background-color: var(--color-accent-blue); border-radius: 10px; }
-        .vision-scroller { display: flex; flex-wrap: nowrap; gap: 2rem; width: max-content; }
+        .vision-scroller { display: flex; flex-wrap: nowrap; gap: 2rem; width: max-content; padding-left: 1rem; padding-right: 1rem;}
         .vision-card {
             flex: 0 0 300px;
             background: var(--color-white);
@@ -72,6 +76,7 @@
             padding: 2rem;
             box-shadow: var(--shadow-md);
             border-top: 4px solid var(--color-primary);
+            scroll-snap-align: start;
         }
         .vision-card h4 { font-size: 1.2rem; margin-bottom: 1rem; color: var(--color-primary); }
         .vision-card p { font-size: 0.95rem; line-height: 1.6; }
@@ -94,6 +99,7 @@
         @media (min-width: 768px) { .solution-grid { grid-template-columns: repeat(2, 1fr); } }
         .flip-card { background-color: transparent; height: 350px; border-radius: 20px; cursor: pointer; }
         .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.8s; transform-style: preserve-3d; box-shadow: var(--shadow-md); border-radius: 20px; }
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
         .flip-card-inner.is-flipped { transform: rotateY(180deg); }
         .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; }
         .flip-card-front { background: var(--color-white); color: var(--color-text); }
@@ -182,26 +188,9 @@
         .tooltip-container .tooltip-text.visible { visibility: visible; opacity: 1; }
         .tooltip-container .tooltip-text::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: var(--color-text) transparent transparent transparent; }
         
-        /* MODIFIED: Simplified Diagnostic Area */
-        .diagnostic-link-area { text-align: center; margin-top: 4rem; background: var(--color-accent-blue); padding: 3rem 2rem; border-radius: 15px; display: grid; grid-template-columns: 1fr; gap: 2rem; align-items: center;}
-        @media (min-width: 992px) { .diagnostic-link-area { grid-template-columns: 1fr 1fr; } }
-        .diagnostic-link-area .diagnostic-link-text { text-align: left; }
-        .diagnostic-preview-container {
-            height: 500px;
-            width: 250px;
-            margin: 0 auto;
-            border-radius: 10px;
-            overflow: hidden;
-            background: #fff;
-            box-shadow: var(--shadow-md);
-        }
-        .diagnostic-preview-container iframe {
-            width: 200%;
-            height: 200%;
-            border: none;
-            transform: scale(0.5);
-            transform-origin: 0 0;
-        }
+        .diagnostic-link-area { text-align: center; margin-top: 4rem; background: var(--color-accent-blue); padding: 3rem 2rem; border-radius: 15px; }
+        .diagnostic-link-area h4 { text-align: center; }
+        .diagnostic-link-area p { max-width: 600px; margin-left: auto; margin-right: auto; }
         
         /* Partnership Section */
         .partnership-grid { display: grid; grid-template-columns: 1fr; gap: 3rem; margin-bottom: 4rem; }
@@ -400,14 +389,9 @@
                     </div>
                 <!-- MODIFIED: Simplified diagnostic area -->
                 <div class="diagnostic-link-area">
-                    <div class="diagnostic-link-text">
-                        <h4>Não tem certeza de quais experiências escolher?</h4>
-                        <p>Use nosso formulário de diagnóstico para pesquisar os interesses de alunos e famílias. Copie o link e compartilhe com sua equipe pedagógica.</p>
-                        <button type="button" id="copy-diagnostic-link" class="btn btn-primary">Copiar Link do Diagnóstico</button>
-                    </div>
-                    <div class="diagnostic-preview-container">
-                        <iframe src="https://clubesa.github.io/simuladorRede3d/diagnostico/formulario.html" title="Preview do Formulário de Diagnóstico"></iframe>
-                    </div>
+                    <h4>Não tem certeza de quais experiências escolher?</h4>
+                    <p>Use nosso formulário de diagnóstico para pesquisar os interesses de alunos e famílias. Copie o link e compartilhe com sua equipe pedagógica.</p>
+                    <button type="button" id="copy-diagnostic-link" class="btn btn-primary">Copiar Link do Diagnóstico</button>
                 </div>
             </section>
             
