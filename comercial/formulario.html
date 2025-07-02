@@ -92,9 +92,9 @@
         .section-solution .container { padding-top: 0; padding-bottom: 0; }
         .solution-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; perspective: 1000px; }
         @media (min-width: 768px) { .solution-grid { grid-template-columns: repeat(2, 1fr); } }
-        .flip-card { background-color: transparent; height: 350px; border-radius: 20px; }
+        .flip-card { background-color: transparent; height: 350px; border-radius: 20px; cursor: pointer; }
         .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.8s; transform-style: preserve-3d; box-shadow: var(--shadow-md); border-radius: 20px; }
-        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-inner.is-flipped { transform: rotateY(180deg); }
         .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; }
         .flip-card-front { background: var(--color-white); color: var(--color-text); }
         .flip-card-front i { color: var(--color-primary); margin-bottom: 1rem; }
@@ -159,7 +159,7 @@
         .modality-card-header h4 { margin-bottom: 0; }
         .modality-card-header input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--color-primary); }
         .tooltip-container { position: relative; display: inline-flex; align-items: center; }
-        .tooltip-container .tooltip-icon { cursor: help; }
+        .tooltip-container .tooltip-icon { cursor: pointer; }
         .tooltip-container .tooltip-text {
             visibility: hidden;
             width: max-content;
@@ -179,22 +179,21 @@
             font-size: 0.85rem;
             line-height: 1.4;
         }
+        .tooltip-container .tooltip-text.visible { visibility: visible; opacity: 1; }
         .tooltip-container .tooltip-text::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: var(--color-text) transparent transparent transparent; }
-        .tooltip-container:hover .tooltip-text { visibility: visible; opacity: 1; }
         
         /* MODIFIED: Simplified Diagnostic Area */
-        .diagnostic-link-area { text-align: center; margin-top: 4rem; background: var(--color-accent-blue); padding: 3rem 2rem; border-radius: 15px; }
-        .diagnostic-link-area h4 { text-align: center; }
-        .diagnostic-link-area p { max-width: 600px; margin-left: auto; margin-right: auto; }
+        .diagnostic-link-area { text-align: center; margin-top: 4rem; background: var(--color-accent-blue); padding: 3rem 2rem; border-radius: 15px; display: grid; grid-template-columns: 1fr; gap: 2rem; align-items: center;}
+        @media (min-width: 992px) { .diagnostic-link-area { grid-template-columns: 1fr 1fr; } }
+        .diagnostic-link-area .diagnostic-link-text { text-align: left; }
         .diagnostic-preview-container {
-            height: 400px;
-            width: 100%;
-            max-width: 500px;
-            margin: 2rem auto 0 auto;
-            border: 1px solid #ccc;
+            height: 500px;
+            width: 250px;
+            margin: 0 auto;
             border-radius: 10px;
             overflow: hidden;
             background: #fff;
+            box-shadow: var(--shadow-md);
         }
         .diagnostic-preview-container iframe {
             width: 200%;
@@ -243,8 +242,8 @@
         input[type="range"] { -webkit-appearance: none; width: 100%; height: 8px; background: var(--color-accent-blue); border-radius: 5px; outline: none; }
         input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; background: var(--color-primary); cursor: pointer; border-radius: 50%; }
         input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; background: var(--color-primary); cursor: pointer; border-radius: 50%; }
-        .financial-comparison-row { grid-column: 1 / -1; display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--color-accent-blue); }
-        .financial-comparison-row .input-group { flex: 1; }
+        .financial-comparison-row { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--color-accent-blue); }
+        .financial-comparison-row .input-group { flex: 1; min-width: 120px; }
         .financial-comparison-row .input-group.percentage { flex: 0.7; text-align: center; }
         .financial-comparison-row .input-group.percentage input { text-align: center; font-weight: bold; color: var(--color-primary); }
 
@@ -255,10 +254,24 @@
         .result-card .gain-value { font-size: 1.8rem; font-weight: bold; color: var(--color-primary); }
         .result-card .formula { font-size: 0.8rem; font-style: italic; color: #777; }
 
-        /* Benefits Section */
+        /* MODIFIED: Benefits Section for uniform button size */
         .benefits-cloud { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; }
         .benefit-tag input[type="checkbox"] { display: none; }
-        .benefit-tag label { display: inline-block; background-color: var(--color-accent-blue); color: var(--color-text); padding: 0.8rem 1.5rem; border-radius: 50px; font-weight: 500; transition: transform 0.3s, background-color 0.3s; cursor: pointer; }
+        .benefit-tag label { 
+            display: inline-flex; 
+            align-items: center;
+            justify-content: center;
+            min-width: 180px;
+            height: 50px;
+            background-color: var(--color-accent-blue); 
+            color: var(--color-text); 
+            padding: 0.8rem 1.5rem; 
+            border-radius: 50px; 
+            font-weight: 500; 
+            transition: transform 0.3s, background-color 0.3s; 
+            cursor: pointer;
+            text-align: center;
+        }
         .benefit-tag input[type="checkbox"]:checked + label { transform: scale(1.05); background-color: var(--color-secondary); color: var(--color-white); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         
         /* Footer & Modal */
