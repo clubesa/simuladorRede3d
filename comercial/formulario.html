@@ -81,7 +81,8 @@
         @media (min-width: 992px) { .problem-grid { grid-template-columns: 1fr 1fr; } }
         .challenge-item { display: flex; justify-content: space-between; align-items: center; background-color: var(--color-light-bg); padding: 1rem 1.5rem; border-radius: 12px; margin-bottom: 1rem; }
         .challenge-item p { margin-bottom: 0; font-weight: 500; }
-        .challenge-item select { padding: 0.5rem; border-radius: 8px; border: 2px solid var(--color-secondary); font-weight: bold; cursor: pointer; color: var(--color-secondary); }
+        /* MODIFIED: List box color reverted */
+        .challenge-item select { padding: 0.5rem; border-radius: 8px; border: 2px solid var(--color-accent-blue); font-weight: bold; cursor: pointer; color: var(--color-text); }
         .problem-image-wrapper { background-color: var(--color-light-bg); border-radius: 20px; padding: 2rem; text-align: center; box-shadow: var(--shadow-sm); }
         .problem-image-wrapper h4 { font-family: var(--font-body); font-size: 1.2rem; font-style: italic; color: var(--color-text); }
         .textarea-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
@@ -124,21 +125,19 @@
         .tooltip-container .tooltip-text::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: var(--color-text) transparent transparent transparent; }
         .tooltip-container:hover .tooltip-text { visibility: visible; opacity: 1; }
         
-        /* MODIFIED: Diagnostic Preview Area background changed */
         .diagnostic-link-area { text-align: left; margin-top: 4rem; background: var(--color-accent-blue); padding: 2rem; border-radius: 15px; display: grid; grid-template-columns: 1fr; gap: 2rem; align-items: center; }
         @media (min-width: 992px) { .diagnostic-link-area { grid-template-columns: 2fr 1fr; gap: 3rem;} }
         .diagnostic-link-area h4 { text-align: left; }
         .diagnostic-link-area p { max-width: 100%; text-align: left; }
         
-        .diagnostic-preview { position: relative; background: #4a4a4a; border-radius: 20px; padding: 10px; box-shadow: 0 20px 40px rgba(0,0,0,0.25); border: 2px solid #555; height: 320px; max-width: 450px; margin: 0 auto; overflow: hidden; }
-        .diagnostic-preview::before { content: ''; position: absolute; top: 50%; transform: translateY(-50%); left: -2px; height: 30px; width: 2px; background: #555; border-radius: 4px 0 0 4px; }
+        /* MODIFIED: Diagnostic Preview with centered content */
+        .diagnostic-preview { position: relative; background: #4a4a4a; border-radius: 20px; padding: 10px; box-shadow: 0 20px 40px rgba(0,0,0,0.25); border: 2px solid #555; height: 320px; max-width: 450px; margin: 0 auto; overflow: hidden; display: flex; justify-content: center; align-items: center; }
         .diagnostic-preview iframe {
             width: 182%;
             height: 182%;
             border: none;
-            border-radius: 10px;
             transform: scale(0.55);
-            transform-origin: top left;
+            transform-origin: center;
         }
         
         /* Partnership Section */
