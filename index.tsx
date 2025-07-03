@@ -11,9 +11,12 @@ interface FlipCardProps {
 }
 
 interface ImageLightboxProps {
-    imageUrl: string;
+    images: string[];
+    currentIndex: number;
     originRect: DOMRect;
     onClose: () => void;
+    onNext: () => void;
+    onPrev: () => void;
 }
 
 interface PortfolioItem {
@@ -25,7 +28,7 @@ interface PortfolioItem {
 
 interface PortfolioCardProps {
     item: PortfolioItem;
-    onImageClick: (imageUrl: string, element: HTMLImageElement) => void;
+    onImageClick: (item: PortfolioItem, imageIndex: number, element: HTMLImageElement) => void;
 }
 
 interface FooterProps {
@@ -38,7 +41,8 @@ interface ContactModalProps {
 }
 
 interface LightboxState {
-    imageUrl: string;
+    images: string[];
+    currentIndex: number;
     originElement: HTMLElement;
 }
 
@@ -99,9 +103,10 @@ const FlipCard: React.FC<FlipCardProps> = ({ icon, frontTitle, backTitle, backTe
     );
 };
 
-const ImageLightbox: React.FC<ImageLightboxProps> = ({ imageUrl, originRect, onClose }) => {
+const ImageLightbox: React.FC<ImageLightboxProps> = ({ images, currentIndex, originRect, onClose, onNext, onPrev }) => {
     const [isAnimating, setIsAnimating] = useState(false);
     const [isClosing, setIsClosing] = useState(false);
+    const imageUrl = images[currentIndex];
 
     const handleClose = useCallback(() => {
         setIsClosing(true);
@@ -111,14 +116,18 @@ const ImageLightbox: React.FC<ImageLightboxProps> = ({ imageUrl, originRect, onC
         return () => clearTimeout(timer);
     }, [onClose]);
 
-    // Effect to handle keyboard escape key
+    // Effect to handle keyboard keys
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') handleClose();
+            if (images.length > 1) {
+                if (e.key === 'ArrowRight') onNext();
+                if (e.key === 'ArrowLeft') onPrev();
+            }
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [handleClose]);
+    }, [handleClose, onNext, onPrev, images.length]);
 
     // Effect to trigger the opening animation
     useEffect(() => {
@@ -158,6 +167,24 @@ const ImageLightbox: React.FC<ImageLightboxProps> = ({ imageUrl, originRect, onC
             role="dialog"
             aria-modal="true"
         >
+             {images.length > 1 && (
+                <>
+                    <button
+                        onClick={(e) => { e.stopPropagation(); onPrev(); }}
+                        className={`fixed left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/70 text-text-main rounded-full p-2 sm:p-3 shadow-lg transition-all duration-300 ease-in-out hover:scale-110 hover:bg-white ${isAnimating && !isClosing ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}
+                        aria-label="Imagem Anterior"
+                    >
+                        <ChevronLeft size={28} />
+                    </button>
+                    <button
+                        onClick={(e) => { e.stopPropagation(); onNext(); }}
+                        className={`fixed right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/70 text-text-main rounded-full p-2 sm:p-3 shadow-lg transition-all duration-300 ease-in-out hover:scale-110 hover:bg-white ${isAnimating && !isClosing ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}
+                        aria-label="Próxima Imagem"
+                    >
+                        <ChevronRight size={28} />
+                    </button>
+                </>
+            )}
             <img
                 src={imageUrl}
                 alt="Imagem ampliada"
@@ -214,7 +241,7 @@ const PortfolioCard: React.FC<PortfolioCardProps> = ({ item, onImageClick }) => 
                                 alt={`${item.title} - Imagem ${index + 1}`} 
                                 className="w-full h-full object-contain flex-shrink-0 cursor-pointer"
                                 onError={handleImageError}
-                                onClick={(e) => onImageClick(fullUrl, e.currentTarget)}
+                                onClick={(e) => onImageClick(item, index, e.currentTarget)}
                             />
                         );
                     })}
@@ -541,9 +568,11 @@ const PortfolioSection: React.FC = () => {
         }).catch(err => console.error('Failed to copy link: ', err));
     }, []);
 
-    const handleOpenLightbox = useCallback((imageUrl: string, element: HTMLElement) => {
+    const handleOpenLightbox = useCallback((item: PortfolioItem, imageIndex: number, element: HTMLElement) => {
+        const basePath = 'https://clubesa.github.io/simuladorRede3d/diagnostico/';
+        const fullImageUrls = item.images.map(img => `${basePath}${item.folder}/${img}`);
         element.style.visibility = 'hidden';
-        setLightboxState({ imageUrl, originElement: element });
+        setLightboxState({ images: fullImageUrls, currentIndex: imageIndex, originElement: element });
     }, []);
 
     const handleCloseLightbox = useCallback(() => {
@@ -552,6 +581,22 @@ const PortfolioSection: React.FC = () => {
         }
         setLightboxState(null);
     }, [lightboxState]);
+
+    const handleNextImage = useCallback(() => {
+        setLightboxState(prev => {
+            if (!prev) return null;
+            const nextIndex = (prev.currentIndex + 1) % prev.images.length;
+            return { ...prev, currentIndex: nextIndex };
+        });
+    }, []);
+    
+    const handlePrevImage = useCallback(() => {
+        setLightboxState(prev => {
+            if (!prev) return null;
+            const prevIndex = (prev.currentIndex - 1 + prev.images.length) % prev.images.length;
+            return { ...prev, currentIndex: prevIndex };
+        });
+    }, []);
 
     useEffect(() => {
         if (lightboxState) {
@@ -612,9 +657,12 @@ const PortfolioSection: React.FC = () => {
             </div>
              {lightboxState && (
                 <ImageLightbox
-                    imageUrl={lightboxState.imageUrl}
+                    images={lightboxState.images}
+                    currentIndex={lightboxState.currentIndex}
                     originRect={lightboxState.originElement.getBoundingClientRect()}
                     onClose={handleCloseLightbox}
+                    onNext={handleNextImage}
+                    onPrev={handlePrevImage}
                 />
             )}
         </section>
