@@ -167,6 +167,15 @@ const ImageLightbox: React.FC<ImageLightboxProps> = ({ images, currentIndex, ori
             role="dialog"
             aria-modal="true"
         >
+             {/* The Image - moved to be the first child to be in the background */}
+            <img
+                src={imageUrl}
+                alt="Imagem ampliada"
+                style={style}
+                // Stop propagation so clicking the image doesn't close the lightbox
+                onClick={(e) => e.stopPropagation()}
+            />
+            {/* Navigation Buttons */}
              {images.length > 1 && (
                 <>
                     <button
@@ -185,13 +194,7 @@ const ImageLightbox: React.FC<ImageLightboxProps> = ({ images, currentIndex, ori
                     </button>
                 </>
             )}
-            <img
-                src={imageUrl}
-                alt="Imagem ampliada"
-                style={style}
-                // Stop propagation so clicking the image doesn't close the lightbox
-                onClick={(e) => e.stopPropagation()}
-            />
+            {/* Close Button */}
             <button
                 onClick={(e) => {
                     e.stopPropagation();
