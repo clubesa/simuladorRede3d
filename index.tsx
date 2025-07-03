@@ -139,6 +139,7 @@ const ImageLightbox: React.FC<ImageLightboxProps> = ({ images, currentIndex, ori
     const style: React.CSSProperties = {
         position: 'fixed',
         transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+        zIndex: 60, // Ensure image is above backdrop but below buttons
         // Initial state: matches the thumbnail
         top: `${originRect.top}px`,
         left: `${originRect.left}px`,
@@ -167,7 +168,7 @@ const ImageLightbox: React.FC<ImageLightboxProps> = ({ images, currentIndex, ori
             role="dialog"
             aria-modal="true"
         >
-             {/* The Image - moved to be the first child to be in the background */}
+             {/* The Image is rendered first, but its z-index keeps it behind the buttons */}
             <img
                 src={imageUrl}
                 alt="Imagem ampliada"
@@ -175,19 +176,19 @@ const ImageLightbox: React.FC<ImageLightboxProps> = ({ images, currentIndex, ori
                 // Stop propagation so clicking the image doesn't close the lightbox
                 onClick={(e) => e.stopPropagation()}
             />
-            {/* Navigation Buttons */}
+            {/* The controls are rendered after, and have a higher z-index via their fixed positioning context */}
              {images.length > 1 && (
                 <>
                     <button
                         onClick={(e) => { e.stopPropagation(); onPrev(); }}
-                        className={`fixed left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/70 text-text-main rounded-full p-2 sm:p-3 shadow-lg transition-all duration-300 ease-in-out hover:scale-110 hover:bg-white ${isAnimating && !isClosing ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}
+                        className={`fixed left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/70 text-text-main rounded-full p-2 sm:p-3 shadow-lg transition-all duration-300 ease-in-out hover:scale-110 hover:bg-white z-70 ${isAnimating && !isClosing ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}
                         aria-label="Imagem Anterior"
                     >
                         <ChevronLeft size={28} />
                     </button>
                     <button
                         onClick={(e) => { e.stopPropagation(); onNext(); }}
-                        className={`fixed right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/70 text-text-main rounded-full p-2 sm:p-3 shadow-lg transition-all duration-300 ease-in-out hover:scale-110 hover:bg-white ${isAnimating && !isClosing ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}
+                        className={`fixed right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/70 text-text-main rounded-full p-2 sm:p-3 shadow-lg transition-all duration-300 ease-in-out hover:scale-110 hover:bg-white z-70 ${isAnimating && !isClosing ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}
                         aria-label="Próxima Imagem"
                     >
                         <ChevronRight size={28} />
@@ -200,7 +201,7 @@ const ImageLightbox: React.FC<ImageLightboxProps> = ({ images, currentIndex, ori
                     e.stopPropagation();
                     handleClose();
                 }}
-                className={`fixed top-4 right-4 bg-white text-text-main rounded-full p-2 shadow-lg transition-all duration-300 ease-in-out hover:scale-110 ${isAnimating && !isClosing ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}
+                className={`fixed top-4 right-4 bg-white text-text-main rounded-full p-2 shadow-lg transition-all duration-300 ease-in-out hover:scale-110 z-70 ${isAnimating && !isClosing ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}
                 aria-label="Fechar"
             >
                 <X size={24} />
@@ -543,16 +544,16 @@ const WayOfDoingSection: React.FC = () => {
 };
 
 const portfolioData: PortfolioItem[] = [
-    { title: 'Marcenaria', folder: 'marcenaria', images: ['IMG_1954.jpeg', 'IMG_1809.jpeg', 'IMG_1810.jpeg', 'IMG_1835.jpeg'], tooltip: null },
-    { title: 'Circo', folder: 'circo', images: ['IMG_1953.jpeg', 'IMG_1813.jpeg', 'IMG_1839.jpeg', 'IMG_1840.jpeg'], tooltip: null },
-    { title: 'Fazeres Manuais', folder: 'fazeresmanuais', images: ['IMG_1956.jpeg', '82d08da1-ed2c-4bfd-908a-4b6e75999604.jpeg', 'IMG_1822.jpeg', 'IMG_1846.jpeg'], tooltip: 'Horta, Panificação, Cozinha Experimental' },
-    { title: 'Tecnologia', folder: 'tecnologia', images: ['IMG_1952.jpeg', 'IMG_1807.jpeg', 'IMG_1808.jpeg', 'IMG_1894.jpeg'], tooltip: 'Programação de Jogos, Robótica, Criação de Jogos de Tabuleiro e RPG' },
-    { title: 'CidadeVamos', folder: 'cidadevamos', images: ['IMG_1947.jpeg', 'IMG_1948.jpeg', 'IMG_1943.jpeg', 'IMG_1946.jpeg', 'IMG_1912.jpeg', 'IMG_1913.jpeg', 'IMG_1914.jpeg'], tooltip: null },
-    { title: 'Infância Sem Excesso', folder: 'infanciasemexcesso', images: ['IMG_1943.jpeg', 'IMG_1944.jpeg', 'IMG_1946.jpeg', 'IMG_1930.jpeg', 'IMG_1931.jpeg', 'IMG_1932.jpeg', 'IMG_1933.jpeg', 'IMG_1934.jpeg', 'IMG_1937.jpeg', 'IMG_1938.jpeg', 'IMG_1939.jpeg', 'IMG_1940.jpeg', 'IMG_1941.jpeg', 'IMG_1942.jpeg', 'IMG_1936.jpeg', 'IMG_1945.jpeg', 'IMG_1927.jpeg', 'IMG_1935.jpeg', 'IMG_1928.jpeg', 'IMG_1929.jpeg'], tooltip: null },
-    { title: 'Prática Esportiva', folder: 'praticaesportiva', images: ['IMG_1955.jpeg', 'IMG_1907.jpeg', 'IMG_1908.jpeg', 'IMG_1909.jpeg'], tooltip: null },
-    { title: 'Brincar Livre', folder: 'brincarlivre', images: ['IMG_1958.jpeg', 'IMG_1811.jpeg', 'IMG_1829.jpeg', 'IMG_1830.jpeg', 'IMG_1831.jpeg', 'IMG_1832.jpeg'], tooltip: null },
-    { title: 'Mindfulness', folder: 'mindfulness', images: ['IMG_1957.jpeg', 'IMG_1854.jpeg', 'IMG_1855.jpeg'], tooltip: null },
-    { title: 'Ateliês', folder: 'atelie', images: ['IMG_1820.jpeg', 'IMG_1825.jpeg', 'IMG_1826.jpeg'], tooltip: 'Clube de Leitura, CrioLivros, Artes Visuais, Artes Cênicas, Improvisação, Dança e Música' },
+    { title: 'Marcenaria', folder: 'marcenaria', images: ['IMG_1960.jpeg', 'IMG_1809.jpeg', 'IMG_1810.jpeg', 'IMG_1835.jpeg', 'IMG_1836.jpeg', 'IMG_1837.jpeg'], tooltip: null },
+    { title: 'Circo', folder: 'circo', images: ['IMG_1953.jpeg', 'IMG_1813.jpeg', 'IMG_1839.jpeg', 'IMG_1840.jpeg', 'IMG_1841.jpeg', 'IMG_1842.jpeg', 'IMG_1843.jpeg', 'IMG_1844.jpeg', 'bc110c9c-a8e1-452a-94b7-5a0c6ce0d3b8.jpeg', 'e3b3b2a3-a15e-4e24-be2f-b529a24e3a60.jpeg', 'f80d9019-6851-4b2f-af19-5a8dd0edcaf7.jpeg'], tooltip: null },
+    { title: 'Fazeres Manuais', folder: 'fazeresmanuais', images: ['82d08da1-ed2c-4bfd-908a-4b6e75999604.jpeg', 'IMG_1822.jpeg', 'IMG_1846.jpeg', 'IMG_1847.jpeg', 'IMG_1848.jpeg', 'IMG_1849.jpeg', 'IMG_1850.jpeg', 'IMG_1851.jpeg', 'IMG_1852.jpeg', 'IMG_1853.jpeg', 'IMG_1956.jpeg'], tooltip: 'Horta, Panificação, Cozinha Experimental' },
+    { title: 'Tecnologia', folder: 'tecnologia', images: ['IMG_1952.jpeg', 'IMG_1807.jpeg', 'IMG_1808.jpeg', 'IMG_1894.jpeg', 'IMG_1895.jpeg', 'IMG_1896.jpeg', 'IMG_1897.jpeg', 'IMG_1898.jpeg', 'IMG_1899.jpeg', 'IMG_1900.jpeg', 'IMG_1901.jpeg', 'IMG_1902.jpeg', 'IMG_1903.jpeg', 'IMG_1904.jpeg', 'IMG_1905.jpeg', 'IMG_1906.jpeg'], tooltip: 'Programação de Jogos, Robótica, Criação de Jogos de Tabuleiro e RPG' },
+    { title: 'CidadeVamos', folder: 'cidadevamos', images: ['IMG_1912.jpeg', 'IMG_1913.jpeg', 'IMG_1914.jpeg', 'IMG_1915.jpeg', 'IMG_1916.jpeg', 'IMG_1917.jpeg', 'IMG_1918.jpeg', 'IMG_1919.jpeg', 'IMG_1920.jpeg', 'IMG_1921.jpeg', 'IMG_1922.jpeg', 'IMG_1923.jpeg', 'IMG_1924.jpeg', 'IMG_1925.jpeg', 'IMG_1926.jpeg', 'IMG_1943.jpeg', 'IMG_1946.jpeg', 'IMG_1947.jpeg', 'IMG_1948.jpeg'], tooltip: null },
+    { title: 'Infância Sem Excesso', folder: 'infanciasemexcesso', images: ['IMG_1927.jpeg', 'IMG_1928.jpeg', 'IMG_1929.jpeg', 'IMG_1930.jpeg', 'IMG_1931.jpeg', 'IMG_1932.jpeg', 'IMG_1933.jpeg', 'IMG_1934.jpeg', 'IMG_1935.jpeg', 'IMG_1936.jpeg', 'IMG_1937.jpeg', 'IMG_1938.jpeg', 'IMG_1939.jpeg', 'IMG_1940.jpeg', 'IMG_1941.jpeg', 'IMG_1942.jpeg', 'IMG_1943.jpeg', 'IMG_1944.jpeg', 'IMG_1945.jpeg', 'IMG_1946.jpeg'], tooltip: null },
+    { title: 'Prática Esportiva', folder: 'praticaesportiva', images: ['IMG_1955.jpeg', 'IMG_1907.jpeg', 'IMG_1908.jpeg', 'IMG_1910.jpeg', 'IMG_1911.jpeg', 'IMG_1969.jpeg', 'IMG_1970.jpeg', 'IMG_1971.jpeg', 'IMG_1972.jpeg', 'IMG_1973.jpeg', 'IMG_1974.jpeg', 'IMG_1975.jpeg', 'IMG_1976.jpeg', 'IMG_1977.jpeg', 'IMG_1978.jpeg'], tooltip: null },
+    { title: 'Brincar Livre', folder: 'brincarlivre', images: ['8c01a9ee-c495-41bd-926e-4ee64715ef30.jpeg', 'IMG_1801.jpeg', 'IMG_1804.jpeg', 'IMG_1811.jpeg', 'IMG_1830.jpeg', 'IMG_1831.jpeg', 'IMG_1832.jpeg', 'IMG_1979.jpeg', 'IMG_1980.jpeg', 'IMG_1981.jpeg', 'IMG_1982.jpeg', 'IMG_1983.jpeg', 'IMG_1984.jpeg', 'IMG_1985.jpeg', 'IMG_1986.jpeg', 'IMG_1987.jpeg', 'IMG_1988.jpeg'], tooltip: null },
+    { title: 'Mindfulness', folder: 'mindfulness', images: ['IMG_1959.jpeg', 'IMG_1812.jpeg', 'IMG_1854.jpeg', 'IMG_1855.jpeg', 'IMG_1857.jpeg'], tooltip: null },
+    { title: 'Ateliês', folder: 'atelie', images: ['8c01a9ee-c495-41bd-926e-4ee64715ef30.jpeg', 'IMG_1820.jpeg', 'IMG_1861.jpeg', 'IMG_1862.jpeg', 'IMG_1863.jpeg', 'IMG_1865.jpeg', 'IMG_1866.jpeg', 'IMG_1867.jpeg', 'IMG_1868.jpeg', 'IMG_1869.jpeg', 'IMG_1870.jpeg', 'IMG_1871.jpeg', 'IMG_1872.jpeg', 'IMG_1873.jpeg', 'IMG_1874.jpeg', 'IMG_1875.jpeg', 'IMG_1881.jpeg', 'IMG_1883.jpeg', 'IMG_1884.jpeg', 'IMG_1885.jpeg', 'IMG_1886.jpeg', 'IMG_1887.jpeg', 'IMG_1888.jpeg', 'IMG_1890.jpeg', 'IMG_1891.jpeg', 'IMG_1962.jpeg', 'IMG_1963.jpeg', 'IMG_1964.jpeg', 'IMG_1965.jpeg', 'IMG_1966.jpeg', 'IMG_3195.jpeg', 'fa97fcb7-9657-435d-8e72-e67d85f09b8b.jpeg'], tooltip: 'Clube de Leitura, CrioLivros, Artes Visuais, Artes Cênicas, Improvisação, Dança e Música' },
 ];
 
 const PortfolioSection: React.FC = () => {
