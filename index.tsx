@@ -29,15 +29,27 @@ interface PortfolioItem {
 interface PortfolioCardProps {
     item: PortfolioItem;
     onImageClick: (item: PortfolioItem, imageIndex: number, element: HTMLImageElement) => void;
+    isChecked: boolean;
+    onToggle: (title: string) => void;
 }
 
 interface FooterProps {
     onOpenModal: () => void;
+    isFormValid: boolean;
 }
 
 interface ContactModalProps {
     isOpen: boolean;
     onClose: () => void;
+    contactData: {
+        name: string;
+        email: string;
+        phone: string;
+        role: string;
+        school: string;
+    };
+    onContactDataChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onSubmit: () => void;
 }
 
 interface LightboxState {
@@ -45,6 +57,41 @@ interface LightboxState {
     currentIndex: number;
     originElement: HTMLElement;
 }
+
+// Props for state-lifted components
+interface ProblemSectionProps {
+    rankings: Record<string, string>;
+    setRankings: React.Dispatch<React.SetStateAction<Record<string, string>>>;
+    openChallenge: string;
+    setOpenChallenge: (value: string) => void;
+}
+
+interface PortfolioSectionProps {
+    selectedItems: Record<string, boolean>;
+    onToggleItem: (title: string) => void;
+    onToggleSelectAll: () => void;
+    onDeselectAll: () => void;
+    portfolioItemTitles: string[];
+}
+
+interface BenefitsSectionProps {
+    selectedBenefits: Record<string, boolean>;
+    onToggleBenefit: (id: string) => void;
+}
+
+interface SimulatorSectionProps {
+    totalAlunos: string;
+    setTotalAlunos: (value: string) => void;
+    metaConversao: number;
+    setMetaConversao: (value: number) => void;
+    frequenciaSemanal: number;
+    setFrequenciaSemanal: (value: number) => void;
+    mensalidadeCurricular: string;
+    setMensalidadeCurricular: (value: string) => void;
+    selectedModel: string;
+    onSelectModel: (model: string) => void;
+}
+
 
 // --- Hooks (from hooks/useFadeIn.ts) ---
 const useFadeIn = <T extends HTMLElement,>(): [RefObject<T>, boolean] => {
@@ -210,7 +257,7 @@ const ImageLightbox: React.FC<ImageLightboxProps> = ({ images, currentIndex, ori
     );
 };
 
-const PortfolioCard: React.FC<PortfolioCardProps> = ({ item, onImageClick }) => {
+const PortfolioCard: React.FC<PortfolioCardProps> = ({ item, onImageClick, isChecked, onToggle }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const basePath = 'https://clubesa.github.io/simuladorRede3d/diagnostico/';
 
@@ -289,6 +336,8 @@ const PortfolioCard: React.FC<PortfolioCardProps> = ({ item, onImageClick }) => 
                         name="modalidades_selecionadas" 
                         value={item.title}
                         className="w-5 h-5 accent-primary cursor-pointer"
+                        checked={isChecked}
+                        onChange={() => onToggle(item.title)}
                     />
                 </div>
             </div>
@@ -384,14 +433,9 @@ const challenges = [
     { id: 'espacos', text: 'Transformar espaços ociosos em ambientes vivos' },
 ];
 
-const ProblemSection: React.FC = () => {
+const ProblemSection: React.FC<ProblemSectionProps> = ({ rankings, setRankings, openChallenge, setOpenChallenge }) => {
     const [sectionRef, isVisible] = useFadeIn<HTMLElement>();
-    const [rankings, setRankings] = useState<Record<string, string>>({
-        diferenciar: '',
-        reter: '',
-        espacos: '',
-    });
-
+    
     const handleRankingChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const { name, value } = e.target;
         setRankings(prev => ({
@@ -447,7 +491,9 @@ const ProblemSection: React.FC = () => {
                             id="open-challenge" 
                             name="desafio_aberto" 
                             placeholder="Descreva aqui..."
-                            className="w-full min-h-[120px] p-4 rounded-xl border-2 border-accent-blue font-inter text-base resize-vertical focus:ring-2 focus:ring-primary focus:outline-none"
+                            className="w-full min-h-[120px] p-4 rounded-xl border-2 border-accent-blue font-inter text-base resize-vertical focus:ring-2 focus:ring-primary focus:outline-none bg-white"
+                            value={openChallenge}
+                            onChange={(e) => setOpenChallenge(e.target.value)}
                         ></textarea>
                     </div>
                 </div>
@@ -483,6 +529,7 @@ const solutionCards: FlipCardProps[] = [
     }
 ];
 
+
 const SolutionSection: React.FC = () => {
     const [sectionRef, isVisible] = useFadeIn<HTMLElement>();
 
@@ -505,13 +552,13 @@ const SolutionSection: React.FC = () => {
     );
 };
 
-const routineItems = [
-    'Intencionalidade', 'Autonomia', 'Presença', 'Problematização/ Aproximação',
-    'Ação/ Cooperação', 'Contemplação', 'Documentação'
-];
 
 const WayOfDoingSection: React.FC = () => {
     const [sectionRef, isVisible] = useFadeIn<HTMLElement>();
+    const routineItems = [
+        'Intencionalidade', 'Autonomia', 'Presença', 'Problematização/ Aproximação',
+        'Ação/ Cooperação', 'Contemplação', 'Documentação'
+    ];
 
     const getFadeInClass = (isVisible: boolean) => 
         `transition-all duration-1000 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`;
@@ -544,23 +591,36 @@ const WayOfDoingSection: React.FC = () => {
 };
 
 const portfolioData: PortfolioItem[] = [
-    { title: 'Marcenaria', folder: 'marcenaria', images: ['IMG_1960.jpeg', 'IMG_1809.jpeg', 'IMG_1810.jpeg', 'IMG_1835.jpeg', 'IMG_1836.jpeg', 'IMG_1837.jpeg'], tooltip: null },
-    { title: 'Circo', folder: 'circo', images: ['IMG_1953.jpeg', 'IMG_1813.jpeg', 'IMG_1839.jpeg', 'IMG_1840.jpeg', 'IMG_1841.jpeg', 'IMG_1842.jpeg', 'IMG_1843.jpeg', 'IMG_1844.jpeg', 'bc110c9c-a8e1-452a-94b7-5a0c6ce0d3b8.jpeg', 'e3b3b2a3-a15e-4e24-be2f-b529a24e3a60.jpeg', 'f80d9019-6851-4b2f-af19-5a8dd0edcaf7.jpeg'], tooltip: null },
-    { title: 'Fazeres Manuais', folder: 'fazeresmanuais', images: ['82d08da1-ed2c-4bfd-908a-4b6e75999604.jpeg', 'IMG_1822.jpeg', 'IMG_1846.jpeg', 'IMG_1847.jpeg', 'IMG_1848.jpeg', 'IMG_1849.jpeg', 'IMG_1850.jpeg', 'IMG_1851.jpeg', 'IMG_1852.jpeg', 'IMG_1853.jpeg', 'IMG_1956.jpeg'], tooltip: 'Horta, Panificação, Cozinha Experimental' },
-    { title: 'Tecnologia', folder: 'tecnologia', images: ['IMG_1952.jpeg', 'IMG_1807.jpeg', 'IMG_1808.jpeg', 'IMG_1894.jpeg', 'IMG_1895.jpeg', 'IMG_1896.jpeg', 'IMG_1897.jpeg', 'IMG_1898.jpeg', 'IMG_1899.jpeg', 'IMG_1900.jpeg', 'IMG_1901.jpeg', 'IMG_1902.jpeg', 'IMG_1903.jpeg', 'IMG_1904.jpeg', 'IMG_1905.jpeg', 'IMG_1906.jpeg'], tooltip: 'Programação de Jogos, Robótica, Criação de Jogos de Tabuleiro e RPG' },
-    { title: 'CidadeVamos', folder: 'cidadevamos', images: ['IMG_1912.jpeg', 'IMG_1913.jpeg', 'IMG_1914.jpeg', 'IMG_1915.jpeg', 'IMG_1916.jpeg', 'IMG_1917.jpeg', 'IMG_1918.jpeg', 'IMG_1919.jpeg', 'IMG_1920.jpeg', 'IMG_1921.jpeg', 'IMG_1922.jpeg', 'IMG_1923.jpeg', 'IMG_1924.jpeg', 'IMG_1925.jpeg', 'IMG_1926.jpeg', 'IMG_1943.jpeg', 'IMG_1946.jpeg', 'IMG_1947.jpeg', 'IMG_1948.jpeg'], tooltip: null },
-    { title: 'Infância Sem Excesso', folder: 'infanciasemexcesso', images: ['IMG_1927.jpeg', 'IMG_1928.jpeg', 'IMG_1929.jpeg', 'IMG_1930.jpeg', 'IMG_1931.jpeg', 'IMG_1932.jpeg', 'IMG_1933.jpeg', 'IMG_1934.jpeg', 'IMG_1935.jpeg', 'IMG_1936.jpeg', 'IMG_1937.jpeg', 'IMG_1938.jpeg', 'IMG_1939.jpeg', 'IMG_1940.jpeg', 'IMG_1941.jpeg', 'IMG_1942.jpeg', 'IMG_1943.jpeg', 'IMG_1944.jpeg', 'IMG_1945.jpeg', 'IMG_1946.jpeg'], tooltip: null },
-    { title: 'Prática Esportiva', folder: 'praticaesportiva', images: ['IMG_1955.jpeg', 'IMG_1907.jpeg', 'IMG_1908.jpeg', 'IMG_1910.jpeg', 'IMG_1911.jpeg', 'IMG_1969.jpeg', 'IMG_1970.jpeg', 'IMG_1971.jpeg', 'IMG_1972.jpeg', 'IMG_1973.jpeg', 'IMG_1974.jpeg', 'IMG_1975.jpeg', 'IMG_1976.jpeg', 'IMG_1977.jpeg', 'IMG_1978.jpeg'], tooltip: null },
-    { title: 'Brincar Livre', folder: 'brincarlivre', images: ['8c01a9ee-c495-41bd-926e-4ee64715ef30.jpeg', 'IMG_1801.jpeg', 'IMG_1804.jpeg', 'IMG_1811.jpeg', 'IMG_1830.jpeg', 'IMG_1831.jpeg', 'IMG_1832.jpeg', 'IMG_1979.jpeg', 'IMG_1980.jpeg', 'IMG_1981.jpeg', 'IMG_1982.jpeg', 'IMG_1983.jpeg', 'IMG_1984.jpeg', 'IMG_1985.jpeg', 'IMG_1986.jpeg', 'IMG_1987.jpeg', 'IMG_1988.jpeg'], tooltip: null },
-    { title: 'Mindfulness', folder: 'mindfulness', images: ['IMG_1959.jpeg', 'IMG_1812.jpeg', 'IMG_1854.jpeg', 'IMG_1855.jpeg', 'IMG_1857.jpeg'], tooltip: null },
-    { title: 'Ateliês', folder: 'atelie', images: ['8c01a9ee-c495-41bd-926e-4ee64715ef30.jpeg', 'IMG_1820.jpeg', 'IMG_1861.jpeg', 'IMG_1862.jpeg', 'IMG_1863.jpeg', 'IMG_1865.jpeg', 'IMG_1866.jpeg', 'IMG_1867.jpeg', 'IMG_1868.jpeg', 'IMG_1869.jpeg', 'IMG_1870.jpeg', 'IMG_1871.jpeg', 'IMG_1872.jpeg', 'IMG_1873.jpeg', 'IMG_1874.jpeg', 'IMG_1875.jpeg', 'IMG_1881.jpeg', 'IMG_1883.jpeg', 'IMG_1884.jpeg', 'IMG_1885.jpeg', 'IMG_1886.jpeg', 'IMG_1887.jpeg', 'IMG_1888.jpeg', 'IMG_1890.jpeg', 'IMG_1891.jpeg', 'IMG_1962.jpeg', 'IMG_1963.jpeg', 'IMG_1964.jpeg', 'IMG_1965.jpeg', 'IMG_1966.jpeg', 'IMG_3195.jpeg', 'fa97fcb7-9657-435d-8e72-e67d85f09b8b.jpeg'], tooltip: 'Clube de Leitura, CrioLivros, Artes Visuais, Artes Cênicas, Improvisação, Dança e Música' },
+    { title: 'Marcenaria', folder: 'marcenaria', images: ['IMG_3203.png', 'IMG_1809.jpeg', 'IMG_1810.jpeg', 'IMG_1835.jpeg', 'IMG_1836.jpeg', 'IMG_1837.jpeg'], tooltip: null },
+    { title: 'Circo', folder: 'circo', images: ['IMG_3200.png', 'IMG_1813.jpeg', 'IMG_1839.jpeg', 'IMG_1840.jpeg', 'IMG_1841.jpeg', 'IMG_1842.jpeg', 'IMG_1843.jpeg', 'IMG_1844.jpeg', 'bc110c9c-a8e1-452a-94b7-5a0c6ce0d3b8.jpeg', 'e3b3b2a3-a15e-4e24-be2f-b529a24e3a60.jpeg', 'f80d9019-6851-4b2f-af19-5a8dd0edcaf7.jpeg'], tooltip: null },
+    { title: 'Fazeres Manuais', folder: 'fazeresmanuais', images: ['IMG_3198.png', '82d08da1-ed2c-4bfd-908a-4b6e75999604.jpeg', 'IMG_1822.jpeg', 'IMG_1846.jpeg', 'IMG_1847.jpeg', 'IMG_1848.jpeg', 'IMG_1849.jpeg', 'IMG_1850.jpeg', 'IMG_1851.jpeg', 'IMG_1852.jpeg', 'IMG_1853.jpeg'], tooltip: 'Horta, Panificação, Cozinha Experimental' },
+    { title: 'Tecnologia', folder: 'tecnologia', images: ['IMG_3199.png', 'IMG_1807.jpeg', 'IMG_1808.jpeg', 'IMG_1894.jpeg', 'IMG_1895.jpeg', 'IMG_1896.jpeg', 'IMG_1897.jpeg', 'IMG_1898.jpeg', 'IMG_1899.jpeg', 'IMG_1900.jpeg', 'IMG_1901.jpeg', 'IMG_1902.jpeg', 'IMG_1903.jpeg', 'IMG_1904.jpeg', 'IMG_1905.jpeg', 'IMG_1906.jpeg'], tooltip: 'Programação de Jogos, Robótica, Criação de Jogos de Tabuleiro e RPG' },
+    { title: 'CidadeVamos', folder: 'cidadevamos', images: ['IMG_3201.png', 'IMG_1948.jpeg', 'IMG_1912.jpeg', 'IMG_1913.jpeg', 'IMG_1914.jpeg', 'IMG_1915.jpeg', 'IMG_1916.jpeg', 'IMG_1917.jpeg', 'IMG_1918.jpeg', 'IMG_1919.jpeg', 'IMG_1920.jpeg', 'IMG_1921.jpeg', 'IMG_1922.jpeg', 'IMG_1923.jpeg', 'IMG_1924.jpeg', 'IMG_1925.jpeg', 'IMG_1926.jpeg'], tooltip: null },
+    { title: 'Infância Sem Excesso', folder: 'infanciasemexcesso', images: ['IMG_3202.png', 'IMG_1944.jpeg', 'IMG_1946.jpeg', 'IMG_1930.jpeg', 'IMG_1931.jpeg', 'IMG_1932.jpeg', 'IMG_1933.jpeg', 'IMG_1934.jpeg', 'IMG_1937.jpeg', 'IMG_1938.jpeg', 'IMG_1939.jpeg', 'IMG_1940.jpeg', 'IMG_1941.jpeg', 'IMG_1942.jpeg', 'IMG_1936.jpeg', 'IMG_1945.jpeg', 'IMG_1927.jpeg', 'IMG_1935.jpeg', 'IMG_1928.jpeg', 'IMG_1929.jpeg'], tooltip: null },
+    { title: 'Prática Esportiva', folder: 'praticaesportiva', images: ['IMG_3197.png', 'IMG_1907.jpeg', 'IMG_1908.jpeg', 'IMG_1910.jpeg', 'IMG_1911.jpeg', 'IMG_1969.jpeg', 'IMG_1970.jpeg', 'IMG_1971.jpeg', 'IMG_1972.jpeg', 'IMG_1973.jpeg', 'IMG_1974.jpeg', 'IMG_1975.jpeg', 'IMG_1976.jpeg', 'IMG_1977.jpeg', 'IMG_1978.jpeg'], tooltip: null },
+    { title: 'Brincar Livre', folder: 'brincarlivre', images: ['IMG_3204.png', 'IMG_1801.jpeg', 'IMG_1804.jpeg', 'IMG_1811.jpeg', 'IMG_1830.jpeg', 'IMG_1831.jpeg', 'IMG_1832.jpeg', 'IMG_1979.jpeg', 'IMG_1980.jpeg', 'IMG_1981.jpeg', 'IMG_1982.jpeg', 'IMG_1983.jpeg', 'IMG_1984.jpeg', 'IMG_1985.jpeg', 'IMG_1986.jpeg', 'IMG_1987.jpeg', 'IMG_1988.jpeg'], tooltip: null },
+    { title: 'Mindfulness', folder: 'mindfulness', images: ['IMG_3196.png', '4f98ae78-9869-4179-95df-93919ee1616f.jpeg', '87b6d7f1-94a9-4b8e-adfd-5b0bda9ff2e0.jpeg', 'IMG_1812.jpeg', 'IMG_1854.jpeg', 'IMG_1855.jpeg', 'IMG_1857.jpeg'], tooltip: null },
+    { title: 'Ateliês', folder: 'atelie', images: ['IMG_3204.png', 'IMG_1820.jpeg', 'IMG_1861.jpeg', 'IMG_1862.jpeg', 'IMG_1863.jpeg', 'IMG_1865.jpeg', 'IMG_1866.jpeg', 'IMG_1867.jpeg', 'IMG_1868.jpeg', 'IMG_1869.jpeg', 'IMG_1870.jpeg', 'IMG_1871.jpeg', 'IMG_1872.jpeg', 'IMG_1873.jpeg', 'IMG_1874.jpeg', 'IMG_1875.jpeg', 'IMG_1881.jpeg', 'IMG_1883.jpeg', 'IMG_1884.jpeg', 'IMG_1885.jpeg', 'IMG_1886.jpeg', 'IMG_1887.jpeg', 'IMG_1888.jpeg', 'IMG_1890.jpeg', 'IMG_1891.jpeg', 'IMG_1962.jpeg', 'IMG_1963.jpeg', 'IMG_1964.jpeg', 'IMG_1965.jpeg', 'IMG_1966.jpeg', 'IMG_3195.jpeg', 'fa97fcb7-9657-435d-8e72-e67d85f09b8b.jpeg'], tooltip: 'Clube de Leitura, CrioLivros, Artes Visuais, Artes Cênicas, Improvisação, Dança e Música' },
 ];
 
-const PortfolioSection: React.FC = () => {
+const PortfolioSection: React.FC<PortfolioSectionProps> = ({ selectedItems, onToggleItem, onToggleSelectAll, onDeselectAll, portfolioItemTitles }) => {
     const [sectionRef, isVisible] = useFadeIn<HTMLElement>();
     const [copyButtonText, setCopyButtonText] = useState('Copiar Link do Diagnóstico');
+    
+    // Lightbox state
     const [lightboxState, setLightboxState] = useState<LightboxState | null>(null);
+    const selectAllCheckboxRef = useRef<HTMLInputElement>(null);
+    
+    const numSelected = useMemo(() => Object.values(selectedItems).filter(Boolean).length, [selectedItems]);
+    const allSelected = useMemo(() => numSelected > 0 && numSelected === portfolioItemTitles.length, [numSelected, portfolioItemTitles.length]);
+    const isIndeterminate = useMemo(() => numSelected > 0 && numSelected < portfolioItemTitles.length, [numSelected, portfolioItemTitles.length]);
 
+    useEffect(() => {
+        if (selectAllCheckboxRef.current) {
+            selectAllCheckboxRef.current.indeterminate = isIndeterminate;
+        }
+    }, [isIndeterminate]);
+    
     const getFadeInClass = (isVisible: boolean) => 
         `transition-all duration-1000 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`;
 
@@ -572,11 +632,11 @@ const PortfolioSection: React.FC = () => {
         }).catch(err => console.error('Failed to copy link: ', err));
     }, []);
 
+    const basePath = 'https://clubesa.github.io/simuladorRede3d/diagnostico/';
     const handleOpenLightbox = useCallback((item: PortfolioItem, imageIndex: number, element: HTMLElement) => {
-        const basePath = 'https://clubesa.github.io/simuladorRede3d/diagnostico/';
-        const fullImageUrls = item.images.map(img => `${basePath}${item.folder}/${img}`);
+        const imageUrls = item.images.map(imgFile => `${basePath}${item.folder}/${imgFile}`);
         element.style.visibility = 'hidden';
-        setLightboxState({ images: fullImageUrls, currentIndex: imageIndex, originElement: element });
+        setLightboxState({ images: imageUrls, currentIndex: imageIndex, originElement: element });
     }, []);
 
     const handleCloseLightbox = useCallback(() => {
@@ -586,30 +646,27 @@ const PortfolioSection: React.FC = () => {
         setLightboxState(null);
     }, [lightboxState]);
 
-    const handleNextImage = useCallback(() => {
-        setLightboxState(prev => {
-            if (!prev) return null;
-            const nextIndex = (prev.currentIndex + 1) % prev.images.length;
-            return { ...prev, currentIndex: nextIndex };
-        });
-    }, []);
-    
-    const handlePrevImage = useCallback(() => {
-        setLightboxState(prev => {
-            if (!prev) return null;
-            const prevIndex = (prev.currentIndex - 1 + prev.images.length) % prev.images.length;
-            return { ...prev, currentIndex: prevIndex };
-        });
-    }, []);
+    const handleNextLightboxImage = useCallback(() => {
+        if (lightboxState) {
+            setLightboxState(prev => prev ? ({ ...prev, currentIndex: (prev.currentIndex + 1) % prev.images.length }) : null);
+        }
+    }, [lightboxState]);
+
+    const handlePrevLightboxImage = useCallback(() => {
+        if (lightboxState) {
+            setLightboxState(prev => prev ? ({ ...prev, currentIndex: (prev.currentIndex - 1 + prev.images.length) % prev.images.length }) : null);
+        }
+    }, [lightboxState]);
 
     useEffect(() => {
+        const body = document.body;
         if (lightboxState) {
-            document.body.style.overflow = 'hidden';
+            body.style.overflow = 'hidden';
         } else {
-            document.body.style.overflow = '';
+            body.style.overflow = '';
         }
         return () => {
-            document.body.style.overflow = '';
+            body.style.overflow = '';
         };
     }, [lightboxState]);
 
@@ -618,22 +675,62 @@ const PortfolioSection: React.FC = () => {
             <h2 className="font-lora text-center text-[clamp(2.2rem,5vw,3.2rem)] leading-tight mb-12">Portfólio de Experiências</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="flex items-center justify-center text-center bg-light-bg rounded-2xl p-6">
-                    <p className="text-lg font-semibold text-gray-700">
-                        Selecione as experiências que melhor compõem com o projeto pedagógico da sua escola.
-                    </p>
+                {/* Card 1: Select All */}
+                <div className="bg-white rounded-2xl shadow-md overflow-hidden flex flex-col h-full">
+                    <div className="bg-gray-100 p-6 flex-grow flex items-center justify-center text-center">
+                        <p className="text-lg font-semibold text-gray-700">
+                            Selecione as experiências que melhor compõem com o projeto pedagógico da sua escola.
+                        </p>
+                    </div>
+                    <div className="p-4 border-t">
+                        <div className="flex justify-between items-center gap-2">
+                            <label htmlFor="select-all" className="font-lora text-xl font-semibold cursor-pointer flex-grow text-text-main">
+                                Selecionar todas
+                            </label>
+                            <input 
+                                ref={selectAllCheckboxRef}
+                                type="checkbox" 
+                                id="select-all"
+                                className="w-5 h-5 accent-primary cursor-pointer"
+                                checked={allSelected}
+                                onChange={onToggleSelectAll}
+                            />
+                        </div>
+                    </div>
                 </div>
+
                 {portfolioData.map((item) => (
                    <PortfolioCard 
                         key={item.title} 
                         item={item}
-                        onImageClick={handleOpenLightbox} 
+                        onImageClick={handleOpenLightbox}
+                        isChecked={!!selectedItems[item.title]}
+                        onToggle={onToggleItem}
                     />
                 ))}
-                <div className="flex items-center justify-center text-center bg-light-bg rounded-2xl p-6">
-                    <p className="text-lg font-semibold text-gray-700">
-                        Se não tem certeza de quais experiências escolher, criamos a ferramenta Diagnóstico para inventariar os interesses de alunos e famílias. Para isso, basta copiar o link no botão adiante e enviá-lo ao público da pesquisa.
-                    </p>
+                
+                {/* Card 3: Info & Deselect All */}
+                <div className="bg-white rounded-2xl shadow-md overflow-hidden flex flex-col h-full">
+                    <div className="bg-gray-100 p-6 flex-grow flex items-center justify-center text-center">
+                         <p className="text-lg font-semibold text-gray-700">
+                            Não sabe quais experiências escolher, copie abaixo o link do Diagnóstico e envie-o para mapear os interesses do público.
+                        </p>
+                    </div>
+                    <div className="p-4 border-t">
+                        <div className="flex justify-between items-center gap-2">
+                            <label htmlFor="deselect-all" className="font-lora text-xl font-semibold cursor-pointer flex-grow text-text-main">
+                                Desmarcar todas
+                            </label>
+                            <input 
+                                type="checkbox" 
+                                id="deselect-all"
+                                className="w-5 h-5 accent-primary cursor-pointer disabled:cursor-not-allowed"
+                                checked={numSelected > 0}
+                                onChange={onDeselectAll}
+                                disabled={numSelected === 0}
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -651,11 +748,12 @@ const PortfolioSection: React.FC = () => {
                         {copyButtonText}
                     </button>
                 </div>
-                <div className="w-full h-full min-h-[400px]">
+                <div className="w-full h-full min-h-[800px] flex items-center justify-center">
                     <iframe 
                         src="https://clubesa.github.io/simuladorRede3d/diagnostico/formulario.html" 
                         title="Preview do Formulário de Diagnóstico"
                         className="w-full h-full border-4 border-white rounded-lg shadow-lg"
+                        style={{ transform: 'scale(0.7)' }}
                     ></iframe>
                 </div>
             </div>
@@ -665,8 +763,8 @@ const PortfolioSection: React.FC = () => {
                     currentIndex={lightboxState.currentIndex}
                     originRect={lightboxState.originElement.getBoundingClientRect()}
                     onClose={handleCloseLightbox}
-                    onNext={handleNextImage}
-                    onPrev={handlePrevImage}
+                    onNext={handleNextLightboxImage}
+                    onPrev={handlePrevLightboxImage}
                 />
             )}
         </section>
@@ -674,7 +772,7 @@ const PortfolioSection: React.FC = () => {
 };
 
 const PartnershipCard = ({ title, description, border, details, note, activityDuration }: any) => (
-    <div className={`bg-white p-8 sm:p-10 rounded-2xl shadow-md border-t-4 ${border} transition-transform duration-300 hover:-translate-y-2 hover:shadow-lg`}>
+    <div className={`bg-white p-8 sm:p-10 rounded-2xl shadow-md border-t-4 ${border} transition-transform duration-300 hover:-translate-y-2 hover:shadow-lg h-full`}>
         <h4 className="font-lora text-3xl mb-4">{title}</h4>
         <p className="text-lg text-gray-600 mb-4" dangerouslySetInnerHTML={{ __html: description }}></p>
         <p className="font-bold text-primary mb-6">{activityDuration}</p>
@@ -705,7 +803,7 @@ const PartnershipSection: React.FC = () => {
                     border="border-primary"
                     activityDuration="2 horas de atividade/dia"
                     details={[
-                        '<span class="font-bold">50%</span> LABirintar',
+                        '<span>50%</span> LABirintar',
                         '<span>35%</span> Educador',
                         '<strong class="font-bold"><span>15%</span> Escola</strong>',
                     ]}
@@ -728,30 +826,36 @@ const PartnershipSection: React.FC = () => {
     );
 };
 
-const ticketPrices: { [key: number]: number } = { 1: 298, 2: 447, 3: 759, 4: 948, 5: 948 };
 
-const formatCurrency = (value: number) => {
-    if (isNaN(value)) return 'R$ 0,00';
-    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-};
-
-const SimulatorSection: React.FC = () => {
+const SimulatorSection: React.FC<SimulatorSectionProps> = ({
+    totalAlunos, setTotalAlunos,
+    metaConversao, setMetaConversao,
+    frequenciaSemanal, setFrequenciaSemanal,
+    mensalidadeCurricular, setMensalidadeCurricular,
+    selectedModel, onSelectModel
+}) => {
     const [sectionRef, isVisible] = useFadeIn<HTMLDivElement>();
-    const [totalAlunos, setTotalAlunos] = useState(500);
-    const [metaConversao, setMetaConversao] = useState(10);
-    const [frequenciaSemanal, setFrequenciaSemanal] = useState(2);
-    const [mensalidadeCurricular, setMensalidadeCurricular] = useState(1500);
+    
+    const ticketPrices: { [key: number]: number } = { 1: 298, 2: 447, 3: 759, 4: 948, 5: 948 };
 
-    const alunosExtra = useMemo(() => Math.round((totalAlunos * metaConversao) / 100), [totalAlunos, metaConversao]);
+    const formatCurrency = (value: number) => {
+        if (isNaN(value)) return 'R$ 0,00';
+        return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    };
+
+    const totalAlunosNum = Number(totalAlunos) || 0;
+    const mensalidadeCurricularNum = Number(mensalidadeCurricular) || 0;
+
+    const alunosExtra = useMemo(() => Math.round((totalAlunosNum * metaConversao) / 100), [totalAlunosNum, metaConversao]);
     const mensalidadeExtra = useMemo(() => ticketPrices[frequenciaSemanal], [frequenciaSemanal]);
     const percentualCurricular = useMemo(() => {
-        if (!mensalidadeCurricular || mensalidadeCurricular <= 0) return '-';
-        return `${((mensalidadeExtra / mensalidadeCurricular) * 100).toFixed(1)}%`;
-    }, [mensalidadeExtra, mensalidadeCurricular]);
+        if (!mensalidadeCurricularNum || mensalidadeCurricularNum <= 0) return '-';
+        return `${((mensalidadeExtra / mensalidadeCurricularNum) * 100).toFixed(1)}%`;
+    }, [mensalidadeExtra, mensalidadeCurricularNum]);
     
     const totalRevenue = useMemo(() => alunosExtra * mensalidadeExtra, [alunosExtra, mensalidadeExtra]);
     const gainModel1 = useMemo(() => totalRevenue * 0.15, [totalRevenue]);
-    const costModel2 = useMemo(() => (mensalidadeCurricular > 0 ? mensalidadeCurricular : 2000), [mensalidadeCurricular]);
+    const costModel2 = useMemo(() => (mensalidadeCurricularNum > 0 ? mensalidadeCurricularNum : 2000), [mensalidadeCurricularNum]);
     const gainModel2 = useMemo(() => (totalRevenue * 0.50) - costModel2, [totalRevenue, costModel2]);
 
     const getFadeInClass = (isVisible: boolean) => 
@@ -772,7 +876,7 @@ const SimulatorSection: React.FC = () => {
                     {/* Total de Alunos */}
                     <div className="input-group">
                         <label htmlFor="totalAlunos" className="font-semibold mb-2 block">Total de alunos da escola</label>
-                        <input type="number" id="totalAlunos" name="simulador_total_alunos" placeholder="Ex: 500" value={totalAlunos} onChange={e => setTotalAlunos(Number(e.target.value))} className="w-full p-3 border-2 border-accent-blue rounded-lg text-lg"/>
+                        <input type="number" id="totalAlunos" name="simulador_total_alunos" placeholder="Ex: 500" value={totalAlunos} onChange={e => setTotalAlunos(e.target.value)} className="w-full p-3 border-2 border-accent-blue rounded-lg text-lg bg-white"/>
                     </div>
 
                     {/* Meta de Conversão */}
@@ -803,7 +907,7 @@ const SimulatorSection: React.FC = () => {
                     <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-6 pt-6 mt-4 border-t border-accent-blue">
                         <div className="input-group">
                             <label htmlFor="mensalidadeCurricular" className="font-semibold mb-2 block">Mensalidade curricular (R$)</label>
-                            <input type="number" id="mensalidadeCurricular" name="simulador_mensalidade_curricular" placeholder="Ex: 1500" value={mensalidadeCurricular} onChange={e => setMensalidadeCurricular(Number(e.target.value))} className="w-full p-3 border-2 border-accent-blue rounded-lg text-lg"/>
+                            <input type="number" id="mensalidadeCurricular" name="simulador_mensalidade_curricular" placeholder="Ex: 1500" value={mensalidadeCurricular} onChange={e => setMensalidadeCurricular(e.target.value)} className="w-full p-3 border-2 border-accent-blue rounded-lg text-lg bg-white"/>
                         </div>
                         <div className="input-group">
                             <label htmlFor="percentualCurricular" className="font-semibold mb-2 block">% sobre curricular</label>
@@ -819,15 +923,47 @@ const SimulatorSection: React.FC = () => {
                 {/* --- RESULTS --- */}
                 {alunosExtra > 0 && (
                     <div id="results" className="mt-8 grid md:grid-cols-2 gap-6 text-left">
-                        <div className="bg-white p-6 rounded-xl shadow-sm">
-                            <h4 className="font-lora text-xl mb-2">Ganho com Modelo 1 (Split)</h4>
-                            <p className="text-3xl font-bold text-primary">{formatCurrency(gainModel1)}</p>
-                            <p className="text-sm text-gray-500 italic mt-1">15% da receita total de {formatCurrency(totalRevenue)}</p>
+                        <div className="bg-white p-6 rounded-xl shadow-sm flex flex-col justify-between">
+                            <div>
+                                <h4 className="font-lora text-xl mb-2">Ganho com Modelo 1 (Split)</h4>
+                                <p className="text-3xl font-bold text-primary">{formatCurrency(gainModel1)}</p>
+                                <p className="text-sm text-gray-500 italic mt-1">15% da receita total de {formatCurrency(totalRevenue)}</p>
+                            </div>
+                            <div className="mt-4 flex items-center justify-center bg-light-bg p-3 rounded-lg">
+                                <input 
+                                    type="radio" 
+                                    id="sim-model1-select" 
+                                    name="partnership_model" 
+                                    value="split"
+                                    checked={selectedModel === 'split'}
+                                    onChange={(e) => onSelectModel(e.target.value)}
+                                    className="w-5 h-5 accent-primary cursor-pointer"
+                                />
+                                <label htmlFor="sim-model1-select" className="ml-3 font-semibold text-text-main cursor-pointer">
+                                    Selecionar este modelo
+                                </label>
+                            </div>
                         </div>
-                        <div className="bg-white p-6 rounded-xl shadow-sm">
-                            <h4 className="font-lora text-xl mb-2">Ganho com Modelo 2 (Assinatura)</h4>
-                            <p className="text-3xl font-bold text-primary">{formatCurrency(gainModel2)}</p>
-                            <p className="text-sm text-gray-500 italic mt-1">50% ({formatCurrency(totalRevenue * 0.5)}) - Assinatura ({formatCurrency(costModel2)})</p>
+                        <div className="bg-white p-6 rounded-xl shadow-sm flex flex-col justify-between">
+                           <div>
+                                <h4 className="font-lora text-xl mb-2">Ganho com Modelo 2 (Assinatura)</h4>
+                                <p className="text-3xl font-bold text-primary">{formatCurrency(gainModel2)}</p>
+                                <p className="text-sm text-gray-500 italic mt-1">50% ({formatCurrency(totalRevenue * 0.5)}) - Assinatura ({formatCurrency(costModel2)})</p>
+                           </div>
+                           <div className="mt-4 flex items-center justify-center bg-light-bg p-3 rounded-lg">
+                                <input 
+                                    type="radio" 
+                                    id="sim-model2-select" 
+                                    name="partnership_model" 
+                                    value="signature"
+                                    checked={selectedModel === 'signature'}
+                                    onChange={(e) => onSelectModel(e.target.value)}
+                                    className="w-5 h-5 accent-primary cursor-pointer"
+                                />
+                                <label htmlFor="sim-model2-select" className="ml-3 font-semibold text-text-main cursor-pointer">
+                                    Selecionar este modelo
+                                </label>
+                           </div>
                         </div>
                     </div>
                 )}
@@ -846,7 +982,7 @@ const benefits = [
     { id: 'b7', value: 'Engajamento das famílias', label: 'Engajamento das famílias' },
 ];
 
-const BenefitsSection: React.FC = () => {
+const BenefitsSection: React.FC<BenefitsSectionProps> = ({ selectedBenefits, onToggleBenefit }) => {
     const [sectionRef, isVisible] = useFadeIn<HTMLElement>();
     
     const getFadeInClass = (isVisible: boolean) => 
@@ -860,7 +996,15 @@ const BenefitsSection: React.FC = () => {
             <div className="flex flex-wrap justify-center gap-4">
                 {benefits.map(benefit => (
                     <div key={benefit.id} className="benefit-tag">
-                        <input type="checkbox" id={benefit.id} name="beneficios" value={benefit.value} className="peer hidden" />
+                        <input 
+                            type="checkbox" 
+                            id={benefit.id} 
+                            name="beneficios" 
+                            value={benefit.value} 
+                            className="peer hidden" 
+                            checked={!!selectedBenefits[benefit.id]}
+                            onChange={() => onToggleBenefit(benefit.id)}
+                        />
                         <label 
                             htmlFor={benefit.id} 
                             className="flex items-center justify-center min-w-[180px] h-14 bg-accent-blue text-text-main px-6 py-3 rounded-full font-semibold transition-all duration-300 cursor-pointer text-center hover:bg-opacity-80 peer-checked:bg-secondary peer-checked:text-white peer-checked:scale-105 peer-checked:shadow-lg"
@@ -874,21 +1018,29 @@ const BenefitsSection: React.FC = () => {
     );
 };
 
-const Footer: React.FC<FooterProps> = ({ onOpenModal }) => {
+const Footer: React.FC<FooterProps> = ({ onOpenModal, isFormValid }) => {
+    const handleButtonClick = () => {
+        if (!isFormValid) {
+            alert('Preencha os campos acima corretamente para conseguir clicar nesse botão.');
+            return;
+        }
+        onOpenModal();
+    };
+    
     return (
         <footer className="bg-text-main text-white text-center py-20 px-4">
             <div className="container mx-auto max-w-3xl">
                 <h2 className="font-lora text-4xl text-white mb-6">Escolha Caminhar Conosco</h2>
                 <p className="text-lg opacity-80 max-w-xl mx-auto mb-10">
-                    A LABirintar transforma o contraturno. Preencha seus dados e nossa equipe entrará em contato.
+                    A LABirintar transforma o contraturno. Preencha seus dados e nossa equipe enviará uma proposta de orçamento.
                 </p>
                 <div className="flex justify-center">
                     <button 
                         type="button" 
-                        onClick={onOpenModal}
-                        className="inline-block py-4 px-10 rounded-full text-white font-bold text-lg bg-secondary hover:bg-opacity-90 transition-all transform hover:-translate-y-1 shadow-md hover:shadow-lg"
+                        onClick={handleButtonClick}
+                        className={`inline-block py-4 px-10 rounded-full text-white font-bold text-lg bg-secondary transition-all transform shadow-md hover:shadow-lg ${isFormValid ? 'hover:bg-opacity-90 hover:-translate-y-1' : 'opacity-50 cursor-not-allowed'}`}
                     >
-                        Receber Contato
+                        Receber Orçamento
                     </button>
                 </div>
             </div>
@@ -896,8 +1048,8 @@ const Footer: React.FC<FooterProps> = ({ onOpenModal }) => {
     );
 };
 
-const InputGroup: React.FC<{ label: string; id: string; name: string; type?: string; placeholder?: string; required?: boolean }> = 
-({ label, id, name, type = 'text', placeholder, required = true }) => (
+const InputGroup: React.FC<{ label: string; id: string; name: string; type?: string; placeholder?: string; required?: boolean; value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; }> = 
+({ label, id, name, type = 'text', placeholder, required = true, value, onChange }) => (
     <div>
         <label htmlFor={id} className="block font-semibold mb-2 text-text-main">{label}</label>
         <input 
@@ -906,12 +1058,14 @@ const InputGroup: React.FC<{ label: string; id: string; name: string; type?: str
             name={name} 
             placeholder={placeholder} 
             required={required}
-            className="w-full p-3 border-2 border-accent-blue rounded-lg text-lg focus:ring-2 focus:ring-primary focus:outline-none"
+            value={value}
+            onChange={onChange}
+            className="w-full p-3 border-2 border-accent-blue rounded-lg text-lg focus:ring-2 focus:ring-primary focus:outline-none bg-white"
         />
     </div>
 );
 
-const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
+const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, contactData, onContactDataChange, onSubmit }) => {
     if (!isOpen) return null;
 
     return (
@@ -926,16 +1080,19 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
                 <h3 className="font-lora text-2xl mb-2">Informações de Contato</h3>
                 <p className="text-gray-600 mb-6">Deixe seus dados para que nossa equipe possa retornar.</p>
                 
-                <div className="space-y-4">
-                    <InputGroup label="Seu nome" id="contact-name" name="contato_nome" />
-                    <InputGroup label="Telefone" id="contact-phone" name="contato_telefone" type="tel" placeholder="(11) 99999-9999" />
-                    <InputGroup label="Cargo" id="contact-role" name="contato_cargo" />
-                    <InputGroup label="Escola" id="contact-school" name="contato_escola" />
-                </div>
+                <form id="commercial-form-modal-part" onSubmit={(e) => { e.preventDefault(); onSubmit(); }}>
+                    <div className="space-y-4">
+                        <InputGroup label="Seu nome" id="contact-name" name="name" value={contactData.name} onChange={onContactDataChange} />
+                        <InputGroup label="E-mail" id="contact-email" name="email" type="email" placeholder="seu@email.com" value={contactData.email} onChange={onContactDataChange}/>
+                        <InputGroup label="Telefone" id="contact-phone" name="phone" type="tel" placeholder="(11) 99999-9999" value={contactData.phone} onChange={onContactDataChange}/>
+                        <InputGroup label="Cargo" id="contact-role" name="role" value={contactData.role} onChange={onContactDataChange}/>
+                        <InputGroup label="Escola" id="contact-school" name="school" value={contactData.school} onChange={onContactDataChange}/>
+                    </div>
+                </form>
                 
                 <button 
-                    type="submit" 
-                    form="commercial-form" 
+                    type="button" 
+                    onClick={onSubmit}
                     className="w-full mt-8 py-4 px-10 rounded-full text-white font-bold text-lg bg-primary hover:bg-opacity-90 transition-all transform hover:-translate-y-1 shadow-md hover:shadow-lg"
                 >
                     Enviar
@@ -945,79 +1102,255 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
     );
 };
 
-// --- App Component (from App.tsx) ---
+// =================================================================================================
+// MAIN APP COMPONENT
+// =================================================================================================
+const APPS_SCRIPT_URL = 'COLE_A_URL_DO_SEU_APP_DA_WEB_AQUI';
+
 const App: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const debounceTimer = useRef<number | null>(null);
+    const sessionId = useRef<string | null>(null);
     
-    // This state would hold all form data if it were to be submitted to a backend.
-    const [formData, setFormData] = useState<Record<string, any>>({});
+    // --- State for all form fields ---
+    const [rankings, setRankings] = useState<Record<string, string>>({
+        diferenciar: '',
+        reter: '',
+        espacos: '',
+    });
+    const [openChallenge, setOpenChallenge] = useState('');
+    const [selectedExperiences, setSelectedExperiences] = useState<Record<string, boolean>>({});
+    const [selectedPartnershipModel, setSelectedPartnershipModel] = useState('');
+    const [selectedBenefits, setSelectedBenefits] = useState<Record<string, boolean>>({});
+    const [simTotalAlunos, setSimTotalAlunos] = useState('');
+    const [simMetaConversao, setSimMetaConversao] = useState(10);
+    const [simFrequenciaSemanal, setSimFrequenciaSemanal] = useState(2);
+    const [simMensalidadeCurricular, setSimMensalidadeCurricular] = useState('');
+    const [contactData, setContactData] = useState({
+        name: '', email: '', phone: '', role: '', school: ''
+    });
 
-    const handleOpenModal = useCallback(() => {
-        setIsModalOpen(true);
+    // --- Generate unique session ID on first load ---
+    useEffect(() => {
+        if (!sessionId.current) {
+            sessionId.current = crypto.randomUUID();
+        }
     }, []);
 
-    const handleCloseModal = useCallback(() => {
-        setIsModalOpen(false);
-    }, []);
-
-    const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const fullFormData = new FormData(e.currentTarget);
-        const data: Record<string, any> = {};
+    // --- Calculated values from simulator ---
+    const {
+        alunosExtra, mensalidadeExtra, percentualCurricular, totalRevenue, gainModel1, gainModel2
+    } = useMemo(() => {
+        const ticketPrices: { [key: number]: number } = { 1: 298, 2: 447, 3: 759, 4: 948, 5: 948 };
+        const totalAlunosNum = Number(simTotalAlunos) || 0;
+        const mensalidadeCurricularNum = Number(simMensalidadeCurricular) || 0;
         
-        fullFormData.forEach((value, key) => {
-             // Handle multiple checkboxes with the same name
-            if (key in data) {
-                if (Array.isArray(data[key])) {
-                    data[key].push(value);
-                } else {
-                    data[key] = [data[key], value];
-                }
-            } else {
-                data[key] = value;
+        const alunosExtra = Math.round((totalAlunosNum * simMetaConversao) / 100);
+        const mensalidadeExtra = ticketPrices[simFrequenciaSemanal];
+        const percentualCurricular = (!mensalidadeCurricularNum || mensalidadeCurricularNum <= 0) ? '-' : `${((mensalidadeExtra / mensalidadeCurricularNum) * 100).toFixed(1)}%`;
+        const totalRevenue = alunosExtra * mensalidadeExtra;
+        const gainModel1 = totalRevenue * 0.15;
+        const costModel2 = (mensalidadeCurricularNum > 0 ? mensalidadeCurricularNum : 2000);
+        const gainModel2 = (totalRevenue * 0.50) - costModel2;
+        
+        return { alunosExtra, mensalidadeExtra, percentualCurricular, totalRevenue, gainModel1, gainModel2 };
+    }, [simTotalAlunos, simMetaConversao, simFrequenciaSemanal, simMensalidadeCurricular]);
+    
+
+    const portfolioItemTitles = useMemo(() => portfolioData.map(item => item.title), []);
+
+    const isFormValid = useMemo(() => {
+        const isProblemSectionValid = Object.values(rankings).every(r => r !== '') && openChallenge.trim() !== '';
+        const isPortfolioSectionValid = Object.values(selectedExperiences).some(v => v);
+        const isPartnershipSectionValid = selectedPartnershipModel !== '';
+        const isBenefitsSectionValid = Object.values(selectedBenefits).some(v => v);
+        const isSimulatorValid = simTotalAlunos.trim() !== '' && simMensalidadeCurricular.trim() !== '';
+
+        return isProblemSectionValid && isPortfolioSectionValid && isPartnershipSectionValid && isBenefitsSectionValid && isSimulatorValid;
+    }, [rankings, openChallenge, selectedExperiences, selectedPartnershipModel, selectedBenefits, simTotalAlunos, simMensalidadeCurricular]);
+
+    // --- Data Syncing with Google Sheets ---
+    const syncDataWithSheet = useCallback(() => {
+        if (!APPS_SCRIPT_URL.startsWith('https://')) {
+            console.warn('APPS_SCRIPT_URL is not set. Data will not be saved.');
+            return;
+        }
+
+        const fullFormData = {
+            sessionId: sessionId.current,
+            timestamp: new Date().toISOString(),
+            // Contact
+            contatoNome: contactData.name,
+            contatoEmail: contactData.email,
+            contatoTelefone: contactData.phone,
+            contatoCargo: contactData.role,
+            contatoEscola: contactData.school,
+            // Problem
+            rankingDiferenciar: rankings.diferenciar,
+            rankingReter: rankings.reter,
+            rankingEspacos: rankings.espacos,
+            desafioAberto: openChallenge,
+            // Portfolio
+            experienciasSelecionadas: Object.keys(selectedExperiences).filter(k => selectedExperiences[k]).join(', '),
+            // Simulator Inputs
+            simuladorTotalAlunos: simTotalAlunos,
+            simuladorMetaConversao: simMetaConversao,
+            simuladorFrequenciaSemanal: simFrequenciaSemanal,
+            simuladorMensalidadeCurricular: simMensalidadeCurricular,
+            // Simulator Calculated
+            calculadoAlunosExtra: alunosExtra,
+            calculadoMensalidadeExtra: mensalidadeExtra,
+            calculadoPercentualCurricular: percentualCurricular,
+            calculadoReceitaTotal: totalRevenue,
+            calculadoGanhoModelo1: gainModel1,
+            calculadoGanhoModelo2: gainModel2,
+            // Partnership
+            modeloParceriaSelecionado: selectedPartnershipModel,
+            // Benefits
+            beneficiosSelecionados: Object.keys(selectedBenefits).filter(k => selectedBenefits[k]).map(id => benefits.find(b => b.id === id)?.label || '').join(', '),
+        };
+
+        fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify(fullFormData),
+            headers: {
+                'Content-Type': 'text/plain;charset=utf-8', // Apps Script quirk
+            },
+        }).then(response => response.json())
+          .then(data => console.log('Sync success:', data))
+          .catch(error => console.error('Sync error:', error));
+
+    }, [
+        contactData, rankings, openChallenge, selectedExperiences, 
+        simTotalAlunos, simMetaConversao, simFrequenciaSemanal, simMensalidadeCurricular,
+        selectedPartnershipModel, selectedBenefits,
+        alunosExtra, mensalidadeExtra, percentualCurricular, totalRevenue, gainModel1, gainModel2
+    ]);
+
+    // Debounced useEffect to sync data on any change
+    useEffect(() => {
+        if (debounceTimer.current) {
+            clearTimeout(debounceTimer.current);
+        }
+        debounceTimer.current = window.setTimeout(() => {
+            syncDataWithSheet();
+        }, 1500); // Wait 1.5s after user stops typing
+
+        return () => {
+            if (debounceTimer.current) {
+                clearTimeout(debounceTimer.current);
             }
-        });
-        
-        console.log("Final form data submitted:", data);
-        alert("Obrigado! Suas respostas foram enviadas com sucesso. (Demonstração)");
+        };
+    }, [syncDataWithSheet]);
+
+
+    const handleToggleExperience = useCallback((title: string) => {
+        setSelectedExperiences(prev => ({ ...prev, [title]: !prev[title] }));
+    }, []);
+
+    const handleToggleSelectAllExperiences = useCallback(() => {
+        const numSelected = Object.values(selectedExperiences).filter(Boolean).length;
+        const allSelected = numSelected === portfolioItemTitles.length;
+        const newSelectedItems: Record<string, boolean> = {};
+        if (!allSelected) {
+            portfolioItemTitles.forEach(title => {
+                newSelectedItems[title] = true;
+            });
+        }
+        setSelectedExperiences(newSelectedItems);
+    }, [selectedExperiences, portfolioItemTitles]);
+    
+    const handleDeselectAllExperiences = useCallback(() => {
+        setSelectedExperiences({});
+    }, []);
+    
+    const handleToggleBenefit = useCallback((id: string) => {
+        setSelectedBenefits(prev => ({ ...prev, [id]: !prev[id] }));
+    }, []);
+
+    const handleContactDataChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setContactData(prev => ({...prev, [name]: value}));
+    };
+
+    const handleOpenModal = useCallback(() => setIsModalOpen(true), []);
+    const handleCloseModal = useCallback(() => setIsModalOpen(false), []);
+
+    const handleFinalSubmit = () => {
+        // Final sync before submission
+        syncDataWithSheet();
+
+        alert("Obrigado! Suas respostas foram enviadas com sucesso.");
         handleCloseModal();
-        e.currentTarget.reset(); // Reset form fields
+        
+        // Reset all state
+        setRankings({ diferenciar: '', reter: '', espacos: '' });
+        setOpenChallenge('');
+        setSelectedExperiences({});
+        setSelectedPartnershipModel('');
+        setSelectedBenefits({});
+        setSimTotalAlunos('');
+        setSimMetaConversao(10);
+        setSimFrequenciaSemanal(2);
+        setSimMensalidadeCurricular('');
+        setContactData({ name: '', email: '', phone: '', role: '', school: '' });
+        
+        // Optional: Reload to start a fresh session
+        // window.location.reload(); 
     };
 
     return (
         <div className="overflow-x-hidden">
             <Hero />
-            <form id="commercial-form" onSubmit={handleFormSubmit}>
-                <main>
-                    <VisionSection />
-                    <ProblemSection />
-                    <SolutionSection />
-                    <WayOfDoingSection />
-                    <PortfolioSection />
-                    <PartnershipSection />
-                    <SimulatorSection />
-                    <BenefitsSection />
-                </main>
-                <Footer onOpenModal={handleOpenModal} />
-                <ContactModal 
-                    isOpen={isModalOpen} 
-                    onClose={handleCloseModal} 
+            <main>
+                <VisionSection />
+                <ProblemSection 
+                    rankings={rankings}
+                    setRankings={setRankings}
+                    openChallenge={openChallenge}
+                    setOpenChallenge={setOpenChallenge}
                 />
-            </form>
+                <SolutionSection />
+                <WayOfDoingSection />
+                <PortfolioSection
+                    selectedItems={selectedExperiences}
+                    onToggleItem={handleToggleExperience}
+                    onToggleSelectAll={handleToggleSelectAllExperiences}
+                    onDeselectAll={handleDeselectAllExperiences}
+                    portfolioItemTitles={portfolioItemTitles}
+                />
+                <PartnershipSection />
+                <SimulatorSection 
+                    totalAlunos={simTotalAlunos}
+                    setTotalAlunos={setSimTotalAlunos}
+                    metaConversao={simMetaConversao}
+                    setMetaConversao={setSimMetaConversao}
+                    frequenciaSemanal={simFrequenciaSemanal}
+                    setFrequenciaSemanal={setSimFrequenciaSemanal}
+                    mensalidadeCurricular={simMensalidadeCurricular}
+                    setMensalidadeCurricular={setSimMensalidadeCurricular}
+                    selectedModel={selectedPartnershipModel}
+                    onSelectModel={setSelectedPartnershipModel}
+                />
+                <BenefitsSection 
+                    selectedBenefits={selectedBenefits}
+                    onToggleBenefit={handleToggleBenefit}
+                />
+            </main>
+            <Footer 
+                onOpenModal={handleOpenModal} 
+                isFormValid={isFormValid}
+            />
+            <ContactModal 
+                isOpen={isModalOpen} 
+                onClose={handleCloseModal} 
+                contactData={contactData}
+                onContactDataChange={handleContactDataChange}
+                onSubmit={handleFinalSubmit}
+            />
         </div>
     );
 };
 
-
-// --- ReactDOM Render (from original index.tsx) ---
-const rootElement = document.getElementById('root');
-if (!rootElement) {
-  throw new Error("Could not find root element to mount to");
-}
-
-const root = ReactDOM.createRoot(rootElement);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+const root = ReactDOM.createRoot(document.getElementById('root')!);
+root.render(<App />);
