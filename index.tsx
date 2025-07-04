@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useMemo, useEffect, useRef, RefObject } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Map, Cpu, Award, Heart, Share2, CheckCircle, ChevronLeft, ChevronRight, BarChart2, X } from 'lucide-react';
@@ -182,72 +183,72 @@ const ImageLightbox: React.FC<ImageLightboxProps> = ({ images, currentIndex, ori
         return () => clearTimeout(timer);
     }, []);
 
-    // Calculate initial and final styles for the animation
-    const style: React.CSSProperties = {
+    // Style for the animating container
+    const containerStyle: React.CSSProperties = {
         position: 'fixed',
         transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)',
-        zIndex: 60, // Ensure image is above backdrop but below buttons
-        // Initial state: matches the thumbnail
+        zIndex: 60,
         top: `${originRect.top}px`,
         left: `${originRect.left}px`,
         width: `${originRect.width}px`,
         height: `${originRect.height}px`,
+        maxWidth: '90vw',
+        maxHeight: '90vh',
     };
 
-    // Final state: centered and larger
     if (isAnimating && !isClosing) {
-        style.top = '50%';
-        style.left = '50%';
-        style.width = 'auto'; // Let aspect ratio work
-        style.height = 'auto';
-        style.maxWidth = '90vw';
-        style.maxHeight = '90vh';
-        style.transform = 'translate(-50%, -50%)';
-        style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25)';
-        style.borderRadius = '0.75rem'; // 12px
+        containerStyle.top = '50%';
+        containerStyle.left = '50%';
+        containerStyle.width = 'auto'; // Let aspect ratio dictate size
+        containerStyle.height = 'auto';
+        containerStyle.transform = 'translate(-50%, -50%)';
+        containerStyle.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25)';
+        containerStyle.borderRadius = '0.75rem';
     }
 
     return (
-        // The backdrop: fades in and handles closing clicks
         <div
-            className={`fixed inset-0 z-50 transition-colors duration-300 ease-in-out ${isAnimating && !isClosing ? 'bg-black/70 backdrop-blur-sm' : 'bg-transparent'}`}
+            className={`fixed inset-0 z-50 transition-all duration-300 ease-in-out ${isAnimating && !isClosing ? 'bg-black/70 backdrop-blur-sm' : 'bg-transparent'}`}
             onClick={handleClose}
             role="dialog"
             aria-modal="true"
         >
-             {/* The Image is rendered first, but its z-index keeps it behind the buttons */}
-            <img
-                src={imageUrl}
-                alt="Imagem ampliada"
-                style={style}
-                // Stop propagation so clicking the image doesn't close the lightbox
+            {/* Animating container for image and nav buttons */}
+            <div
+                style={containerStyle}
                 onClick={(e) => e.stopPropagation()}
-            />
-            {/* The controls are rendered after, and have a higher z-index via their fixed positioning context */}
-             {images.length > 1 && (
-                <>
-                    <button
-                        onClick={(e) => { e.stopPropagation(); onPrev(); }}
-                        className={`fixed left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/70 text-text-main rounded-full p-2 sm:p-3 shadow-lg transition-all duration-300 ease-in-out hover:scale-110 hover:bg-white z-70 ${isAnimating && !isClosing ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}
-                        aria-label="Imagem Anterior"
-                    >
-                        <ChevronLeft size={28} />
-                    </button>
-                    <button
-                        onClick={(e) => { e.stopPropagation(); onNext(); }}
-                        className={`fixed right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/70 text-text-main rounded-full p-2 sm:p-3 shadow-lg transition-all duration-300 ease-in-out hover:scale-110 hover:bg-white z-70 ${isAnimating && !isClosing ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}
-                        aria-label="Próxima Imagem"
-                    >
-                        <ChevronRight size={28} />
-                    </button>
-                </>
-            )}
-            {/* Close Button */}
+                className="relative flex items-center justify-center overflow-hidden"
+            >
+                <img
+                    src={imageUrl}
+                    alt="Imagem ampliada"
+                    className="w-auto h-auto max-w-full max-h-full object-contain"
+                />
+
+                {/* Navigation buttons are now absolute to the parent container */}
+                {images.length > 1 && (
+                    <>
+                        <button
+                            onClick={(e) => { e.stopPropagation(); onPrev(); }}
+                            className={`absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/70 text-text-main rounded-full p-2 sm:p-3 shadow-lg transition-all duration-300 ease-in-out hover:scale-110 hover:bg-white ${isAnimating && !isClosing ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}
+                            aria-label="Imagem Anterior"
+                        >
+                            <ChevronLeft size={28} />
+                        </button>
+                        <button
+                            onClick={(e) => { e.stopPropagation(); onNext(); }}
+                            className={`absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/70 text-text-main rounded-full p-2 sm:p-3 shadow-lg transition-all duration-300 ease-in-out hover:scale-110 hover:bg-white ${isAnimating && !isClosing ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}
+                            aria-label="Próxima Imagem"
+                        >
+                            <ChevronRight size={28} />
+                        </button>
+                    </>
+                )}
+            </div>
+            
+            {/* Close Button - stays fixed to viewport */}
             <button
-                onClick={(e) => {
-                    e.stopPropagation();
-                    handleClose();
-                }}
+                onClick={(e) => { e.stopPropagation(); handleClose(); }}
                 className={`fixed top-4 right-4 bg-white text-text-main rounded-full p-2 shadow-lg transition-all duration-300 ease-in-out hover:scale-110 z-70 ${isAnimating && !isClosing ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}
                 aria-label="Fechar"
             >
@@ -1105,7 +1106,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, contactDat
 // =================================================================================================
 // MAIN APP COMPONENT
 // =================================================================================================
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyc9yzE_1gecULA5nwOdrgcVR9VkGCKbWV17xnjUFvEpZzm5AkakuQZntjesyUW60Q0/exec$0';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyc9yzE_1gecULA5nwOdrgcVR9VkGCKbWV17xnjUFvEpZzm5AkakuQZntjesyUW60Q0/exec';
 
 const App: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
