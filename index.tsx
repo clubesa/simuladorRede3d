@@ -1105,7 +1105,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, contactDat
 // =================================================================================================
 // MAIN APP COMPONENT
 // =================================================================================================
-const APPS_SCRIPT_URL = 'COLE_A_URL_DO_SEU_APP_DA_WEB_AQUI';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyc9yzE_1gecULA5nwOdrgcVR9VkGCKbWV17xnjUFvEpZzm5AkakuQZntjesyUW60Q0/exec$0';
 
 const App: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
