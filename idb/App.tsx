@@ -8,10 +8,12 @@ import { InfoCard } from './components/InfoCard';
 const Header = () => (
   <header className="text-center py-12 bg-white shadow-sm">
     <div className="container mx-auto px-4">
-      <img src="/logoslabirintar/Labirintar_RGB.png" alt="LABirintar Logo" className="w-auto h-24 mx-auto mb-6" />
-      <h1 className="text-4xl md:text-5xl font-bold text-brand-primary mb-2">
+      <div className="inline-block mx-auto mb-6">
+        <img src="/logoslabirintar/Labirintar_RGB.png" alt="Logo da LABirintar" className="h-16 w-auto" />
+      </div>
+      <h2 className="text-4xl md:text-5xl font-bold text-neutral-800 mb-2">
         Proposta de Parceria Estratégica
-      </h1>
+      </h2>
       <p className="text-2xl font-semibold text-neutral-800">
         + Instituto IDB
       </p>
